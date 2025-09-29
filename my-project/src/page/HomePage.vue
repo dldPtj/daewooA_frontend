@@ -18,7 +18,7 @@ export default {
   },
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
-    const resultData = result.data.data.content;
+    const resultData = result.data.content;
     console.log('data >>> ', resultData);
     this.cities = resultData || [];
   }
