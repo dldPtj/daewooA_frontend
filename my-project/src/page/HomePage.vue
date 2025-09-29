@@ -18,7 +18,7 @@ export default {
   },
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
-    const resultData = result.data.data.content;
+    const resultData = result.data.content;
     console.log('data >>> ', resultData);
     this.cities = resultData || [];
   }
@@ -283,49 +283,6 @@ export default {
   align-items: center;
   gap: 20px;
 }
-.city-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: absolute;
-  text-align: left;
-  top: 1250px;
-  width: 250px;
-  margin: auto 25px;
-}
-.city-content {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  z-index: 2;
-  color: white;
-}
-.city-detail {
-  max-width: 165px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.homepage-hotel-price {
-  display: flex;
-  z-index: 2;
-  color: white;
-}
-#bookhotel {
-  width: 250px;
-  height: 50px;
-  font-size: 15px;
-  background-color: #8ae6b2;
-  border-radius: 5px;
-  border: #8ae6b2 solid 1px;
-}
-.hotel-book-btn {
-  display: flex;
-  position: absolute;
-  align-items: center;
-  justify-content: center;
-  top: 70px;
-}
-
 .tour-selection-bar {
   display: flex;
   justify-content: space-between;
