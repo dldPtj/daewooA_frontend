@@ -208,7 +208,7 @@ export default {
               </div>
               <!--호텔 보기 버튼-->
               <div class="hotel-view-place">
-                <button id="view-place-btn">
+                <button @click="$router.push('/hoteldetail')" id="view-place-btn">
                   <span>View Place</span>
                 </button>
               </div>
