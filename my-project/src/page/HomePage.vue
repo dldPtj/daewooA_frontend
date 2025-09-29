@@ -18,7 +18,7 @@ export default {
   },
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
-    const resultData = result.data.data.content;
+    const resultData = result.data.content;
     console.log('data >>> ', resultData);
     this.cities = resultData || [];
   }
@@ -50,6 +50,7 @@ export default {
             <legend>
               &nbsp;Enter Destination&nbsp;
             </legend>
+            <!--도시, 호텔 선택 버튼-->
             <button class="search-bar-box">
               <img src="../assets/ion_bed.png" class="ion_bed" alt="침대 아이콘">&nbsp;도시와 호텔을 선택하세요
             </button>
@@ -85,6 +86,11 @@ export default {
             </button>
           </fieldset>
         </form>
+      <div class="hotel-search-btn">
+        <button @click="$router.push('/hotelsearch')" id="hotel-search-btn">
+          <img src="../assets/search.png">
+        </button>
+      </div>
     </div>
   </div>
 
@@ -196,7 +202,7 @@ export default {
   top: -75px;
   left: 50%;
   transform: translateX(-50%);
-  width: 1240px;
+  width: 1290px;
   height: 150px;
   z-index: 2;
 }
