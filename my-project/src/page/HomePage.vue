@@ -289,6 +289,7 @@ export default {
   align-items: center;
   gap: 20px;
 }
+
 .tour-selection-bar {
   display: flex;
   justify-content: space-between;
