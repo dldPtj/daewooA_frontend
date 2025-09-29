@@ -9,12 +9,12 @@ export default {
   },
   computed: {
     fullImageUrl() {
-      // API 서버 주소 + imageUrl 결합
+      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
       return this.cityInfo.imageUrl
-          ? `http://localhost:18888${this.cityInfo.imageUrl}`
+          ? `${baseUrl}${this.cityInfo.imageUrl}`
           : "";
     },
-  },
+  }
 };
 </script>
 
