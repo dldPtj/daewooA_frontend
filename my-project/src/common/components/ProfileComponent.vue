@@ -1,15 +1,26 @@
 <script >
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
-
+import {aTeamApi} from "@/util/axios";
 export default{
-  components: {HeaderComponent}
+  components: {HeaderComponent},
+  data(){
+    return{
+      ProfileName: {},
+      ProfileEmail: {},
+    };
+  },
+  async mounted() {
+    const res = await aTeamApi.get('/api/users/me/profileAll');
+    const data = res.data;
+    console.log('data >>> ', data);
+    this.hotels = data || [];
+    this.ProfileName = data.content.userName;
+    this.ProfileEmail = data.content.email;
+  }
 }
 
 </script>
-components: {
-  HeaderComponent: HeaderComponent,
-  FooterComponent: FooterComponent,
-},
+
 <template>
   <HeaderComponent/>
   <div id ="accountImgMain">
@@ -22,8 +33,8 @@ components: {
         <div id="ProfileImgModify"><img src="../../assets/Pencil.png"></div>
       </div>
       <div id ="AccountProfileMainT">
-        <h3>프로필 이름</h3>
-        <a>mjc123@mjc816.com</a>
+        <h3>{{ ProfileName }}</h3>
+        <a>{{ ProfileEmail }}</a>
       </div>
     </div>
   </div>

@@ -3,7 +3,10 @@ import eyeoff from '../assets/Eye off.png'
 import eyeon from '../assets/Eye.png'
 import LoginImg1 from '../assets/LoginImg1.jpg'
 import LoginImg2 from '../assets/LoginImg2.jpg'
-  export default {
+import { reactive } from "vue";
+import {aTeamApi} from "@/util/axios";
+import router from "@/router";
+export default {
     data() {
       return {
         eyeImg : eyeoff,
@@ -12,16 +15,47 @@ import LoginImg2 from '../assets/LoginImg2.jpg'
         LoginImgBtn2: LoginImg2,
         ChangeLBtn1: true,
         ChangeLBtn2: false,
-        TimerId : null
+        TimerId : null,
       };
     },
-    mounted() {
+    async mounted() {
       this.TimerId = setInterval(this.TtoCIMG, 10000);
+
+
     },
+    setup(){
+      const state = reactive({
+        form: {
+          userEmail: "",
+          userPw: "",
+        },
+      });
+      const submit = async () => {
+        const loginObj = {
+          email: state.form.userEmail,
+          password: state.form.userPw,
+        };
+         await aTeamApi.post('/api/auth/login', loginObj).then(async (res) => {
+           alert("로그인 성공");
+           await router.push("/homepage");
+           let token = res.data.content.accessToken;
+           localStorage.setItem("token", token);
+         }).catch((error)=> {
+           if (error.response?.status === 500) {
+             alert("아이디와 비밀번호가 일치 하지 않습니다. 다시 로그인 해주세요.");
+           } else  {
+             alert("정보를 가져오는데 실패했습니다.");
+           }
+         });
+      };
+      return { state, submit };
+    },
+
     methods: {
       changeEyeImg(){
         if(this.eyeImg === eyeoff){
           this.eyeImg = eyeon;
+
         } else {
           this.eyeImg = eyeoff;
         }
@@ -68,11 +102,11 @@ import LoginImg2 from '../assets/LoginImg2.jpg'
       </div>
       <fieldset class="fieldLogin">
           <legend class="LegendLogin">이메일</legend>
-          <input type="email" placeholder="이메일을 입력하세요." class="LTextBox">
+          <input type="email" placeholder="이메일을 입력하세요." value="" class="LTextBox" id="userEmail" v-model="state.form.userEmail">
         </fieldset>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Password</legend>
-        <input type="password" placeholder="비밀번호를 입력하세요." class="LTextBox">
+        <input type="password" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw">
         <div id = "eye-offBox">
           <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
         </div>
@@ -83,7 +117,7 @@ import LoginImg2 from '../assets/LoginImg2.jpg'
         </span>
         <router-link to="/" class = "FPwd">Forgot Password</router-link>
       </div>
-        <button type="button" id="LoginBtn">Login</button>
+        <button @click="submit" id="LoginBtn">Login</button>
       <div id = "SignUpLink">
         <router-link to="/" class="SignUpBtn">회원가입</router-link>
       </div>

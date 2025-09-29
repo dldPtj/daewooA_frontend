@@ -2,6 +2,7 @@
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import ProfileComponent from "@/common/components/ProfileComponent.vue";
+import {aTeamApi} from "@/util/axios";
 export default {
   components: {
     HeaderComponent: HeaderComponent,
@@ -10,7 +11,18 @@ export default {
   },
   data(){
     return{
-      ACModal : false
+      ACModal : false,
+      ReadOnlyName : true,
+      ReadOnlyEmail: true,
+      ReadOnlyPhonNum: true,
+      ReadOnlyAddress: true,
+      ReadOnlyBirth: true,
+      AccountData: {},
+      Name: {},
+      Email: {},
+      PhoneNumber: {},
+      Address: {},
+      Birth: {},
     };
   },
   methods:{
@@ -20,6 +32,19 @@ export default {
     ACModalClose(){
       if(this.ACModal === true){
         this.ACModal = false;
+      }
+    },
+   async ReadOnlyOnOff(field, updateKey, updateValue) {
+      try {
+        this[field] = !this[field];
+        if (this[field] === true) {
+          await aTeamApi.put("/api/users/me/profile-info", {
+            [updateKey]: this[updateValue]
+          })
+              .then(() => alert(`${updateKey} 수정 완료!`))
+        }
+      }catch (err){
+        console.error(err);
       }
     }
   },
@@ -32,6 +57,21 @@ export default {
       }
     }
   },
+  async mounted() {
+    try {
+      const res =  await aTeamApi.get('/api/users/me/profile');
+      const data = res.data.content;
+      console.log('data >>> ', data);
+      this.AccountData = data || '';
+      this.Name = data.userName;
+      this.Email = data.email;
+      this.PhoneNumber = data.phoneNumber;
+      this.Address = data.address;
+      this.Birth = data.birthDate;
+    }catch (err){
+      console.error(err);
+    }
+  }
 }
 </script>
 
@@ -40,11 +80,11 @@ export default {
   <ProfileComponent/>
 <!--  프로필 아래 메뉴 선택 버튼 -->
   <div class="ChangeAccountMenu">
-    <button type="button" class="selectAcPage">계정</button>
+    <button type="button" class="selectAcPage"  @click="$router.push('/account')">계정</button>
     <a class="OtherLine"></a>
-    <button type="button" class="NOselectAcPage">내역</button>
+    <button type="button" class="NOselectAcPage" @click="$router.push('/reservation')">내역</button>
     <a class="OtherLine"></a>
-    <button type="button" class="NOselectAcPage">결제수단</button>
+    <button type="button" class="NOselectAcPage" @click="$router.push('/paymentadd')">결제수단</button>
   </div>
 <!--메뉴 선택시 나오는 화면 -->
   <div id = "AccountPageMain">
@@ -57,11 +97,11 @@ export default {
           <a>Name</a>
 <!--          이름 정보가 저장되는 곳-->
           <div class="ACInsertData">
-            이름이름이름
+            <input type="text" v-model="Name" :readonly="ReadOnlyName">
           </div>
         </div>
-<!--        버튼 클릭시 모달창 이동-->
-        <button type="button" @click="ACModalOpen"><img src="../assets/AccountBtnImg.png">change</button>
+<!--클릭시 readonly해제-->
+        <button type="button" @click="ReadOnlyOnOff('ReadOnlyName','userName','Name')" ><img src="../assets/AccountBtnImg.png">change</button>
       </div>
     </div>
 <!--     이메일 리스트 박스-->
@@ -70,10 +110,10 @@ export default {
         <div class="ACDataBox">
           <a>Email</a>
           <div class="ACInsertData">
-            이메이메
+            <input type="email" v-model="Email" :readonly="ReadOnlyEmail">
           </div>
         </div>
-        <button type="button"><img src="../assets/AccountBtnImg.png">change</button>
+        <button type="button" @click="ReadOnlyOnOff('ReadOnlyEmail','email','Email')"><img src="../assets/AccountBtnImg.png">change</button>
       </div>
     </div>
 <!--     비밀번호 리스트 박스-->
@@ -85,7 +125,8 @@ export default {
             <input type="password" value="sdsd2323232" readonly>
           </div>
         </div>
-        <button type="button"><img src="../assets/AccountBtnImg.png">change</button>
+        <!--        버튼 클릭시 모달창 이동-->
+        <button type="button" @click="ACModalOpen"><img src="../assets/AccountBtnImg.png">change</button>
       </div>
     </div>
 <!--    전화번호 리스트 박스-->
@@ -94,10 +135,10 @@ export default {
         <div class="ACDataBox">
           <a>Phone number</a>
           <div class="ACInsertData">
-            010-1234-1234
+            <input type=text v-model="PhoneNumber" :readonly="ReadOnlyBirth">
           </div>
         </div>
-        <button type="button"><img src="../assets/AccountBtnImg.png">change</button>
+        <button type="button" @click="ReadOnlyOnOff('ReadOnlyBirth','phoneNumber','PhoneNumber')"><img src="../assets/AccountBtnImg.png">change</button>
       </div>
     </div>
 <!--     주소 리스트 박스-->
@@ -106,10 +147,10 @@ export default {
         <div class="ACDataBox">
           <a>Address</a>
           <div class="ACInsertData">
-            경기도 부천시 어디구 어디동
+            <input type="text" v-model="Address" :readonly="ReadOnlyAddress">
           </div>
         </div>
-        <button type="button"><img src="../assets/AccountBtnImg.png">change</button>
+        <button type="button" @click="ReadOnlyOnOff('ReadOnlyAddress','address','Address')"><img src="../assets/AccountBtnImg.png">change</button>
       </div>
     </div>
 <!--     생일 리스트 박스-->
@@ -118,30 +159,30 @@ export default {
         <div class="ACDataBox">
           <a>Date of birth</a>
           <div class="ACInsertData">
-            2002-09-12
+            <input type="text" v-model="Birth" :readonly="ReadOnlyBirth">
           </div>
         </div>
-        <button type="button"><img src="../assets/AccountBtnImg.png">change</button>
+        <button type="button" @click="ReadOnlyOnOff('ReadOnlyBirth','birthDate','Birth')"><img src="../assets/AccountBtnImg.png">change</button>
       </div>
     </div>
    </div>
   </div>
-<!--이름 모달-->
+<!--비밀번호 모달-->
   <div class="AccountModalWrap" v-show="ACModal">
     <div class="ACModalContainer">
 <!--      취소 버튼-->
       <img src="../assets/ModalClose.png" alt="취소 사진" @click="ACModalClose" class="ModalCloseBtn">
-      <h1>이름 수정</h1>
+      <h1>비밀번호 수정</h1>
       <div>
         <fieldset class="fieldModal">
-          <legend class="LegendLogin">이름</legend>
+          <legend class="LegendLogin">비밀 번호</legend>
 <!--          수정할 이름 입력 하는곳-->
-          <input type="text" placeholder="이름을 입력하세요." class="LTextBox">
+          <input type="text" placeholder="비밀번호를 입력하세요." class="LTextBox">
         </fieldset>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Password</legend>
 <!--          비밀번호 입력하는 곳-->
-          <input type="password" placeholder="현재  비밀번호를 입력하세요." class="LTextBox">
+          <input type="password" placeholder="현재 비밀번호를 입력하세요." class="LTextBox">
         </fieldset>
       </div>
 <!--      클릭시 수정 완료-->
@@ -219,6 +260,11 @@ export default {
 }
 .ACInsertData input {
   border: none;
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+
 }
 .ACInsertData input:focus{
   outline: none;
