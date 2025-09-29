@@ -15,7 +15,7 @@ export default {
 <template>
   <div class= "ReservationList" >
     <div class="ReservationImage">
-      <img src="" alt="호텔 이미지가 나옵니다.">
+      <img src="../../assets/CommonProfileImg.png" alt="호텔 이미지가 나옵니다." id="ProfileImg">
     </div>
     <div class="Reservation_CheckInOut_Day">
       <a>Check-In</a><br>
@@ -59,6 +59,9 @@ export default {
 </template>
 
 <style >
+#ProfileImg{
+  object-fit: cover;
+}
 #MoreBtn {
   width: 48px;
   height: 48px;
@@ -157,7 +160,8 @@ export default {
 
 }
 .ReservationImage{
-  background-color: black;
+  display: flex;
+  background-color: white;
   width: 80px;
   height: 80px;
   margin: auto 32px auto 24px;

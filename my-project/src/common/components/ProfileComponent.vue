@@ -7,6 +7,7 @@ export default{
     return{
       ProfileName: {},
       ProfileEmail: {},
+      ProfileImg:{},
     };
   },
   async mounted() {
@@ -16,6 +17,7 @@ export default{
     this.hotels = data || [];
     this.ProfileName = data.content.userName;
     this.ProfileEmail = data.content.email;
+    this.ProfileImg = data.content.imageUrl;
   }
 }
 
@@ -30,6 +32,7 @@ export default{
   <div id = "accountProfile">
     <div id = "accountProfileMain">
       <div id="AccountProfileImg">
+        <img :src="ProfileImg">
         <div id="ProfileImgModify"><img src="../../assets/Pencil.png"></div>
       </div>
       <div id ="AccountProfileMainT">

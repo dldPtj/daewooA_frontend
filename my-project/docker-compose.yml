@@ -36,18 +36,6 @@ services:
       - mariadb
     networks:
       - mjc_network
-
-  front-app:
-    image: dldptj/front_image:v1.0.5
-    container_name: front_container
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - boot-app
-    networks:
-      - mjc_network
-
 networks:
   mjc_network:
     driver: bridge
