@@ -1,6 +1,20 @@
 <script >
+import aTeamApi from "@/util/axios";
+
   export default {
     name : 'HeaderComponent',
+    data(){
+      return{
+        ProfileName: {},
+      };
+    },
+    async mounted() {
+      const res = await aTeamApi.get('/api/users/me/profileAll');
+      const data = res.data;
+      console.log('data >>> ', data);
+      this.hotels = data || [];
+      this.ProfileName = data.content.userName;
+    }
   }
 </script>
 
@@ -8,7 +22,7 @@
   <div class="container">
     <nav class="nav-container">
       <!-- 왼쪽 -->
-      <div class="item">
+      <div class="item" @click="$router.push('/homepage')">
                 <span>
                     <img src="../../assets/ion_bed.png" alt="침대 사진">
                     hotels
@@ -24,13 +38,13 @@
                     </span>
           |
           <!-- 오른쪽 두번째 -->
-          <div class="circle ">
+          <div class="circle " @click="$router.push('/account')">
             <div class="mini-circle">
               <div class="check"></div>
             </div>
           </div>
           <span>
-                        Tomhoon
+                        {{ ProfileName }}
                     </span>
         </div>
 

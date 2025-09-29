@@ -29,8 +29,22 @@ services:
       SPRING_MAIL_USERNAME: "${SPRING_MAIL_USERNAME}"
       SPRING_MAIL_PASSWORD: "${SPRING_MAIL_PASSWORD}"
       JWT_SECRET_KEY: "${JWT_SECRET_KEY}"
+      # Google OAuth 환경 변수 추가
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
     depends_on:
       - mariadb
+    networks:
+      - mjc_network
+
+  front-app:
+    image: dldptj/front_image:v1.0.5
+    container_name: front_container
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - boot-app
     networks:
       - mjc_network
 

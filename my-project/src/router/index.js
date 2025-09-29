@@ -12,13 +12,15 @@ import ProfileComponent from "@/common/components/ProfileComponent.vue";
 // import Favorites from '../components/Favorites.vue';
 import AccountPage from '../page/AccountPage.vue';
 import ReservationPage from '../page/ReservationPage.vue';
-// import PaymentAdd from '../components/PaymentAdd.vue';
+import PaymentAdd from '../page/PaymentAdd.vue';
 import LoginPage from '../page/LoginPage.vue';
 // import SignUp from '../components/SignUp.vue';
 // import FirstPaymentAdd from '../components/FirstPaymentAdd.vue';
 // import Findpw from '../components/Findpw.vue';
 // import Identification from '../components/Identification.vue';
 // import Resetpw from '../components/Resetpw.vue';
+import ReservationComponent from '../common/components/ReservationComponent.vue'
+
 
 const router = createRouter({
     history: createWebHistory(),
@@ -35,13 +37,15 @@ const router = createRouter({
         // { path: '/favorites', name: 'favorites', component: Favorites },
         { path: '/account', name: 'account', component: AccountPage },
         { path: '/reservation', name: 'reservation', component: ReservationPage },
-        // { path: '/paymentadd', name: 'paymentadd', component: PaymentAdd },
+        { path: '/paymentadd', name: 'paymentadd', component: PaymentAdd },
         { path: '/loginpage', name: 'loginpage', component: LoginPage },
         // { path: '/signup', name: 'signup', component: SignUp },
         // { path: '/firstpaymentadd', name: 'firstpaymentadd', component: FirstPaymentAdd },
         // { path: '/findpw', name: 'findpw', component: Findpw },
         // { path: '/identification', name: 'identification', component: Identification },
         // { path: '/resetpw', name: 'resetpw', component: Resetpw },
+        { path: '/reservationComponent', name: 'reservationComponent', component: ReservationComponent },
+
     ],
 });
 
