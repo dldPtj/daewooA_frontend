@@ -2,24 +2,26 @@
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import {aTeamApi} from "@/util/axios";
+import HotelLists from "@/common/components/HotelLists.vue";
 
 
 export default {
   components: {
+    HotelLists,
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
   },
   name: 'HotelSearch',
   data() {
     return {
-      list:[],
-      resultData: null,
+      hotellists: []
     }
   },
-  async mounted(){
-    const result = await aTeamApi.get('/api/hotels/filter?id=1');
-    this.resultData=result;
-    this.list = this.resultData.data.data;
+  async mounted() {
+    const result = await aTeamApi.get('/api/hotels/filter');
+    const resultData = result.data.hotels;
+    console.log('data >>> ', resultData);
+    this.hotellists = resultData || [];
   }
 }
 </script>
@@ -146,337 +148,7 @@ export default {
 
       <!--호텔 리스트-->
       <div class="hotel-lists">
-        <!--첫번째 호텔-->
-        <div class="hotel-1">
-          <div class="hotel-img">
-            <img src="../assets/hotel-img-1.png">
-            <div class="hotel-img-count">
-              9 images
-            </div>
-          </div>
-          <!--호텔 정보-->
-          <div class="hotel-info">
-              <!--호텔 이름-->
-              <div class="hotel-name">
-                <h3 id="hotel-name-1">
-                  해튼 호텔
-                </h3>
-              </div>
-              <!--호텔 위치-->
-              <div class="hotel-location">
-                <img src="../assets/ion-location.png">
-                <span id="address">
-                  <small>Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 344371111111111111111111111111111111111111111111111</small>
-                </span>
-              </div>
-
-              <!--호텔 등급과 편의시설-->
-              <div class="hotel-grade-amenities">
-                <!--호텔 등급-->
-                <div class="hotel-grade">
-                  <span id="grade-stars">☆☆☆☆☆</span>&nbsp;<span id="grade">5</span> Star Hotel
-                </div>
-                <!--편의시설-->
-                <div class="hotel-amenities">
-                  <img src="../assets/amenities.png"><strong>+<span id="amenities">20</span></strong>&nbsp;Amenities
-                </div>
-              </div>
-
-            <!--호텔 리뷰 평점 및 개수-->
-            <div class="hotel-rating-count">
-              <!--호텔 리뷰 평점-->
-              <div class="hotel-review-avg">
-                <span id="review-rating">4.2</span>
-              </div>
-              <!--호텔 만족도-->
-              <div class="hotel-satisfaction">
-                <b><span id="satisfaction">Very Good</span></b>
-              </div>
-              <!--호텔 평점 개수-->
-              <div class="hotel-review-count">
-                <span id="review-count">271</span>reviews
-              </div>
-            </div>
-
-            <!--호텔 찜하기, 보기 버튼-->
-            <div class="hotel-liked-view">
-              <!--호텔 찜하기 버튼-->
-              <div class="hotel-liked">
-                <button id="hotel-liked-btn">
-                  <img src="../assets/heart.png">
-                </button>
-              </div>
-              <!--호텔 보기 버튼-->
-              <div class="hotel-view-place">
-                <button @click="$router.push('/hoteldetail')" id="view-place-btn">
-                  <span>View Place</span>
-                </button>
-              </div>
-            </div>
-            <!--호텔 가격-->
-            <div class="hotel-price">
-              <div>
-                <small>starting from</small>
-              </div>
-              <div class="price">
-                <b><span id="hotel-price">₩240,000</span></b><small>/night</small>
-              </div>
-              <div class="tax">
-                <small>excl. tax</small>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!--두번째 호텔-->
-        <div class="hotel-2">
-          <div class="hotel-img">
-            <img src="../assets/hotel-img-2.png">
-            <div class="hotel-img-count">
-              9 images
-            </div>
-          </div>
-          <!--호텔 정보-->
-          <div class="hotel-info">
-            <!--호텔 이름-->
-            <div class="hotel-name">
-              <h3 id="hotel-name-1">
-                마제스틱 말라카 호텔
-              </h3>
-            </div>
-            <!--호텔 위치-->
-            <div class="hotel-location">
-              <img src="../assets/ion-location.png">
-              <span id="address">
-                <small>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</small>
-              </span>
-            </div>
-
-            <!--호텔 등급과 편의시설-->
-            <div class="hotel-grade-amenities">
-              <!--호텔 등급-->
-              <div class="hotel-grade">
-                <span id="grade-stars">☆☆☆☆☆</span>&nbsp;<span id="grade">5</span> Star Hotel
-              </div>
-              <!--편의시설-->
-              <div class="hotel-amenities">
-                <img src="../assets/amenities.png"><strong>+<span id="amenities">20</span></strong>&nbsp;Amenities
-              </div>
-            </div>
-
-            <!--호텔 리뷰 평점 및 개수-->
-            <div class="hotel-rating-count">
-              <!--호텔 리뷰 평점-->
-              <div class="hotel-review-avg">
-                <span id="review-rating">4.2</span>
-              </div>
-              <!--호텔 만족도-->
-              <div class="hotel-satisfaction">
-                <b><span id="satisfaction">Very Good</span></b>
-              </div>
-              <!--호텔 평점 개수-->
-              <div class="hotel-review-count">
-                <span id="review-count">271</span>reviews
-              </div>
-            </div>
-
-            <!--호텔 찜하기, 보기 버튼-->
-            <div class="hotel-liked-view">
-              <!--호텔 찜하기 버튼-->
-              <div class="hotel-liked">
-                <button id="hotel-liked-btn">
-                  <img src="../assets/heart.png">
-                </button>
-              </div>
-              <!--호텔 보기 버튼-->
-              <div class="hotel-view-place">
-                <button id="view-place-btn">
-                  <span>View Place</span>
-                </button>
-              </div>
-            </div>
-            <!--호텔 가격-->
-            <div class="hotel-price">
-              <div>
-                <small>starting from</small>
-              </div>
-              <div class="price">
-                <b><span id="hotel-price">₩240,000</span></b><small>/night</small>
-              </div>
-              <div class="tax">
-                <small>excl. tax</small>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-        <!--세번째 호텔-->
-        <div class="hotel-3">
-          <div class="hotel-img">
-            <img src="../assets/hotel-img-3.png">
-            <div class="hotel-img-count">
-              9 images
-            </div>
-          </div>
-          <!--호텔 정보-->
-          <div class="hotel-info">
-            <!--호텔 이름-->
-            <div class="hotel-name">
-              <h3 id="hotel-name-1">
-                카나델 리오 호텔
-              </h3>
-            </div>
-            <!--호텔 위치-->
-            <div class="hotel-location">
-              <img src="../assets/ion-location.png">
-              <span id="address">
-                <small>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</small>
-              </span>
-            </div>
-
-            <!--호텔 등급과 편의시설-->
-            <div class="hotel-grade-amenities">
-              <!--호텔 등급-->
-              <div class="hotel-grade">
-                <span id="grade-stars">☆☆☆☆☆</span>&nbsp;<span id="grade">5</span> Star Hotel
-              </div>
-              <!--편의시설-->
-              <div class="hotel-amenities">
-                <img src="../assets/amenities.png"><strong>+<span id="amenities">20</span></strong>&nbsp;Amenities
-              </div>
-            </div>
-
-            <!--호텔 리뷰 평점 및 개수-->
-            <div class="hotel-rating-count">
-              <!--호텔 리뷰 평점-->
-              <div class="hotel-review-avg">
-                <span id="review-rating">4.2</span>
-              </div>
-              <!--호텔 만족도-->
-              <div class="hotel-satisfaction">
-                <b><span id="satisfaction">Very Good</span></b>
-              </div>
-              <!--호텔 평점 개수-->
-              <div class="hotel-review-count">
-                <span id="review-count">271</span>reviews
-              </div>
-            </div>
-
-            <!--호텔 찜하기, 보기 버튼-->
-            <div class="hotel-liked-view">
-              <!--호텔 찜하기 버튼-->
-              <div class="hotel-liked">
-                <button id="hotel-liked-btn">
-                  <img src="../assets/heart.png">
-                </button>
-              </div>
-              <!--호텔 보기 버튼-->
-              <div class="hotel-view-place">
-                <button id="view-place-btn">
-                  <span>View Place</span>
-                </button>
-              </div>
-            </div>
-            <!--호텔 가격-->
-            <div class="hotel-price">
-              <div>
-                <small>starting from</small>
-              </div>
-              <div class="price">
-                <b><span id="hotel-price">₩240,000</span></b><small>/night</small>
-              </div>
-              <div class="tax">
-                <small>excl. tax</small>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--네번째 호텔-->
-        <div class="hotel-4">
-          <div class="hotel-img">
-            <img src="../assets/hotel-img-4.png">
-            <div class="hotel-img-count">
-              9 images
-            </div>
-          </div>
-          <!--호텔 정보-->
-          <div class="hotel-info">
-            <!--호텔 이름-->
-            <div class="hotel-name">
-              <h3 id="hotel-name-1">
-                베이뷰 호텔
-              </h3>
-            </div>
-            <!--호텔 위치-->
-            <div class="hotel-location">
-              <img src="../assets/ion-location.png">
-              <span id="address">
-                <small>Kucukayasofya No. 40 Sultanahmet, Istanbul 34022</small>
-              </span>
-            </div>
-
-            <!--호텔 등급과 편의시설-->
-            <div class="hotel-grade-amenities">
-              <!--호텔 등급-->
-              <div class="hotel-grade">
-                <span id="grade-stars">☆☆☆☆☆</span>&nbsp;<span id="grade">5</span> Star Hotel
-              </div>
-              <!--편의시설-->
-              <div class="hotel-amenities">
-                <img src="../assets/amenities.png"><strong>+<span id="amenities">20</span></strong>&nbsp;Amenities
-              </div>
-            </div>
-
-            <!--호텔 리뷰 평점 및 개수-->
-            <div class="hotel-rating-count">
-              <!--호텔 리뷰 평점-->
-              <div class="hotel-review-avg">
-                <span id="review-rating">4.2</span>
-              </div>
-              <!--호텔 만족도-->
-              <div class="hotel-satisfaction">
-                <b><span id="satisfaction">Very Good</span></b>
-              </div>
-              <!--호텔 평점 개수-->
-              <div class="hotel-review-count">
-                <span id="review-count">271</span>reviews
-              </div>
-            </div>
-
-            <!--호텔 찜하기, 보기 버튼-->
-            <div class="hotel-liked-view">
-              <!--호텔 찜하기 버튼-->
-              <div class="hotel-liked">
-                <button id="hotel-liked-btn">
-                  <img src="../assets/heart.png">
-                </button>
-              </div>
-              <!--호텔 보기 버튼-->
-              <div class="hotel-view-place">
-                <button id="view-place-btn">
-                  <span>View Place</span>
-                </button>
-              </div>
-            </div>
-            <!--호텔 가격-->
-            <div class="hotel-price">
-              <div>
-                <small>starting from</small>
-              </div>
-              <div class="price">
-                <b><span id="hotel-price">₩240,000</span></b><small>/night</small>
-              </div>
-              <div class="tax">
-                <small>excl. tax</small>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <HotelLists v-for="hotel in hotellists" :key="hotel.id" :hotelInfo="hotel" />
       </div>
     </div>
   </div>
@@ -507,130 +179,6 @@ export default {
   border-right: #D9D9D9 solid 1px;
 }
 
-.hotel-img-count {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  margin: 10px 210px;
-  border-radius: 10px;
-  width: 80px;
-  height: 40px;
-  background-color: rgba(255,255,255,0.5);
-}
-#hotel-price {
-  font-size: 25px;
-}
-.price {
-  color: #FF8682;
-}
-.tax {
-  text-align: right;
-}
-.hotel-price {
-  display: flex;
-  position: absolute;
-  margin: 0 0 0 300px;
-  flex-direction: column;
-  color: grey;
-}
-.hotel-review-avg {
-  border: #8ae6b2 solid 1px;
-  border-radius: 5px;
-  width: 50px;
-  height: 35px;
-  text-align: center;
-  padding: 7px;
-}
-.hotel-rating-count {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 240px 0 0;
-}
-.hotel-liked {
-  display: flex;
-}
-#hotel-liked-btn {
-  border: #8ae6b2 solid 1px;
-  border-radius: 5px;
-  background-color: white;
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  padding: 7px;
-}
-.hotel-view-place {
-  display: flex;
-}
-#view-place-btn {
-  border: #8ae6b2 solid 1px;
-  border-radius: 5px;
-  background-color: #8ae6b2;
-  width: 400px;
-  height: 50px;
-  text-align: center;
-  margin: 0 0 0 10px;
-  padding: 7px;
-}
-.hotel-liked-view {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: #D9D9D9 solid 1px;
-  margin: 20px 0 0 0;
-  padding: 20px 0 0 0;
-}
-.hotel-grade-amenities {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 150px 0 0;
-}
-#grade-stars {
-  color: #FF8682;
-}
-.hotel-1 {
-  display: flex;
-  border-radius: 15px;
-  box-shadow: 0px 3px 10px #d3d3d3;
-}
-.hotel-2 {
-  display: flex;
-  border-radius: 15px;
-  box-shadow: 0px 3px 10px #d3d3d3;
-}
-.hotel-3 {
-  display: flex;
-  border-radius: 15px;
-  box-shadow: 0px 3px 10px #d3d3d3;
-}
-.hotel-4 {
-  display: flex;
-  border-radius: 15px;
-  box-shadow: 0px 3px 10px #d3d3d3;
-}
-#address {
-  max-width: 310px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.hotel-location {
-  display: flex;
-  align-items: center;
-  text-align: left;
-  margin: 20px 0 10px 0;
-}
-.hotel-img {
-  display: flex;
-  border-radius: 20px 0 0 20px;
-}
-.hotel-info {
-  display: flex;
-  text-align: left;
-  flex-direction: column;
-  margin: auto 20px;
-}
 .hotel-lists {
   display: flex;
   justify-content: center;
@@ -660,28 +208,39 @@ export default {
 .accommodation-selection {
   border-radius: 10px;
   box-shadow: 0px 3px 10px #d3d3d3;
-  padding: 30px;
 }
 #hotel-count {
   border: white solid 1px;
-  border-right: #d3d3d3 solid 2px;
   background-color: white;
+  padding: 25px;
   width: 230px;
   text-align: left;
+}
+#hotel-count:hover {
+  border-bottom: #8ae6b2 solid 5px;
 }
 #motel-count {
   border: white solid 1px;
-  border-right: #d3d3d3 solid 2px;
+  border-left: #d3d3d3 solid 2px;
+  padding: 25px;
   background-color: white;
   width: 230px;
   text-align: left;
-  margin: auto 20px;
+  margin: auto 40px;
+}
+#motel-count:hover {
+  border-bottom: #8ae6b2 solid 5px;
 }
 #resort-count {
   border: white solid 1px;
+  border-left: #d3d3d3 solid 2px;
+  padding: 25px;
   background-color: white;
   width: 230px;
   text-align: left;
+}
+#resort-count:hover {
+  border-bottom: #8ae6b2 solid 5px;
 }
 .hotel-search-main {
   display: flex;
