@@ -326,8 +326,8 @@ export default {
   text-align: left;
 }
 .tour-price {
-  position: absolute;
-  top: 1670px;
+  position: relative;
+  top: -180px;
   border-radius: 5px;
   border: #8ae6b2 solid 1px;
   background-color: white;
@@ -336,8 +336,8 @@ export default {
   padding: 5px;
 }
 .flight-book-btn {
-  position: absolute;
-  top: 1940px;
+  position: relative;
+  top: 35px;
 }
 #bookflight {
   display: flex;
