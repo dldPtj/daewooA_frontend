@@ -31,19 +31,19 @@ export default {
   <div id = "PaymentPageMain">
     <h1>결제 수단</h1>
     <div id = "PaymentPageList">
-        <button type="button" class = "AddNewCard">
-          <div class="AddNewCardMain">
-           <div class="PlusBtn">
-              <a>+</a>
-           </div>
-           <span>Add a new card</span>
+      <button type="button" class = "AddNewCard">
+        <div class="AddNewCardMain">
+          <div class="PlusBtn">
+            <a>+</a>
           </div>
-        </button>
+          <span>Add a new card</span>
+        </div>
+      </button>
       <button type="button" class = "CardsList">
         <div id="cardListTop">
           <div id="cardPw">**** **** ****
             <div>
-            1234
+              1234
             </div>
           </div>
           <img src="../assets/Bin.png">
