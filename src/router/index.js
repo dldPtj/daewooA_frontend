@@ -3,10 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 // 뷰 컴포넌트 import
 import PageMove from '../page/PageMove.vue';
 import HomePage from "../page/HomePage.vue";
-import HotelSearch from '../page/HotelSearch.vue';
+import HotelSearchPage from '../page/HotelSearchPage.vue';
 import HeaderComponent from '../common/components/HeaderComponent.vue';
 import FooterComponent from "../common/components/FooterComponent.vue";
-import HotelDetail from '../page/HotelDetail.vue';
+import HotelDetailPage from '../page/HotelDetailPage.vue';
 import ProfileComponent from "@/common/components/ProfileComponent.vue";
 // import PaymentPage from '../components/PaymentPage.vue';
 import FavoritesPage from '../page/FavoritesPage.vue';
@@ -28,10 +28,10 @@ const router = createRouter({
     routes: [
         { path: '/', name: 'pagemove', component: PageMove },
         { path: '/homepage', name: 'homepage', component: HomePage },
-        { path: '/hotelsearch', name: 'hotelsearch', component: HotelSearch },
+        { path: '/hotelsearchpage', name: 'hotelsearchpage', component: HotelSearchPage },
         { path: '/headercomponent', name: 'headercomponent', component: HeaderComponent },
         { path: '/FooterComponent', name: 'FooterComponent', component: FooterComponent },
-        { path: '/hoteldetail', name: 'hoteldetail', component: HotelDetail },
+        { path: '/hoteldetailpage', name: 'hoteldetailpage', component: HotelDetailPage },
         { path: '/ProfileComponent', name: 'ProfileComponent', component: ProfileComponent },
         // { path: '/paymentpage', name: 'paymentpage', component: PaymentPage },
         { path: '/favoritespage', name: 'favoritespage', component: FavoritesPage },
