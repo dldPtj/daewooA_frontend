@@ -43,7 +43,8 @@ export default {
       <CardComponent v-for="(item, index) in cardData"
                      :key = "index"
                      :card-num-last="item.last4Digits"
-                     :thru="item.expirationDate"/>
+                     :thru="item.expirationDate"
+                     :card-id="item.paymentId"/>
       <AddCardComponent/>
     </div>
   </div>
@@ -56,10 +57,9 @@ export default {
 
 #PaymentPageList{
   display: flex;
-  box-shadow: 0px 4px 16px 0px #1122110D;
+  box-shadow: 0px 2px 11px #d3d3d3;
   width: 1232px;
   height: fit-content;
-  border: #FF8682 solid 1px;
   margin-top: 16px;
   padding: 24px 24px 24px 24px;
   gap: 22px;
@@ -71,7 +71,6 @@ export default {
   text-align: left;
   width: 1232px;
   height: fit-content;
-  border: #FF8682 solid 1px;
   margin: 40px auto 119px;
 }
 </style>

@@ -1,9 +1,30 @@
 <script >
+import aTeamApi from "@/util/axios";
+
 export default {
   props: {
     cardNumLast: String,
     thru: String,
-  }
+    cardId: {
+      type: [Number, BigInt, String],
+      required: true
+    }
+  },
+  methods: {
+    async removeCard(){
+      await aTeamApi.delete(`/api/payments/me/${Number(this.cardId)}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }).then(async () => {
+        alert("삭제 성공");
+        window.location.reload();
+      }).catch((err)=> {
+        console.error(err);
+        console.log("삭제 호출 URL:", `/api/payments/me/${this.cardId}`);
+      })
+    }
+  },
 };
 </script>
 
@@ -15,7 +36,7 @@ export default {
           {{ cardNumLast }}
         </div>
       </div>
-      <img src="../../assets/Bin.png" alt="">
+      <img src="../../assets/Bin.png" alt="" @click="removeCard">
     </div>
 
     <div class="vailThru">
