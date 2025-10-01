@@ -1,15 +1,11 @@
 <script >
 import aTeamApi from "@/util/axios";
+import {reactive} from "vue";
 
 export default {
   data() {
     return {
       pAModal: false,
-      paymentNumber: {},
-      expirationDate: {},
-      cvc: {},
-      cardUser: {},
-      country: {}
     }
   },
   methods: {
@@ -22,10 +18,28 @@ export default {
       }
     },
    async cardAdd(){
-      await aTeamApi.delete(`/api/payments/me`, {
+      const cardDataList = reactive({
+        form: {
+          paymentNumber: {},
+          expirationDate: {},
+          cvc: {},
+          cardUser: {},
+          country: {}
+        },
+      });
+      const cardData = {
+        pNum: cardDataList.form.paymentNumber,
+        exD: cardDataList.form.expirationDate,
+        cvc: cardDataList.form.cvc,
+        cardUser: cardDataList.form.cardUser,
+        country: cardDataList.form.country
+      }
+      await aTeamApi.post(`/api/payments/me`, {
+        cardData,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
+
       }).then(async () => {
         alert("등록 성공");
         window.location.reload();
@@ -65,29 +79,29 @@ export default {
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Card Number</legend>
           <!--          수정할 카드 번호 입력 하는곳-->
-          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox" v>
+          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox" v-model="paymentNumber">
         </fieldset>
         <div id="half">
         <fieldset class="fieldModalHalf">
           <legend class="LegendLogin">Exp. Date</legend>
           <!--          수정할 카드 번호 입력 하는곳-->
-          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox">
+          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox" v-model="expirationDate">
         </fieldset>
         <fieldset class="fieldModalHalf">
           <legend class="LegendLogin">Exp. Date</legend>
           <!--          수정할 카드 번호 입력 하는곳-->
-          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox">
+          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox" v-model="cvc">
         </fieldset>
         </div>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Name On Card</legend>
           <!--          카드 명의인 입력하는 곳-->
-          <input type="password" placeholder="카드 명의인을 입력하세요." class="LTextBox">
+          <input type="text" placeholder="카드 명의인을 입력하세요." class="LTextBox" v-model="cardUser">
         </fieldset>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Country or Region</legend>
           <!--          국가/지역 입력하는 곳-->
-          <input type="password" placeholder="국가/지역을 입력하세요." class="LTextBox">
+          <input type="password" placeholder="국가/지역을 입력하세요." class="LTextBox" v-model="country">
         </fieldset>
         <div id="CardFooter">
          <input type="checkbox" class="LoginCheckbox"><a>정보 저장하기</a>
