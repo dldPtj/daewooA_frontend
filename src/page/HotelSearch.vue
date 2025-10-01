@@ -183,6 +183,7 @@ export default {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  margin: 40px auto;
   gap: 20px;
 }
 #accommodation-sort-option {
@@ -196,7 +197,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 30px;
+  margin: 30px auto;
 }
 .accommodation-sort-text {
   font-weight: bold;
@@ -213,7 +214,7 @@ export default {
   border: white solid 1px;
   background-color: white;
   padding: 25px;
-  width: 230px;
+  width: 250px;
   text-align: left;
 }
 #hotel-count:hover {
@@ -224,9 +225,8 @@ export default {
   border-left: #d3d3d3 solid 2px;
   padding: 25px;
   background-color: white;
-  width: 230px;
+  width: 250px;
   text-align: left;
-  margin: auto 40px;
 }
 #motel-count:hover {
   border-bottom: #8ae6b2 solid 5px;
@@ -236,7 +236,7 @@ export default {
   border-left: #d3d3d3 solid 2px;
   padding: 25px;
   background-color: white;
-  width: 230px;
+  width: 250px;
   text-align: left;
 }
 #resort-count:hover {
