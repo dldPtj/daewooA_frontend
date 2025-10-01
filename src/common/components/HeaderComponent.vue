@@ -5,7 +5,7 @@ import aTeamApi from "@/util/axios";
     name : 'HeaderComponent',
     data(){
       return{
-        ProfileName: {},
+        profileName: {},
       };
     },
     async mounted() {
@@ -13,7 +13,7 @@ import aTeamApi from "@/util/axios";
       const data = res.data;
       console.log('data >>> ', data);
       this.hotels = data || [];
-      this.ProfileName = data.content.userName;
+      this.profileName = data.content.userName;
     }
   }
 </script>
@@ -44,7 +44,7 @@ import aTeamApi from "@/util/axios";
             </div>
           </div>
           <span>
-                        {{ ProfileName }}
+                        {{ profileName }}
                     </span>
         </div>
 

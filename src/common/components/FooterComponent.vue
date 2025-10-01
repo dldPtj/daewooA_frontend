@@ -143,7 +143,7 @@
   width: 1232px;
   height: fit-content;
   justify-content: space-between;
-  margin: auto auto 0px;
+  margin: auto auto -32px;
 
 }
 .guDocGOT {
