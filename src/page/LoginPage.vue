@@ -229,6 +229,7 @@ export default {
   height: 30px;
   border: none;
   margin-left: 16px;
+  background-color: white;
 }
 input.LTextBox:focus{
   outline: none;

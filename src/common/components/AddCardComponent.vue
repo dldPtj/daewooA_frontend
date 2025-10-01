@@ -1,0 +1,111 @@
+<script >
+export default {
+  data() {
+    return {
+      pAModal: false,
+    }
+  },
+  methods: {
+    pAModalOpen() {
+      this.pAModal = !this.pAModal
+    },
+    pAModalClose() {
+      if (this.pAModal === true) {
+        this.pAModal = false;
+      }
+    }
+  },
+  watch: {
+    pAModal: function (val) {
+      if (val) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+  },
+}
+</script>
+
+<template>
+  <button type="button" class = "AddNewCard" @click="pAModalOpen">
+    <div class="AddNewCardMain">
+      <div class="PlusBtn">
+        <a>+</a>
+      </div>
+      <span>Add a new card</span>
+    </div>
+  </button>
+  <div class="AccountModalWrap" v-show="pAModal">
+    <div class="ACModalContainer">
+      <!--      취소 버튼-->
+      <img src="../../assets/ModalClose.png" alt="취소 사진" @click="pAModalClose" class="ModalCloseBtn">
+      <h1>카드 추가</h1>
+      <div>
+        <fieldset class="fieldModal">
+          <legend class="LegendLogin">Card Number</legend>
+          <!--          수정할 카드 번호 입력 하는곳-->
+          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox">
+        </fieldset>
+        <fieldset class="fieldModalHalf">
+          <legend class="LegendLogin">Exp. Date</legend>
+          <!--          수정할 카드 번호 입력 하는곳-->
+          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox">
+        </fieldset>
+        <fieldset class="fieldModalHalf">
+          <legend class="LegendLogin">Exp. Date</legend>
+          <!--          수정할 카드 번호 입력 하는곳-->
+          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox">
+        </fieldset>
+        <fieldset class="fieldModal">
+          <legend class="LegendLogin">Name On Card</legend>
+          <!--          비밀번호 입력하는 곳-->
+          <input type="password" placeholder="카드 명의인을 입력하세요." class="LTextBox">
+        </fieldset>
+      </div>
+      <!--      클릭시 수정 완료-->
+      <button type="button" class="ModalBtnStyle">수정</button>
+    </div>
+  </div>
+</template>
+<style >
+.fieldModalHalf {
+  display: flex;
+  margin-bottom: 24px;
+  width: 40%;
+  height: 56px;
+  border-radius: 4px;
+}
+.AddNewCardMain{
+  font-weight: bold;
+}
+.PlusBtn span{
+  display: flex;
+  width: 96px;
+  height: 15px;
+  margin: 0 auto;
+}
+.PlusBtn a{
+  font-size: 39px;
+  color: #8DD3BB;
+  margin-bottom: 18px;
+}
+.PlusBtn{
+  width: 48px;
+  height: 48px;
+  border: #8DD3BB solid 2px;
+  border-radius: 48px;
+  margin: 0 auto 10px;
+}
+.AddNewCard{
+  display: flex;
+  width: 378px;
+  height: 212px;
+  border: #8DD3BB dashed 2px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+
+</style>
