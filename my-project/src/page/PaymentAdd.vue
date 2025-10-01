@@ -8,6 +8,13 @@ export default {
     FooterComponent: FooterComponent,
     ProfileComponent: ProfileComponent,
   },
+  data(){
+    return{
+      pAModal: true,
+
+    }
+
+  }
 }
 </script>
 
@@ -33,19 +40,88 @@ export default {
           </div>
         </button>
       <button type="button" class = "CardsList">
-        <div class="AddNewCardMain">
-          <div class="PlusBtn">
-            <a>+</a>
+        <div id="cardListTop">
+          <div id="cardPw">**** **** ****
+            <div>
+            1234
+            </div>
           </div>
-          <span>Add a new card</span>
+          <img src="../assets/Bin.png">
+        </div>
+
+        <div class="vailThru">
+          <span>
+            Valid Thru
+            <div>02/27</div>
+          </span>
+          <img src="../assets/visaImg.png">
         </div>
       </button>
     </div>
   </div>
+  <div class="AccountModalWrap" v-show="pAModal">
+    <div class="ACModalContainer">
+      <!--      취소 버튼-->
+      <img src="../assets/ModalClose.png" alt="취소 사진" @click="ACModalClose" class="ModalCloseBtn">
+      <h1>카드 추가</h1>
+      <div>
+        <fieldset class="fieldModal">
+          <legend class="LegendLogin">Card Number</legend>
+          <!--          수정할 카드 번호 입력 하는곳-->
+          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox">
+        </fieldset>
+        <fieldset class="fieldModal">
+          <legend class="LegendLogin">Name On Card</legend>
+          <!--          비밀번호 입력하는 곳-->
+          <input type="password" placeholder="카드 명의인을 입력하세요." class="LTextBox">
+        </fieldset>
+      </div>
+      <!--      클릭시 수정 완료-->
+      <button type="button" class="ModalBtnStyle">수정</button>
+    </div>
+  </div>
+
   <FooterComponent/>
 </template>
 
 <style >
+#cardListTop{
+  display: flex;
+  justify-content: space-between;
+  height: 61px;
+  margin-bottom: 60px;
+}
+#cardListTop img {
+  display: flex;
+  width: 24px;
+  height: 24px;
+}
+#cardPw{
+  display: flex;
+  flex-direction: column;
+}
+#cardPw div{
+  text-align: left;
+}
+.vailThru{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 61px;
+}
+.vailThru span{
+  height: 39px;
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+}
+.vailThru img{
+  display: flex;
+  margin: auto 0;
+  width: 52px;
+  height: 32px;
+}
+
 .AddNewCardMain{
   font-weight: bold;
 }
@@ -79,12 +155,12 @@ export default {
 
 .CardsList{
   display: flex;
+  flex-direction: column;
+  padding: 16px;
   width: 378px;
   height: 212px;
   background-color: #8DD3BB;
-  justify-content: center;
   border: none;
-  align-items: center;
 }
 #PaymentPageList{
   display: flex;
