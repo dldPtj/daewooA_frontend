@@ -1,5 +1,10 @@
 <script >
-
+export default {
+  props: {
+    cardNumLast: String,
+    thru: String,
+  }
+};
 </script>
 
 <template>
@@ -7,7 +12,7 @@
     <div class="cardListTop">
       <div class="cardPw">**** **** ****
         <div>
-          1234
+          {{ cardNumLast }}
         </div>
       </div>
       <img src="../../assets/Bin.png" alt="">
@@ -16,7 +21,7 @@
     <div class="vailThru">
           <span>
             <a class="thruText">Valid Thru</a>
-            <div class="thruInsert">02/27</div>
+            <div class="thruInsert">{{ thru }}</div>
           </span>
       <img src="../../assets/visaImg.png" alt="">
     </div>
