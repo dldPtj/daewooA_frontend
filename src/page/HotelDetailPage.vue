@@ -340,20 +340,106 @@ export default {
             <span id="review-count">371</span>verified reviews
           </div>
         </div>
-
       </div>
+
+      <!--리뷰 리스트-->
+      <div class="review-lists">
+        <!--리뷰 내용(프로필, 리뷰평점, 이름, 리뷰내용)-->
+        <div class="review-info">
+          <div class="review-profile">
+
+          </div>
+          <div class="review-info-in">
+            <div class="reviewer-rating-name">
+              <span id="review-rating">5.0 Amazing</span> | 이예서
+            </div>
+            <div class="review-content">
+              "말라카 구시가지의 한복판에 자리한 고요하고 휴식이 가득한 공간. 강변의 깨끗한 루프탑 수영장이 특히 인상 깊었고, 객실마다 밤마다 향 오일 램프가 켜져 있어 정말 좋았다"고 감탄했습니다.
+            </div>
+          </div>
+        </div>
+        <!--리뷰 신고버튼-->
+        <button class="review-report-btn">
+          <i class='bxr  bx-flag-alt-2' ></i>
+        </button>
+      </div>
+      <!--리뷰 페이지 처리부분-->
+      <div class="review-page">
+        <button id="review-back-btn">
+          <i class='bxr  bx-chevron-left'></i>
+        </button>
+        1 of 40
+        <button id="review-next-btn">
+          <i class='bxr  bx-chevron-right'  style='color:#000000'></i>
+        </button>
+      </div>
+
     </div>
 
     <div>
       <FooterComponent />
     </div>
   </div>
+  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </template>
 
 <style>
-.satis-count {
+.review-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+#review-back-btn {
+  font-size: 30px;
+  background-color: white;
+  border: white;
+}
+#review-next-btn {
+  font-size: 30px;
+  background-color: white;
+  border: white;
+}
+.review-lists {
+  border-bottom: #D9D9D9 solid 1px;
+}
+#review-rating {
+  font-weight: bold;
+}
+.review-report-btn {
+  font-size: 24px;
+  background-color: white;
+  border: white;
+}
+.review-profile {
+  background-color: #8ae6b2;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+.review-info-in {
   display: flex;
   flex-direction: column;
+  max-width: 1130px;
+  text-align: left;
+  margin: auto 20px;
+}
+.review-info {
+  display: flex;
+  align-items: center;
+}
+.review-lists {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px auto;
+  padding-bottom: 20px;
+}
+.satis-count {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto 20px;
   text-align: left;
 }
 #reviews-rating {
@@ -362,7 +448,13 @@ export default {
 }
 .reviews-rating-avg {
   display: flex;
+  border-bottom: #D9D9D9 solid 1px;
   justify-items: left;
+  margin: 20px auto;
+  padding-bottom: 20px;
+}
+#satisfaction {
+  font-weight: bold;
 }
 #write-review-btn {
   border: #8ae6b2 solid 1px;
