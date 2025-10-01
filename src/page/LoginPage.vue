@@ -7,89 +7,89 @@ import { reactive } from "vue";
 import {aTeamApi} from "@/util/axios";
 import router from "@/router";
 export default {
-    data() {
-      return {
-        eyeImg : eyeoff,
-        LoginImg: LoginImg1,
-        LoginImgBtn1: LoginImg1,
-        LoginImgBtn2: LoginImg2,
-        ChangeLBtn1: true,
-        ChangeLBtn2: false,
-        TimerId : null,
+  data() {
+    return {
+      eyeImg : eyeoff,
+      loginImg: LoginImg1,
+      loginImgBtn1: LoginImg1,
+      loginImgBtn2: LoginImg2,
+      changeLBtn1: true,
+      changeLBtn2: false,
+      timerId : null,
+    };
+  },
+  async mounted() {
+    this.timerId = setInterval(this.TtoCIMG, 10000);
+
+
+  },
+  setup(){
+    const state = reactive({
+      form: {
+        userEmail: "",
+        userPw: "",
+      },
+    });
+    const submit = async () => {
+      const loginObj = {
+        email: state.form.userEmail,
+        password: state.form.userPw,
       };
-    },
-    async mounted() {
-      this.TimerId = setInterval(this.TtoCIMG, 10000);
-
-
-    },
-    setup(){
-      const state = reactive({
-        form: {
-          userEmail: "",
-          userPw: "",
-        },
+      await aTeamApi.post('/api/auth/login', loginObj).then(async (res) => {
+        alert("로그인 성공");
+        await router.push("/homepage");
+        let token = res.data.content.accessToken;
+        localStorage.setItem("token", token);
+      }).catch((error)=> {
+        if (error.response?.status === 500) {
+          alert("아이디와 비밀번호가 일치 하지 않습니다. 다시 로그인 해주세요.");
+        } else  {
+          alert("정보를 가져오는데 실패했습니다.");
+        }
       });
-      const submit = async () => {
-        const loginObj = {
-          email: state.form.userEmail,
-          password: state.form.userPw,
-        };
-         await aTeamApi.post('/api/auth/login', loginObj).then(async (res) => {
-           alert("로그인 성공");
-           await router.push("/homepage");
-           let token = res.data.content.accessToken;
-           localStorage.setItem("token", token);
-         }).catch((error)=> {
-           if (error.response?.status === 500) {
-             alert("아이디와 비밀번호가 일치 하지 않습니다. 다시 로그인 해주세요.");
-           } else  {
-             alert("정보를 가져오는데 실패했습니다.");
-           }
-         });
-      };
-      return { state, submit };
+    };
+    return { state, submit };
+  },
+
+  methods: {
+    changeEyeImg(){
+      if(this.eyeImg === eyeoff){
+        this.eyeImg = eyeon;
+
+      } else {
+        this.eyeImg = eyeoff;
+      }
     },
+    changeLoginImg(img){
+      if(img === this.loginImgBtn1){
+        this.loginImg = LoginImg1;
+      }else {
+        this.loginImg = LoginImg2;
+      }
+    },
+    changLBtn(btn){
+      if(btn === this.changeLBtn2){
+        this.changeLBtn2 = true;
+        this.changeLBtn1 = false;
+      }else if(btn === this.changeLBtn1){
+        this.changeLBtn1 = true;
+        this.changeLBtn2 = false;
+      }
+    },
+    TtoCIMG(){
+      if(this.loginImg === LoginImg1){
+        this.loginImg = LoginImg2;
+        this.changeLBtn2 = true;
+        this.changeLBtn1 = false;
+      }else if(this.loginImg === LoginImg2){
+        this.loginImg = LoginImg1;
+        this.changeLBtn1 = true;
+        this.changeLBtn2 = false;
+      }
+    },
+  }
 
-    methods: {
-      changeEyeImg(){
-        if(this.eyeImg === eyeoff){
-          this.eyeImg = eyeon;
-
-        } else {
-          this.eyeImg = eyeoff;
-        }
-      },
-      changeLoginImg(img){
-        if(img === this.LoginImgBtn1){
-          this.LoginImg = LoginImg1;
-        }else {
-          this.LoginImg = LoginImg2;
-        }
-      },
-      changLBtn(btn){
-        if(btn === this.ChangeLBtn2){
-            this.ChangeLBtn2 = true;
-            this.ChangeLBtn1 = false;
-        }else if(btn === this.ChangeLBtn1){
-          this.ChangeLBtn1 = true;
-          this.ChangeLBtn2 = false;
-        }
-      },
-      TtoCIMG(){
-        if(this.LoginImg === LoginImg1){
-          this.LoginImg = LoginImg2;
-          this.ChangeLBtn2 = true;
-          this.ChangeLBtn1 = false;
-        }else if(this.LoginImg === LoginImg2){
-          this.LoginImg = LoginImg1;
-          this.ChangeLBtn1 = true;
-          this.ChangeLBtn2 = false;
-        }
-      },
-    }
-
-  };
+};
 </script>
 
 <template>
@@ -98,12 +98,12 @@ export default {
       <div class="LoginText">
         <h1>Login</h1>
         <br>
-       <a class="PlsL"> 로그인해주세요</a>
+        <a class="PlsL"> 로그인해주세요</a>
       </div>
       <fieldset class="fieldLogin">
-          <legend class="LegendLogin">이메일</legend>
-          <input type="email" placeholder="이메일을 입력하세요." value="" class="LTextBox" id="userEmail" v-model="state.form.userEmail">
-        </fieldset>
+        <legend class="LegendLogin">이메일</legend>
+        <input type="email" placeholder="이메일을 입력하세요." value="" class="LTextBox" id="userEmail" v-model="state.form.userEmail">
+      </fieldset>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Password</legend>
         <input type="password" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw">
@@ -117,7 +117,7 @@ export default {
         </span>
         <router-link to="/" class = "FPwd">Forgot Password</router-link>
       </div>
-        <button @click="submit" id="LoginBtn">Login</button>
+      <button @click="submit" id="LoginBtn">Login</button>
       <div id = "SignUpLink">
         <router-link to="/" class="SignUpBtn">회원가입</router-link>
       </div>
@@ -130,22 +130,22 @@ export default {
         <button type="button" id = "ABtn" class="LBtnGroup"><img src="../assets/appleLogin.png"></button>
       </div>
     </div>
-      <div class="LoginImages">
-        <transition name="fade-in">
-         <img :src="LoginImg" style="width: 612px; height: 816px" class="LoginIMG" alt="로그인시 나오는 사진">
-        </transition>
-        <div id = "PicBtnBoxes">
+    <div class="LoginImages">
+      <transition name="fade-in">
+        <img :src="loginImg" style="width: 612px; height: 816px" class="LoginIMG" alt="로그인시 나오는 사진">
+      </transition>
+      <div id = "PicBtnBoxes">
          <span style="margin-right: 8px">
-          <button type="button" @click ="changeLoginImg(LoginImgBtn1), changLBtn(ChangeLBtn1)" class="NSelectPicBtn" :class="{'SelectPicBtn': ChangeLBtn1}"  ></button>
+          <button type="button" @click ="changeLoginImg(loginImgBtn1), changLBtn(changeLBtn1)" class="NSelectPicBtn" :class="{'SelectPicBtn': changeLBtn1}"  ></button>
          </span>
-         <span style="margin-right: 8px">
-          <button type="button" @click="changeLoginImg(LoginImgBtn2), changLBtn(ChangeLBtn2)" class="NSelectPicBtn" :class="{'SelectPicBtn': ChangeLBtn2}" ></button>
+        <span style="margin-right: 8px">
+          <button type="button" @click="changeLoginImg(loginImgBtn2), changLBtn(changeLBtn2)" class="NSelectPicBtn" :class="{'SelectPicBtn': changeLBtn2}" ></button>
          </span>
-         <span style="margin-right: 8px">
+        <span style="margin-right: 8px">
           <button type="button" class="NSelectPicBtn"></button>
          </span>
-       </div>
       </div>
+    </div>
   </div>
 </template>
 
@@ -155,38 +155,38 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
-  #LoginMain{
-    display: flex;
-    justify-content: center;
-  }
-  .LoginImages{
-    display: flex;
-    justify-content: space-between;
-    margin: auto auto auto 0;
-    width: 616px;
-  }
+#LoginMain{
+  display: flex;
+  justify-content: center;
+}
+.LoginImages{
+  display: flex;
+  justify-content: space-between;
+  margin: auto auto auto 0;
+  width: 616px;
+}
 
-  .LoginBox{
-    margin: auto 104px  auto auto;
-    width: 512px;
-    height: 593px;
-  }
-  .LoginText{
-    text-align: left;
-    margin-bottom: 48px;
-  }
-  .PlsL{
-    color: #112211;
-  }
+.LoginBox{
+  margin: auto 104px  auto auto;
+  width: 512px;
+  height: 593px;
+}
+.LoginText{
+  text-align: left;
+  margin-bottom: 48px;
+}
+.PlsL{
+  color: #112211;
+}
 
- .fade-in-enter-active,
- .fade-in-leave-active{
-    transition: opacity 0.5s ease;
-  }
- .fade-in-enter-from,
- .fade-in-leave-to{
-   opacity: 0;
- }
+.fade-in-enter-active,
+.fade-in-leave-active{
+  transition: opacity 0.5s ease;
+}
+.fade-in-enter-from,
+.fade-in-leave-to{
+  opacity: 0;
+}
 
 
 .LoginIMG{
@@ -229,6 +229,7 @@ export default {
   height: 30px;
   border: none;
   margin-left: 16px;
+  background-color: white;
 }
 input.LTextBox:focus{
   outline: none;
@@ -291,12 +292,12 @@ input.LTextBox:focus{
   background-color: #D9D9D9;
 }
 .hr-sect {
-   display: flex;
-   flex-basis: 100%;
-   align-items: center;
-   color: rgba(0, 0, 0, 0.25);
-   font-size: 15px;
-   margin: 8px 0px;
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 15px;
+  margin: 8px 0px;
 }
 .hr-sect::before,
 .hr-sect::after {

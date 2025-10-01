@@ -18,7 +18,7 @@ services:
       - mjc_network
 
   boot-app:
-    image: asjcell/backend_image:v1.0.8
+    image: asjcell/backend_image:v1.0.9
     build: .
     container_name: boot_container
     ports:
@@ -34,17 +34,6 @@ services:
       GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
     depends_on:
       - mariadb
-    networks:
-      - mjc_network
-
-  front-app:
-    image: dldptj/front_image:v1.0.7
-    container_name: front_container
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - boot-app
     networks:
       - mjc_network
 
