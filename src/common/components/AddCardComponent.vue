@@ -48,7 +48,6 @@ export default {
       })
     }
   },
-
   watch: {
     pAModal: function (val) {
       if (val) {
