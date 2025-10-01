@@ -5,9 +5,9 @@ export default{
   components: {HeaderComponent},
   data(){
     return{
-      ProfileName: {},
-      ProfileEmail: {},
-      ProfileImg:{},
+      profileName: {},
+      profileEmail: {},
+      profileImg:{},
     };
   },
   async mounted() {
@@ -15,9 +15,9 @@ export default{
     const data = res.data;
     console.log('data >>> ', data);
     this.hotels = data || [];
-    this.ProfileName = data.content.userName;
-    this.ProfileEmail = data.content.email;
-    this.ProfileImg = data.content.imageUrl;
+    this.profileName = data.content.userName;
+    this.profileEmail = data.content.email;
+    this.profileImg = data.content.imageUrl;
   }
 }
 
@@ -32,12 +32,12 @@ export default{
   <div id = "accountProfile">
     <div id = "accountProfileMain">
       <div id="AccountProfileImg">
-        <img :src="ProfileImg">
+        <img :src="profileImg">
         <div id="ProfileImgModify"><img src="../../assets/Pencil.png"></div>
       </div>
       <div id ="AccountProfileMainT">
-        <h3>{{ ProfileName }}</h3>
-        <a>{{ ProfileEmail }}</a>
+        <h3>{{ profileName }}</h3>
+        <a>{{ profileEmail }}</a>
       </div>
     </div>
   </div>

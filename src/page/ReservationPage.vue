@@ -10,6 +10,7 @@ export default {
     FooterComponent: FooterComponent,
     ProfileComponent: ProfileComponent,
     ReservationComponent: ReservationComponent,
+
   },
   data() {
     return {

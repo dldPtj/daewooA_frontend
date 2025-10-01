@@ -11,18 +11,18 @@ export default {
   },
   data(){
     return{
-      ACModal : false,
-      ReadOnlyName : true,
-      ReadOnlyEmail: true,
-      ReadOnlyPhonNum: true,
-      ReadOnlyAddress: true,
-      ReadOnlyBirth: true,
-      AccountData: {},
-      Name: {},
-      Email: {},
-      PhoneNumber: {},
-      Address: {},
-      Birth: {},
+      aCModal : false,
+      readOnlyName : true,
+      readOnlyEmail: true,
+      readOnlyPhonNum: true,
+      readOnlyAddress: true,
+      readOnlyBirth: true,
+      accountData: {},
+      name: {},
+      email: {},
+      phoneNumber: {},
+      address: {},
+      birth: {},
       styleName: {
         border: 'none',
       },
@@ -41,15 +41,15 @@ export default {
     };
   },
   methods:{
-    ACModalOpen(){
-      this.ACModal = !this.ACModal
+    aCModalOpen(){
+      this.aCModal = !this.aCModal
     },
-    ACModalClose(){
-      if(this.ACModal === true){
-        this.ACModal = false;
+    aCModalClose(){
+      if(this.aCModal === true){
+        this.aCModal = false;
       }
     },
-   async ReadOnlyOnOff(field, updateKey, updateValue, borderChage) {
+    async ReadOnlyOnOff(field, updateKey, updateValue, borderChage) {
       try {
         this[field] = !this[field];
         this[borderChage].border = 'black solid 1px';
@@ -66,7 +66,7 @@ export default {
     }
   },
   watch: {
-    ACModal: function(val) {
+    aCModal: function(val) {
       if(val){
         document.body.style.overflow = 'hidden';
       }else{
@@ -79,12 +79,12 @@ export default {
       const res =  await aTeamApi.get('/api/users/me/profile');
       const data = res.data.content;
       console.log('data >>> ', data);
-      this.AccountData = data || '';
-      this.Name = data.userName;
-      this.Email = data.email;
-      this.PhoneNumber = data.phoneNumber;
-      this.Address = data.address;
-      this.Birth = data.birthDate;
+      this.accountData = data || '';
+      this.name = data.userName;
+      this.email = data.email;
+      this.phoneNumber = data.phoneNumber;
+      this.address = data.address;
+      this.birth = data.birthDate;
     }catch (err){
       console.error(err);
     }
@@ -95,7 +95,7 @@ export default {
 <template>
   <HeaderComponent/>
   <ProfileComponent/>
-<!--  프로필 아래 메뉴 선택 버튼 -->
+  <!--  프로필 아래 메뉴 선택 버튼 -->
   <div class="ChangeAccountMenu">
     <button type="button" class="selectAcPage"  @click="$router.push('/account')">계정</button>
     <a class="OtherLine"></a>
@@ -103,107 +103,107 @@ export default {
     <a class="OtherLine"></a>
     <button type="button" class="NOselectAcPage" @click="$router.push('/paymentadd')">결제수단</button>
   </div>
-<!--메뉴 선택시 나오는 화면 -->
+  <!--메뉴 선택시 나오는 화면 -->
   <div id = "AccountPageMain">
     <h1>Account</h1>
-   <div id = "ACListStyle">
-<!--     이름 리스트 박스-->
-    <div class = "AccountList">
-      <div class="AccountListBox">
-        <div class="ACDataBox">
-          <a>Name</a>
-<!--          이름 정보가 저장되는 곳-->
-          <div class="ACInsertData">
-            <input type="text" v-model="Name" :readonly="ReadOnlyName" :style="styleName">
+    <div id = "ACListStyle">
+      <!--     이름 리스트 박스-->
+      <div class = "AccountList">
+        <div class="AccountListBox">
+          <div class="ACDataBox">
+            <a>Name</a>
+            <!--          이름 정보가 저장되는 곳-->
+            <div class="ACInsertData">
+              <input type="text" v-model="name" :readonly="readOnlyName" :style="styleName">
+            </div>
           </div>
+          <!--클릭시 readonly해제-->
+          <button type="button" @click="ReadOnlyOnOff('readOnlyName','userName','Name', 'styleName')" ><img src="../assets/AccountBtnImg.png">change</button>
         </div>
-<!--클릭시 readonly해제-->
-        <button type="button" @click="ReadOnlyOnOff('ReadOnlyName','userName','Name', 'styleName')" ><img src="../assets/AccountBtnImg.png">change</button>
+      </div>
+      <!--     이메일 리스트 박스-->
+      <div class = "AccountList">
+        <div class="AccountListBox">
+          <div class="ACDataBox">
+            <a>Email</a>
+            <div class="ACInsertData">
+              <input type="email" v-model="email" :readonly="readOnlyEmail" :style="styleEmail">
+            </div>
+          </div>
+          <button type="button" @click="ReadOnlyOnOff('readOnlyEmail','email','email', 'styleEmail')"><img src="../assets/AccountBtnImg.png">change</button>
+        </div>
+      </div>
+      <!--     비밀번호 리스트 박스-->
+      <div class = "AccountList">
+        <div class="AccountListBox">
+          <div class="ACDataBox">
+            <a>Password</a>
+            <div class="ACInsertData" id="ACPWData">
+              <input type="password" value="sdsd2323232" readonly >
+            </div>
+          </div>
+          <!--        버튼 클릭시 모달창 이동-->
+          <button type="button" @click="aCModalOpen"><img src="../assets/AccountBtnImg.png">change</button>
+        </div>
+      </div>
+      <!--    전화번호 리스트 박스-->
+      <div class = "AccountList">
+        <div class="AccountListBox">
+          <div class="ACDataBox">
+            <a>Phone number</a>
+            <div class="ACInsertData">
+              <input type=text v-model="phoneNumber" :readonly="readOnlyPhonNum" :style="stylePhone">
+            </div>
+          </div>
+          <button type="button" @click="ReadOnlyOnOff('readOnlyPhonNum','phoneNumber','phoneNumber', 'stylePhone')"><img src="../assets/AccountBtnImg.png">change</button>
+        </div>
+      </div>
+      <!--     주소 리스트 박스-->
+      <div class = "AccountList">
+        <div class="AccountListBox">
+          <div class="ACDataBox">
+            <a>Address</a>
+            <div class="ACInsertData">
+              <input type="text" v-model="address" :readonly="readOnlyAddress" :style="styleAddr">
+            </div>
+          </div>
+          <button type="button" @click="ReadOnlyOnOff('readOnlyAddress','address','address', 'styleAddr')"><img src="../assets/AccountBtnImg.png">change</button>
+        </div>
+      </div>
+      <!--     생일 리스트 박스-->
+      <div class = "AccountList">
+        <div class="AccountListBox">
+          <div class="ACDataBox">
+            <a>Date of birth</a>
+            <div class="ACInsertData">
+              <input type="text" v-model="birth" :readonly="readOnlyBirth" :style="styleBirth">
+            </div>
+          </div>
+          <button type="button" @click="ReadOnlyOnOff('readOnlyBirth','birthDate','birth','styleBirth')"><img src="../assets/AccountBtnImg.png">change</button>
+        </div>
       </div>
     </div>
-<!--     이메일 리스트 박스-->
-    <div class = "AccountList">
-      <div class="AccountListBox">
-        <div class="ACDataBox">
-          <a>Email</a>
-          <div class="ACInsertData">
-            <input type="email" v-model="Email" :readonly="ReadOnlyEmail" :style="styleEmail">
-          </div>
-        </div>
-        <button type="button" @click="ReadOnlyOnOff('ReadOnlyEmail','email','Email', 'styleEmail')"><img src="../assets/AccountBtnImg.png">change</button>
-      </div>
-    </div>
-<!--     비밀번호 리스트 박스-->
-    <div class = "AccountList">
-      <div class="AccountListBox">
-        <div class="ACDataBox">
-          <a>Password</a>
-          <div class="ACInsertData" id="ACPWData">
-            <input type="password" value="sdsd2323232" readonly >
-          </div>
-        </div>
-        <!--        버튼 클릭시 모달창 이동-->
-        <button type="button" @click="ACModalOpen"><img src="../assets/AccountBtnImg.png">change</button>
-      </div>
-    </div>
-<!--    전화번호 리스트 박스-->
-    <div class = "AccountList">
-      <div class="AccountListBox">
-        <div class="ACDataBox">
-          <a>Phone number</a>
-          <div class="ACInsertData">
-            <input type=text v-model="PhoneNumber" :readonly="ReadOnlyBirth" :style="stylePhone">
-          </div>
-        </div>
-        <button type="button" @click="ReadOnlyOnOff('ReadOnlyBirth','phoneNumber','PhoneNumber', 'stylePhone')"><img src="../assets/AccountBtnImg.png">change</button>
-      </div>
-    </div>
-<!--     주소 리스트 박스-->
-    <div class = "AccountList">
-      <div class="AccountListBox">
-        <div class="ACDataBox">
-          <a>Address</a>
-          <div class="ACInsertData">
-            <input type="text" v-model="Address" :readonly="ReadOnlyAddress" :style="styleAddr">
-          </div>
-        </div>
-        <button type="button" @click="ReadOnlyOnOff('ReadOnlyAddress','address','Address', 'styleAddr')"><img src="../assets/AccountBtnImg.png">change</button>
-      </div>
-    </div>
-<!--     생일 리스트 박스-->
-    <div class = "AccountList">
-      <div class="AccountListBox">
-        <div class="ACDataBox">
-          <a>Date of birth</a>
-          <div class="ACInsertData">
-            <input type="text" v-model="Birth" :readonly="ReadOnlyBirth" :style="styleBirth">
-          </div>
-        </div>
-        <button type="button" @click="ReadOnlyOnOff('ReadOnlyBirth','birthDate','Birth','styleBirth')"><img src="../assets/AccountBtnImg.png">change</button>
-      </div>
-    </div>
-   </div>
   </div>
-<!--비밀번호 모달-->
-  <div class="AccountModalWrap" v-show="ACModal">
+  <!--비밀번호 모달-->
+  <div class="AccountModalWrap" v-show="aCModal">
     <div class="ACModalContainer">
-<!--      취소 버튼-->
-      <img src="../assets/ModalClose.png" alt="취소 사진" @click="ACModalClose" class="ModalCloseBtn">
+      <!--      취소 버튼-->
+      <img src="../assets/ModalClose.png" alt="취소 사진" @click="aCModalClose" class="ModalCloseBtn">
       <h1>비밀번호 수정</h1>
       <div>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">비밀 번호</legend>
-<!--          수정할 이름 입력 하는곳-->
+          <!--          수정할 이름 입력 하는곳-->
           <input type="text" placeholder="비밀번호를 입력하세요." class="LTextBox">
         </fieldset>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Password</legend>
-<!--          비밀번호 입력하는 곳-->
+          <!--          비밀번호 입력하는 곳-->
           <input type="password" placeholder="현재 비밀번호를 입력하세요." class="LTextBox">
         </fieldset>
       </div>
-<!--      클릭시 수정 완료-->
-        <button type="button" class="ModalBtnStyle">수정</button>
+      <!--      클릭시 수정 완료-->
+      <button type="button" class="ModalBtnStyle">수정</button>
     </div>
   </div>
 
