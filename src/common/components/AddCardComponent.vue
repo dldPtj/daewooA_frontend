@@ -41,12 +41,13 @@ export default {
       <!--      취소 버튼-->
       <img src="../../assets/ModalClose.png" alt="취소 사진" @click="pAModalClose" class="ModalCloseBtn">
       <h1>카드 추가</h1>
-      <div>
+      <div class="AddCardList">
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Card Number</legend>
           <!--          수정할 카드 번호 입력 하는곳-->
           <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox">
         </fieldset>
+        <div id="half">
         <fieldset class="fieldModalHalf">
           <legend class="LegendLogin">Exp. Date</legend>
           <!--          수정할 카드 번호 입력 하는곳-->
@@ -57,22 +58,44 @@ export default {
           <!--          수정할 카드 번호 입력 하는곳-->
           <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox">
         </fieldset>
+        </div>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Name On Card</legend>
-          <!--          비밀번호 입력하는 곳-->
+          <!--          카드 명의인 입력하는 곳-->
           <input type="password" placeholder="카드 명의인을 입력하세요." class="LTextBox">
         </fieldset>
+        <fieldset class="fieldModal">
+          <legend class="LegendLogin">Country or Region</legend>
+          <!--          국가/지역 입력하는 곳-->
+          <input type="password" placeholder="국가/지역을 입력하세요." class="LTextBox">
+        </fieldset>
+        <div id="CardFooter">
+         <input type="checkbox" class="LoginCheckbox"><a>정보 저장하기</a>
+        </div>
       </div>
       <!--      클릭시 수정 완료-->
-      <button type="button" class="ModalBtnStyle">수정</button>
+      <button type="button" class="ModalBtnStyle">Add Card</button>
     </div>
   </div>
 </template>
 <style >
+#CardFooter{
+  display: flex;
+  margin-bottom: 40px;
+}
+#CardFooter input{
+  display: flex;
+  margin-right: 4px;
+}
+#half{
+  display: flex;
+  gap: 24px
+}
+
 .fieldModalHalf {
   display: flex;
   margin-bottom: 24px;
-  width: 40%;
+  width: 255px;
   height: 56px;
   border-radius: 4px;
 }
@@ -95,7 +118,7 @@ export default {
   height: 48px;
   border: #8DD3BB solid 2px;
   border-radius: 48px;
-  margin: 0 auto 10px;
+  margin: 0 auto 18px;
 }
 .AddNewCard{
   display: flex;
