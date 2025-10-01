@@ -1,8 +1,15 @@
 <script >
+import aTeamApi from "@/util/axios";
+
 export default {
   data() {
     return {
       pAModal: false,
+      paymentNumber: {},
+      expirationDate: {},
+      cvc: {},
+      cardUser: {},
+      country: {}
     }
   },
   methods: {
@@ -13,8 +20,21 @@ export default {
       if (this.pAModal === true) {
         this.pAModal = false;
       }
+    },
+   async cardAdd(){
+      await aTeamApi.delete(`/api/payments/me`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }).then(async () => {
+        alert("등록 성공");
+        window.location.reload();
+      }).catch((err)=> {
+        console.error(err);
+      })
     }
   },
+
   watch: {
     pAModal: function (val) {
       if (val) {
@@ -45,7 +65,7 @@ export default {
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Card Number</legend>
           <!--          수정할 카드 번호 입력 하는곳-->
-          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox">
+          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox" v>
         </fieldset>
         <div id="half">
         <fieldset class="fieldModalHalf">
@@ -74,7 +94,7 @@ export default {
         </div>
       </div>
       <!--      클릭시 수정 완료-->
-      <button type="button" class="ModalBtnStyle">Add Card</button>
+      <button type="button" class="ModalBtnStyle" @click="cardAdd()">Add Card</button>
     </div>
   </div>
 </template>
