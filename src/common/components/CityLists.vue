@@ -19,7 +19,7 @@ export default {
 </script>
 
 <template>
-  <!-- 첫번째 도시-->
+  <!--도시-->
   <div class="first-city">
     <div class="city-img-container">
       <img :src="fullImageUrl" alt="city image" class="city-img-size">
