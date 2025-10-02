@@ -118,7 +118,7 @@ export default {
             </div>
           </div>
           <!--클릭시 readonly해제-->
-          <button type="button" @click="ReadOnlyOnOff('readOnlyName','userName','Name', 'styleName')" ><img src="../assets/AccountBtnImg.png">change</button>
+          <button type="button" @click="ReadOnlyOnOff('readOnlyName','userName','name', 'styleName')" ><img src="../assets/AccountBtnImg.png">change</button>
         </div>
       </div>
       <!--     이메일 리스트 박스-->
