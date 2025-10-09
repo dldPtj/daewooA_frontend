@@ -17,6 +17,7 @@
   <button @click="$router.push('/paymentadd')">paymentadd 이동</button>
   <button @click="$router.push('/addCardComponent')">addCardComponent 이동</button>
   <button @click="$router.push('/favoritespage')">favoritespage 이동</button>
+  <button @click="$router.push('/signup')">signup 이동</button>
 
 </template>
 

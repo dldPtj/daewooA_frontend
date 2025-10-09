@@ -14,7 +14,7 @@ import AccountPage from '../page/AccountPage.vue';
 import ReservationPage from '../page/ReservationPage.vue';
 import PaymentAdd from '../page/PaymentAdd.vue';
 import LoginPage from '../page/LoginPage.vue';
-// import SignUp from '../components/SignUp.vue';
+import SignUpPage from '../page/SignUpPage.vue';
 // import FirstPaymentAdd from '../components/FirstPaymentAdd.vue';
 // import Findpw from '../components/Findpw.vue';
 // import Identification from '../components/Identification.vue';
@@ -39,7 +39,7 @@ const router = createRouter({
         { path: '/reservation', name: 'reservation', component: ReservationPage },
         { path: '/paymentadd', name: 'paymentadd', component: PaymentAdd },
         { path: '/loginpage', name: 'loginpage', component: LoginPage },
-        // { path: '/signup', name: 'signup', component: SignUp },
+        { path: '/signup', name: 'signup', component: SignUpPage },
         // { path: '/firstpaymentadd', name: 'firstpaymentadd', component: FirstPaymentAdd },
         // { path: '/findpw', name: 'findpw', component: Findpw },
         // { path: '/identification', name: 'identification', component: Identification },
