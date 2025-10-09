@@ -17,36 +17,6 @@ export default {
         this.pAModal = false;
       }
     },
-   async cardAdd(){
-      const cardDataList = reactive({
-        form: {
-          paymentNumber: {},
-          expirationDate: {},
-          cvc: {},
-          cardUser: {},
-          country: {}
-        },
-      });
-      const cardData = {
-        pNum: cardDataList.form.paymentNumber,
-        exD: cardDataList.form.expirationDate,
-        cvc: cardDataList.form.cvc,
-        cardUser: cardDataList.form.cardUser,
-        country: cardDataList.form.country
-      }
-      await aTeamApi.post(`/api/payments/me`, {
-        cardData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-
-      }).then(async () => {
-        alert("등록 성공");
-        window.location.reload();
-      }).catch((err)=> {
-        console.error(err);
-      })
-    }
   },
   watch: {
     pAModal: function (val) {
@@ -56,6 +26,38 @@ export default {
         document.body.style.overflow = '';
       }
     }
+  },
+  setup(){
+    const state = reactive({
+      form: {
+        paymentNumber: "",
+        expirationDate: "",
+        cvc: "",
+        cardUser: "",
+        country: "",
+      },
+    });
+    const submit = async () => {
+      const cardAdd = {
+        paymentNumber: state.form.paymentNumber,
+        expirationDate: state.form.expirationDate,
+        cvc: state.form.cvc,
+        cardUser: state.form.cardUser,
+        country: state.form.country,
+
+      };
+      await aTeamApi.post('/api/payments/me', cardAdd,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }).then(async () => {
+        alert("카드 추가 성공");
+        window.location.reload();
+      }).catch(()=> {
+          alert("정보를 가져오는데 실패했습니다.");
+      });
+    };
+    return { state, submit };
   },
 }
 </script>
@@ -77,37 +79,37 @@ export default {
       <div class="AddCardList">
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Card Number</legend>
-          <!--          수정할 카드 번호 입력 하는곳-->
-          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox" v-model="paymentNumber">
+          <!--  카드 번호 입력 하는곳-->
+          <input type="text" placeholder="카드 번호를 입력하세요." class="LTextBox" v-model="state.form.paymentNumber">
         </fieldset>
         <div id="half">
         <fieldset class="fieldModalHalf">
           <legend class="LegendLogin">Exp. Date</legend>
-          <!--          수정할 카드 번호 입력 하는곳-->
-          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox" v-model="expirationDate">
+          <!--    만료 날짜 입력 하는곳-->
+          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox" v-model="state.form.expirationDate">
         </fieldset>
         <fieldset class="fieldModalHalf">
-          <legend class="LegendLogin">Exp. Date</legend>
-          <!--          수정할 카드 번호 입력 하는곳-->
-          <input type="text" placeholder="만료 날짜를 입력하세요." class="LTextBox" v-model="cvc">
+          <legend class="LegendLogin">CVC</legend>
+          <!--          cvc 번호 입력 하는곳-->
+          <input type="text" placeholder="cvc를 입력하세요." class="LTextBox" v-model="state.form.cvc">
         </fieldset>
         </div>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Name On Card</legend>
           <!--          카드 명의인 입력하는 곳-->
-          <input type="text" placeholder="카드 명의인을 입력하세요." class="LTextBox" v-model="cardUser">
+          <input type="text" placeholder="카드 명의인을 입력하세요." class="LTextBox" v-model="state.form.cardUser">
         </fieldset>
         <fieldset class="fieldModal">
           <legend class="LegendLogin">Country or Region</legend>
           <!--          국가/지역 입력하는 곳-->
-          <input type="password" placeholder="국가/지역을 입력하세요." class="LTextBox" v-model="country">
+          <input type="text" placeholder="국가/지역을 입력하세요." class="LTextBox" v-model="state.form.country">
         </fieldset>
         <div id="CardFooter">
          <input type="checkbox" class="LoginCheckbox"><a>정보 저장하기</a>
         </div>
       </div>
-      <!--      클릭시 수정 완료-->
-      <button type="button" class="ModalBtnStyle" @click="cardAdd()">Add Card</button>
+      <!--      클릭시 추가 완료-->
+      <button @click="submit" class="ModalBtnStyle">Add Card</button>
     </div>
   </div>
 </template>
