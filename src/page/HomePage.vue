@@ -1,30 +1,60 @@
 <script>
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
-import { aTeamApi } from '@/util/axios';
 import CityLists from "@/common/components/CityLists.vue";
+import { aTeamApi } from "@/util/axios";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 export default {
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     CityLists: CityLists,
+    Datepicker,
   },
   name: 'HomePage',
   data() {
     return {
-      cities: []
-    }
+      cities: [],
+      searchQuery: "",
+      groupList: [],
+      checkInDate: null,
+      checkOutDate: null,
+      showCheckInPicker: false,
+      showCheckOutPicker: false,
+    };
   },
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
     const resultData = result.data.content;
     console.log('data >>> ', resultData);
     this.cities = resultData || [];
-  }
-}
+  },
+  methods: {
+    searchGroup(event) {
+      const len = this.cities.length;
+      for (let i = 0; i < len; i++) {
+        if (
+            this.cities[i].name.includes(event.target.value) === false
+        ) {
+          document.querySelectorAll(".group-item")[i].style.display = "none";
+        } else {
+          document.querySelectorAll(".group-item")[i].style.display = "flex";
+        }
+      }
+    },
 
-
+    handleCheckInSelected(date) {
+      this.checkInDate = date;
+      this.showCheckInPicker = false;
+    },
+    handleCheckOutSelected(date) {
+      this.checkOutDate = date;
+      this.showCheckOutPicker = false;
+    },
+  },
+};
 </script>
 
 <template>
@@ -45,50 +75,58 @@ export default {
             </span>
       </div>
     <div class="search-box">
-        <form class="enter-destination">
-          <fieldset>
-            <legend>
-              &nbsp;Enter Destination&nbsp;
-            </legend>
-            <!--도시, 호텔 선택 버튼-->
-            <button class="search-bar-box">
-              <img src="../assets/ion_bed.png" class="ion_bed" alt="침대 아이콘">&nbsp;도시와 호텔을 선택하세요
-            </button>
-          </fieldset>
-        </form>
-        <form class="check-in">
-          <fieldset>
-            <legend>
-              &nbsp;Check In&nbsp;
-            </legend>
-            <button class="search-bar-box">
-              날짜를 선택하세요&nbsp;&nbsp;<img class="ion_calendar" src="../assets/calendar.png" alt="달력 아이콘">
-            </button>
-          </fieldset>
-        </form>
-        <form class="check-out">
-          <fieldset>
-            <legend>
-              &nbsp;Check Out&nbsp;
-            </legend>
-            <button class="search-bar-box">
-              날짜를 선택하세요&nbsp;&nbsp;<img class="ion_calendar" src="../assets/calendar.png" alt="달력 아이콘">
-            </button>
-          </fieldset>
-        </form>
-        <form class="roomguests">
-          <fieldset>
-            <legend>
-              &nbsp;Room & Guests&nbsp;
-            </legend>
-            <button class="search-bar-box">
-              <img src="../assets/ion_user.png" class="ion_user" alt="유저 아이콘">&nbsp;방 개수, 인원 수를 선택하세요
-            </button>
-          </fieldset>
-        </form>
+      <!-- 여행지 입력 -->
+      <form class="enter-destination">
+        <fieldset>
+          <legend>&nbsp;Enter Destination&nbsp;</legend>
+          <div class="city-hotel-select">
+            <i class="bx bx-bed"></i>
+            <input @input="searchGroup($event)" class="city-hotel-select-input" type="text" v-model="searchQuery" placeholder="여행지나 숙소를 검색해보세요"/>
+            <ul class="group-list">
+              <li v-for="city in cities" :key="city.id" class="group-item">
+                <span><i class="bx bx-location"></i> {{ cities.name }}</span>
+              </li>
+            </ul>
+          </div>
+        </fieldset>
+      </form>
+
+      <!-- 체크인 -->
+      <form class="check-in">
+        <fieldset>
+          <legend>&nbsp;Check In&nbsp;</legend>
+          <Datepicker placeholder="날짜를 선택하세요" class="datepicker" v-model="checkInDate" :format="'yyyy-MM-dd'"
+                      @update:model-value="handleCheckInSelected"
+                      @click="showCheckInPicker"
+          />
+        </fieldset>
+      </form>
+
+      <!-- 체크아웃 -->
+      <form class="check-out">
+        <fieldset>
+          <legend>&nbsp;Check Out&nbsp;</legend>
+          <Datepicker placeholder="날짜를 선택하세요" class="datepicker" v-model="checkOutDate" :format="'yyyy-MM-dd'"
+                      @update:model-value="handleCheckOutSelected"
+                      @click="showCheckOutPicker"
+          />
+        </fieldset>
+      </form>
+
+      <!-- 객실 / 인원 -->
+      <form class="roomguests">
+        <fieldset>
+          <legend>&nbsp;Room & Guests&nbsp;</legend>
+          <button class="roomguests-btn">
+            <i class='bxr  bx-user'></i> &nbsp;방 개수, 인원 수를 선택하세요
+          </button>
+        </fieldset>
+      </form>
+
+      <!-- 검색 버튼 -->
       <div class="hotel-search-btn">
         <button @click="$router.push('/hotelsearch')" id="hotel-search-btn">
-          <img src="../assets/search.png">
+          <i class='bxr  bx-search'></i>
         </button>
       </div>
     </div>
@@ -111,11 +149,10 @@ export default {
   </div>
 
   <div class="city-selection-imgs">
-    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city"/>
+    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city" />
   </div>
 
-
-<!--투어 선택 부분-->
+  <!--투어 선택 부분-->
   <div class="tour-selection-bar">
     <div class="tour-selection-text">
       <h2>
@@ -130,7 +167,6 @@ export default {
       <button class="tour-see-all-btn">See All</button>
     </div>
   </div>
-
   <!--투어 대표 이미지 및 설명-->
   <div class="tour">
     <div class="tour-description">
@@ -161,7 +197,8 @@ export default {
     </div>
   </div>
 
-  <FooterComponent/>
+  <FooterComponent />
+  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </template>
 
 <style>
@@ -174,21 +211,6 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-top: 50px;
-}
-.ion_bed {
-  width:24px;
-  height: 24px;
-  margin: auto 5px;
-}
-.ion_calendar {
-  width: 27px;
-  height: 27px;
-  margin: auto 5px;
-}
-.ion_user {
-  width: 30px;
-  height: 30px;
-  margin: auto 5px;
 }
 .search-bar {
   display: flex;
@@ -224,38 +246,51 @@ export default {
   width: 400px;
   height: 60px;
 }
+.city-hotel-select {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 24px;
+  margin: auto 10px;
+  width: 100%;
+}
+.city-hotel-select-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  outline: none;
+  background-color: transparent;
+}
+
 .check-in fieldset {
   border-radius: 5px;
   width: 200px;
   height: 60px;
-}
-#checkin {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: white;
-  background-color: white;
-  margin: 5px auto;
 }
 .check-out fieldset {
   border-radius: 5px;
   width: 200px;
   height: 60px;
 }
-#checkout {
+.datepicker .dp__input {
   display: flex;
-  justify-content: center;
   align-items: center;
-  border: white;
-  background-color: white;
-  margin: 5px auto;
+  justify-content: space-between;
+  border: none;
 }
 .roomguests fieldset {
   border-radius: 5px;
   width: 300px;
   height: 60px;
 }
-
+.roomguests-btn {
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  background-color: transparent;
+}
 .city-selection-bar {
   display: flex;
   justify-content: space-between;
@@ -268,13 +303,6 @@ export default {
 .city-selection-text {
   flex-direction: column;
   text-align: left;
-}
-.search-bar-box {
-  display: flex;
-  align-items: center;
-  margin: auto 20px;
-  border: white solid 1px;
-  background-color: white;
 }
 .city-see-all-btn {
   border: #8ae6b2 solid 1px;
@@ -345,9 +373,8 @@ export default {
   align-items: center;
   background-color: white;
   border-radius: 2px;
-  border: white solid 1px;
+  border: none;
   width: 490px;
   height: 50px;
 }
-
 </style>
