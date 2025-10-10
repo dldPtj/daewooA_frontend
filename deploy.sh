@@ -14,6 +14,9 @@ docker rm front_container | true
 echo "🥕 기존 이미지 제거"
 docker rmi front_image | true
 
+echo "🥕 프로젝트 빌드"
+npm run build
+
 echo "🥕 신규 이미지 생성"
 docker build -t front_image .
 
