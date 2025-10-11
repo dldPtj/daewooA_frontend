@@ -8,7 +8,7 @@ import HeaderComponent from '../common/components/HeaderComponent.vue';
 import FooterComponent from "../common/components/FooterComponent.vue";
 import HotelDetailPage from '../page/HotelDetailPage.vue';
 import ProfileComponent from "@/common/components/ProfileComponent.vue";
-// import PaymentPage from '../components/PaymentPage.vue';
+import PaymentPage from '../page/PaymentPage.vue';
 import FavoritesPage from '../page/FavoritesPage.vue';
 import AccountPage from '../page/AccountPage.vue';
 import ReservationPage from '../page/ReservationPage.vue';
@@ -33,7 +33,7 @@ const router = createRouter({
         { path: '/FooterComponent', name: 'FooterComponent', component: FooterComponent },
         { path: '/hoteldetailpage', name: 'hoteldetailpage', component: HotelDetailPage },
         { path: '/ProfileComponent', name: 'ProfileComponent', component: ProfileComponent },
-        // { path: '/paymentpage', name: 'paymentpage', component: PaymentPage },
+        { path: '/paymentpage', name: 'paymentpage', component: PaymentPage },
         { path: '/favoritespage', name: 'favoritespage', component: FavoritesPage },
         { path: '/account', name: 'account', component: AccountPage },
         { path: '/reservation', name: 'reservation', component: ReservationPage },
