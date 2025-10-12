@@ -297,7 +297,7 @@ input.LTextBox:focus{
 }
 .hr-sect {
   display: flex;
-  flex-basis: 100%;
+  flex-basis: 0%;
   align-items: center;
   color: rgba(0, 0, 0, 0.25);
   font-size: 15px;
