@@ -1,56 +1,60 @@
 <script>
-import eyeoff from '../assets/Eye off.png'
-import eyeon from '../assets/Eye.png'
 import LoginImg1 from '../assets/LoginImg1.jpg'
 import LoginImg2 from '../assets/LoginImg2.jpg'
-import { reactive } from "vue";
+import eyeoff from "@/assets/Eye off.png";
+import eyeon from "@/assets/Eye.png";
+import {reactive} from "vue";
 import {aTeamApi} from "@/util/axios";
 import router from "@/router";
 export default {
-  data() {
-    return {
+  data(){
+    return{
       eyeImg : eyeoff,
       loginImg: LoginImg1,
       loginImgBtn1: LoginImg1,
       loginImgBtn2: LoginImg2,
+      timerId : null,
       changeLBtn1: true,
       changeLBtn2: false,
-      timerId : null,
     };
   },
-  async mounted() {
-    this.timerId = setInterval(this.TtoCIMG, 10000);
-
-
-  },
-  setup(){
+  setup() {
     const state = reactive({
       form: {
-        userEmail: "",
-        userPw: "",
+        signEmail: "",
+        signPw: "",
+        signName: "",
+        signPhNum: "",
+        confirmPw: "",
       },
     });
     const submit = async () => {
-      const loginObj = {
-        email: state.form.userEmail,
-        password: state.form.userPw,
+      const signObj = {
+        email: state.form.signEmail,
+        password: state.form.signPw,
+        userName: state.form.signName,
+        phoneNumber: state.form.signPhNum,
       };
-      await aTeamApi.post('/api/auth/login', loginObj).then(async (res) => {
-        alert("로그인 성공");
-        await router.push("/homepage");
-        let token = res.data.content.accessToken;
-        localStorage.setItem("token", token);
-      }).catch((error)=> {
-        if (error.response?.status === 500) {
-          alert("아이디와 비밀번호가 일치 하지 않습니다. 다시 로그인 해주세요.");
-        } else  {
-          alert("정보를 가져오는데 실패했습니다.");
-        }
-      });
+      if(state.form.signPw === state.form.confirmPw){
+        await aTeamApi.post('/api/auth/signup', signObj).then(async () => {
+          alert("회원 가입 성공");
+          await router.push("/loginpage");
+        }).catch((error)=> {
+          if (error.response?.status === 500) {
+            alert("아이디와 비밀번호가 일치 하지 않습니다. 다시 로그인 해주세요.");
+          } else  {
+            alert("정보를 가져오는데 실패했습니다.");
+          }
+        });
+      }else{
+        alert("입력 하신 비밀번호가 정보가 일치 하지 않습니다. 비밀번호를 다시 입력하세요.");
+      }
     };
     return { state, submit };
   },
-
+  async mounted() {
+    this.timerId = setInterval(this.TtoCIMG, 10000);
+  },
   methods: {
     changeEyeImg(){
       if(this.eyeImg === eyeoff){
@@ -88,49 +92,12 @@ export default {
       }
     },
   }
-
-};
+}
 </script>
 
 <template>
-  <div id = "LoginMain">
-    <div class="LoginBox">
-      <div class="LoginText">
-        <h1>Login</h1>
-        <br>
-        <a class="PlsL"> 로그인해주세요</a>
-      </div>
-      <fieldset class="fieldLogin">
-        <legend class="LegendLogin">이메일</legend>
-        <input type="email" placeholder="이메일을 입력하세요." value="" class="LTextBox" id="userEmail" v-model="state.form.userEmail">
-      </fieldset>
-      <fieldset class="fieldLogin">
-        <legend class="LegendLogin">Password</legend>
-        <input type="password" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw">
-        <div id = "eye-offBox">
-          <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
-        </div>
-      </fieldset>
-      <div id = "PwdLine">
-        <span id="LoginCheckboxLine">
-        <input type="checkbox" class ="LoginCheckbox">  비밀번호 기억하기
-        </span>
-        <router-link to="/" class = "FPwd">Forgot Password</router-link>
-      </div>
-      <button @click="submit" id="LoginBtn">Login</button>
-      <div id = "SignUpLink">
-        <router-link to="/signup" class="SignUpBtn">회원가입</router-link>
-      </div>
-      <div class="hr-sect">
-        Or link with
-      </div>
-      <div id ="LoginIconBoxes">
-        <button type="button" id ="fBtn" class="LBtnGroup"><img src="../assets/facebookLogin.png"></button>
-        <button type="button" id = "GBtn" class="LBtnGroup"><img src="../assets/googleLogin.png"></button>
-        <button type="button" id = "ABtn" class="LBtnGroup"><img src="../assets/appleLogin.png"></button>
-      </div>
-    </div>
-    <div class="LoginImages">
+  <div id = "SignUpMain">
+    <div class="SignUpImages">
       <transition name="fade-in">
         <img :src="loginImg" style="width: 612px; height: 816px" class="LoginIMG" alt="로그인시 나오는 사진">
       </transition>
@@ -146,6 +113,59 @@ export default {
          </span>
       </div>
     </div>
+    <div class="SignUpBox">
+      <div class="SignUpText">
+        <h1>Sign up</h1>
+        <br>
+        <a class="PlsL"> 회원가입</a>
+      </div>
+      <fieldset class="fieldLogin">
+        <legend class="LegendLogin">Name</legend>
+        <input type="text" placeholder="이름을 입력하세요." value="" class="LTextBox" id="userName" v-model="state.form.signName">
+      </fieldset>
+      <div id="half">
+        <fieldset class="fieldModalHalf">
+          <legend class="LegendLogin">Email</legend>
+          <input type="email" placeholder="이메일을 입력하세요." class="LTextBox" id="signEmail" v-model="state.form.signEmail">
+        </fieldset>
+        <fieldset class="fieldModalHalf">
+          <legend class="LegendLogin">Phone Number</legend>
+          <input type="text" placeholder="전화번호를 입력하세요." class="LTextBox" id="signPhNum" v-model="state.form.signPhNum">
+        </fieldset>
+      </div>
+      <fieldset class="fieldLogin">
+        <legend class="LegendLogin">Password</legend>
+        <input type="password" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="signPw" v-model="state.form.signPw">
+        <div id = "eye-offBox">
+          <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
+        </div>
+      </fieldset>
+      <fieldset class="fieldLogin">
+        <legend class="LegendLogin">Confirm Password</legend>
+        <input type="password" placeholder="비밀번호를 한번더 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.confirmPw">
+        <div id = "eye-offBox">
+          <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
+        </div>
+      </fieldset>
+      <div id = "AgreeLine">
+        <span id="AgreeCheckboxLine">
+        <input type="checkbox" class ="AgreeCheckbox">  동의 하기
+        </span>
+      </div>
+      <button @click="submit" id="LoginBtn">계정 생성</button>
+      <div id = "SignUpLink">
+        <router-link to="/signup" class="SignUpBtn">회원가입</router-link>
+      </div>
+      <div class="hr-sect">
+        Or link with
+      </div>
+      <div id ="LoginIconBoxes">
+        <button type="button" id ="fBtn" class="LBtnGroup"><img src="../assets/facebookLogin.png"></button>
+        <button type="button" id = "GBtn" class="LBtnGroup"><img src="../assets/googleLogin.png"></button>
+        <button type="button" id = "ABtn" class="LBtnGroup"><img src="../assets/appleLogin.png"></button>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -155,39 +175,29 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
-#LoginMain{
+#SignUpMain{
   display: flex;
   justify-content: center;
 }
-.LoginImages{
+.SignUpImages{
   display: flex;
-  justify-content: space-between;
-  margin: auto auto auto 0;
+  margin: auto 104px  auto auto;
   width: 616px;
 }
 
-.LoginBox{
-  margin: auto 104px  auto auto;
+.SignUpBox{
+  justify-content: space-between;
+  margin: auto auto auto 0;
+
   width: 512px;
-  height: 593px;
 }
-.LoginText{
+.SignUpText{
   text-align: left;
   margin-bottom: 48px;
 }
-.PlsL{
+.PlsL {
   color: #112211;
 }
-
-.fade-in-enter-active,
-.fade-in-leave-active{
-  transition: opacity 0.5s ease;
-}
-.fade-in-enter-from,
-.fade-in-leave-to{
-  opacity: 0;
-}
-
 
 .LoginIMG{
   width: 618px;
@@ -204,7 +214,8 @@ export default {
   height: 56px;
   border-radius: 4px;
 }
-#PwdLine{
+#AgreeLine{
+  display: flex;
   margin-bottom: 40px;
 }
 #LoginBtn{
@@ -245,22 +256,15 @@ input.LTextBox:focus{
   display: flex;
   justify-content: center;
 }
-#LoginCheckboxLine{
+#AgreeCheckboxLine{
   margin-right: 230px;
 }
-.LoginCheckbox{
+.AgreeCheckbox{
   width: 18px;
   height: 18px;
   border: black solid 2px;
   position: relative;
   top: 3px;
-}
-.FPwd{
-  color: #FF8682;
-  text-decoration: none;
-}
-.FPwd:hover{
-  color: #e0605d;
 }
 #LoginBtn{
   width: 100%;
@@ -293,7 +297,7 @@ input.LTextBox:focus{
 }
 .hr-sect {
   display: flex;
-  flex-basis: 100%;
+  flex-basis: 0%;
   align-items: center;
   color: rgba(0, 0, 0, 0.25);
   font-size: 15px;
@@ -336,5 +340,4 @@ input.LTextBox:focus{
   margin: 758px 0 0 0;
   justify-content: center;
 }
-
 </style>
