@@ -7,7 +7,8 @@ export default{
     return{
       profileName: {},
       profileEmail: {},
-      profileImg:{},
+      profileImg: {},
+      backgroundImg: {},
     };
   },
   async mounted() {
@@ -18,7 +19,24 @@ export default{
     this.profileName = data.content.userName;
     this.profileEmail = data.content.email;
     this.profileImg = data.content.imageUrl;
+    this.backgroundImg = data.content.backGroundImageUrl;
+
+  },
+  computed: {
+    accountImageUrl() {
+      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      return this.profileImg
+          ? `${baseUrl}${this.profileImg}`
+          : "";
+    },
+    accountBackImgUrl(){
+      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      return this.backgroundImg
+          ? `${baseUrl}${this.backgroundImg}`
+          : "../../assets/AcoountCoverDefault.jpg";
+    }
   }
+
 }
 
 </script>
@@ -26,13 +44,13 @@ export default{
 <template>
   <HeaderComponent/>
   <div id ="accountImgMain">
-    <img src="../../assets/AcoountCoverDefault.jpg" id="CoverImg">
+    <img :src="accountBackImgUrl" id="CoverImg">
     <button type="button" id = "accountImgUpload"><img src="../../assets/AcoountUploadImgIcon.png"><a>upload new cover</a></button>
   </div>
   <div id = "accountProfile">
     <div id = "accountProfileMain">
       <div id="AccountProfileImg">
-        <img :src="profileImg">
+        <img :src="accountImageUrl" class="accountImgSize">
         <div id="ProfileImgModify"><img src="../../assets/Pencil.png"></div>
       </div>
       <div id ="AccountProfileMainT">
@@ -45,6 +63,13 @@ export default{
 </template>
 
 <style >
+.accountImgSize{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 100%;
+}
 #accountImgMain{
   display: flex;
   position: relative;
@@ -57,7 +82,7 @@ export default{
 #CoverImg{
   display: flex;
   object-fit: cover;
-  width: 1232px;
+  width: 100%;
   height: 350px;
 }
 #accountImgUpload{
@@ -68,6 +93,10 @@ export default{
   margin: 276px 26px 26px 1026px;
   background-color: #8DD3BB;
   border: none;
+  z-index: 2;
+}
+#accountImgUpload:hover{
+  background-color: #9e9a9a;
 }
 #accountImgUpload a{
   display: flex;
@@ -90,7 +119,12 @@ export default{
   height: 44px;
   border-radius: 44px;
   background-color: #FF8682;
-  margin: 111px 0 0 111px;
+  margin: -39px 0 0 111px;
+  z-index: 3;
+  position: absolute;
+}
+#ProfileImgModify:hover{
+  background-color: #9e9a9a;
 }
 #ProfileImgModify img {
   margin: auto;

@@ -6,6 +6,7 @@ import aTeamApi from "@/util/axios";
     data(){
       return{
         profileName: {},
+        headerImg: {},
       };
     },
     async mounted() {
@@ -14,6 +15,14 @@ import aTeamApi from "@/util/axios";
       console.log('data >>> ', data);
       this.hotels = data || [];
       this.profileName = data.content.userName;
+    },
+    computed: {
+      headerImageUrl() {
+        const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+        return this.profileImg
+            ? `${baseUrl}${this.profileImg}`
+            : "";
+      },
     }
   }
 </script>
@@ -39,7 +48,8 @@ import aTeamApi from "@/util/axios";
           |
           <!-- 오른쪽 두번째 -->
           <div class="circle " @click="$router.push('/account')">
-            <div class="mini-circle">
+            <div class="mini-circle" >
+              <img :src="headerImageUrl">
               <div class="check"></div>
             </div>
           </div>
