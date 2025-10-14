@@ -31,8 +31,8 @@ export default {
     this.cities = resultData || [];
 
     this.dataList = this.cities.map(city => ({
-      name: city.name, // 목록에 표시할 이름
-      value: city.name.toLowerCase() // 검색을 위해 소문자 값 사용
+      name: city.name,
+      value: city.name
     }));
 
     document.addEventListener('click', this.handleClickOutside);
@@ -107,13 +107,10 @@ export default {
       if(this.searchTerm === '') {
         return this.dataList;
       }
-      // 검색어와 값(value)을 소문자로 변환하여 일치 여부를 검사합니다.
-      const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
+      const searchTermToCompare = this.searchTerm;
 
       return this.dataList.filter(cityName => {
-        // cityName가 검색어를 포함하는 경우 true를 반환하여 목록에 포함시킵니다.
-        // name 속성 대신 value 속성(소문자)으로 검색하도록 수정되었습니다.
-        return cityName.value.includes(lowerCaseSearchTerm);
+        return cityName.value.includes(searchTermToCompare);
       })
     },
     summaryText() {
@@ -142,9 +139,8 @@ export default {
               @input="setSearchTerm"
               @focus="isFocused = true"
               @blur="hideList"
-              placeholder="검색어를 입력하세요"
+              placeholder="여행지나 숙소를 검색해보세요"
           />
-          <!-- ✅ searchTerm이 있을 때만 X 버튼 표시 -->
           <i v-if="searchTerm" @click="clearSearch" class='bx bx-x' style='font-size: 24px; color:#000000; cursor: pointer; margin-right: 5px;'></i>
         </div>
         <!-- isFocused가 true일 때만 목록을 보여줍니다. -->
@@ -267,16 +263,17 @@ export default {
 }
 .search-list {
   position: absolute;
-  top: 130px;
+  top: 135px;
   list-style: none;
   padding: 0;
   margin: 0;
   width: 400px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 12px;
   background-color: white;
   box-shadow: 0px 3px 10px #d3d3d3;
   max-height: 200px;
+  overflow-y: auto;
 }
 .list-item {
   margin: 10px auto;
@@ -304,7 +301,7 @@ export default {
   border: none;
 }
 .roomguests {
-  position: relative; /* 패널 위치 지정을 위해 relative 추가 */
+  position: relative;
 }
 .roomguests fieldset {
   border-radius: 5px;
@@ -320,15 +317,13 @@ export default {
   color: #9e9a9a;
   font-size: 16px;
   background-color: transparent;
-  width: 100%; /* 버튼이 fieldset 너비에 꽉 차도록 설정 */
-  justify-content: flex-start; /* 텍스트 시작 위치 정렬 */
+  width: 100%;
+  justify-content: flex-start;
   cursor: pointer;
 }
-
-/* Selector Panel (드롭다운) 스타일 - 이전 RoomGuestSelector.vue에서 가져온 스타일을 재사용 */
 .selector-panel {
   position: absolute;
-  top: 70px; /* Fieldset 높이 + 약간의 간격 */
+  top: 70px;
   left: 0;
   width: 350px;
   background-color: white;
@@ -336,7 +331,7 @@ export default {
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 15px;
-  z-index: 100; /* 다른 요소 위에 표시되도록 높임 */
+  z-index: 100;
 }
 
 .setting-row {
@@ -355,14 +350,11 @@ export default {
   font-weight: 500;
   color: #333;
 }
-
-/* 컨트롤 버튼 스타일 */
 .controls {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .control-btn {
   width: 30px;
   height: 30px;
