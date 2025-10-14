@@ -11,6 +11,7 @@ export default {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     CityLists: CityLists,
+    Datepicker,
   },
   name: 'HomePage',
   data() {
