@@ -3,10 +3,11 @@ import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import {aTeamApi} from "@/util/axios";
 import HotelLists from "@/common/components/HotelLists.vue";
-
+import SearchbarComponent from "@/common/components/SearchbarComponent.vue";
 
 export default {
   components: {
+    SearchbarComponent,
     HotelLists,
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
@@ -14,7 +15,12 @@ export default {
   name: 'HotelSearch',
   data() {
     return {
-      hotellists: []
+      hotellists: [],
+      FilterOpen: true,
+      priceFilterOpen: false,
+      ratingFilterOpen: false,
+      freebiesFilterOpen: false,
+      amenitiesFilterOpen: false
     }
   },
   async mounted() {
@@ -22,6 +28,19 @@ export default {
     const resultData = result.data.hotels;
     console.log('data >>> ', resultData);
     this.hotellists = resultData || [];
+  },
+  methods: {
+    toggleFilter(filterName) {
+      if (filterName === 'price') {
+        this.priceFilterOpen = !this.priceFilterOpen;
+      } else if (filterName === 'rating') {
+        this.ratingFilterOpen = !this.ratingFilterOpen;
+      } else if (filterName === 'freebies') {
+        this.freebiesFilterOpen = !this.freebiesFilterOpen;
+      } else if (filterName === 'amenities') {
+        this.amenitiesFilterOpen = !this.amenitiesFilterOpen;
+      }
+    },
   }
 }
 </script>
@@ -31,59 +50,7 @@ export default {
 
   <!--호텔 검색 바-->
   <div class="hotel-search-bar">
-
-    <div class="hotel-search-box">
-      <form class="enter-destination">
-        <fieldset>
-          <legend>
-            &nbsp;Enter Destination&nbsp;
-          </legend>
-          <div class="hotel-search-bar-box">
-            <img src="../assets/ion_bed.png" alt="침대 아이콘">&nbsp;도시와 호텔을 선택하세요
-          </div>
-        </fieldset>
-      </form>
-      <form class="check-in">
-        <fieldset>
-          <legend>
-            &nbsp;Check In&nbsp;
-          </legend>
-          <div class="hotel-search-bar-box">
-            <button id="checkin" onclick="showCalendar()">
-              날짜를 선택하세요&nbsp;&nbsp;<img class="calendar-icon" src="../assets/calendar.png" alt="달력 아이콘">
-            </button>
-          </div>
-        </fieldset>
-      </form>
-      <form class="check-out">
-        <fieldset>
-          <legend>
-            &nbsp;Check Out&nbsp;
-          </legend>
-          <div class="hotel-search-bar-box">
-            <button id="checkout" onclick="showCalendar()">
-              날짜를 선택하세요&nbsp;&nbsp;<img class="calendar-icon" src="../assets/calendar.png" alt="달력 아이콘">
-            </button>
-          </div>
-        </fieldset>
-      </form>
-      <form class="roomguests">
-        <fieldset>
-          <legend>
-            &nbsp;Room & Guests&nbsp;
-          </legend>
-          <div class="hotel-search-bar-box">
-            <img src="../assets/ion_user.png" alt="유저 아이콘">&nbsp;방 개수, 인원 수를 선택하세요
-          </div>
-        </fieldset>
-      </form>
-      <div class="hotel-search-btn">
-        <button id="hotel-search-btn">
-          <img src="../assets/search.png">
-        </button>
-      </div>
-    </div>
-
+    <SearchbarComponent />
   </div>
 
   <!--호텔 검색 화면 메인 부분-->
@@ -91,25 +58,105 @@ export default {
 
     <!--호텔 필터링-->
     <div class="hotel-filters">
+      <!--가격 필터-->
       <div class="filers">
         <h3>Filters</h3>
       </div>
-      <!--가격 필터-->
-      <div class="price-filter">
-        <h4>Price</h4>
-        <input type="range" id="mySlider" name="mySlider" min="0" max="100" value="50">
-      </div>
-      <!--호텔 평점 필터-->
-      <div class="rating-filer">
-        <h4>Rating</h4>
-      </div>
-      <!--호텔 무료 서비스 필터-->
-      <div class="freebies-filter">
-        <h4>Freebies</h4>
-      </div>
-      <!--호텔 편의시설 필터-->
-      <div class="amenities-filter">
-        <h4>Amenities</h4>
+      <div class="filter-items">
+        <div class="filter">
+          <div class="filter-header">
+            <h4>Price</h4>
+            <button id="dropdown-btn" @click="toggleFilter('price')">
+              <i class='bxr' :class="{
+              'bx-chevron-up': priceFilterOpen,
+              'bx-chevron-down': !priceFilterOpen
+            }"></i>
+            </button>
+          </div>
+          <div v-if="priceFilterOpen">
+            <input type="range" id="priceSlider" min="0" max="100" value="₩5">
+            <div class="price-range">
+              <span>₩0</span><span>{{}}</span><span>₩1,000,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!--호텔 평점 필터-->
+        <div class="filter">
+          <div class="filter-header">
+            <h4>Rating</h4>
+            <button id="dropdown-btn" @click="toggleFilter('rating')">
+              <i class='bxr' :class="{
+              'bx-chevron-up': ratingFilterOpen,
+              'bx-chevron-down': !ratingFilterOpen
+            }"></i>
+            </button>
+          </div>
+          <div v-if="ratingFilterOpen">
+            <div class="rating-range">
+              <button id="rating-btn">0+</button>
+              <button id="rating-btn">1+</button>
+              <button id="rating-btn">2+</button>
+              <button id="rating-btn">3+</button>
+              <button id="rating-btn">4+</button>
+            </div>
+          </div>
+        </div>
+        <!--호텔 무료 서비스 필터-->
+        <div class="filter">
+          <div class="filter-header">
+            <h4>Freebies</h4>
+            <button id="dropdown-btn" @click="toggleFilter('freebies')">
+              <i class='bxr' :class="{
+              'bx-chevron-up': freebiesFilterOpen,
+              'bx-chevron-down': !freebiesFilterOpen
+            }"></i>
+            </button>
+          </div>
+          <div v-if="freebiesFilterOpen" class="freebies-checkboxes">
+            <div>
+              <input type="checkbox"><label for="조식포함">조식포함</label>
+            </div>
+            <div>
+              <input type="checkbox"><label for="무료주차">무료주차</label>
+            </div>
+            <div>
+              <input type="checkbox"><label for="WIFI">WIFI</label>
+            </div>
+            <div>
+              <input type="checkbox"><label for="공항셔틀">공항셔틀</label>
+            </div>
+            <div>
+              <input type="checkbox"><label for="무료취소">무료취소</label>
+            </div>
+          </div>
+        </div>
+        <!--호텔 편의시설 필터-->
+        <div class="filter">
+          <div class="filter-header">
+            <h4>Amenities</h4>
+            <button id="dropdown-btn" @click="toggleFilter('amenities')">
+              <i class='bxr' :class="{
+              'bx-chevron-up': amenitiesFilterOpen,
+              'bx-chevron-down': !amenitiesFilterOpen
+            }"></i>
+            </button>
+          </div>
+          <div v-if="amenitiesFilterOpen" class="amenities-checkboxes">
+            <div>
+              <input type="checkbox"><label for="24시 프론트데스크">24시 프론트데스크</label>
+            </div>
+            <div>
+              <input type="checkbox"><label for="에어컨">에어컨</label>
+            </div>
+            <div>
+              <input type="checkbox"><label for="피트니스">피트니스</label>
+            </div>
+            <div>
+              <input type="checkbox"><label for="수영장">수영장</label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -153,23 +200,85 @@ export default {
     </div>
   </div>
   <FooterComponent />
+  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </template>
 
 <style >
-.price-filter {
-  margin: 40px 10px 20px 0;
+.filter-items {
+  margin: 10px 20px 0 0;
 }
-.rating-filer {
-  border-top : #D9D9D9 solid 1px;
-  margin: 20px 10px 20px 0;
+.filter {
+  border-bottom : #D9D9D9 solid 1px;
+  margin: 10px auto;
+  padding-bottom: 10px;
 }
-.freebies-filter {
-  border-top : #D9D9D9 solid 1px;
-  margin: 20px 10px 20px 0;
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.amenities-filter {
-  border-top : #D9D9D9 solid 1px;
-  margin: 20px 10px 20px 0;
+#dropdown-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 40px;
+}
+input[type=range] {
+  -webkit-appearance: none;
+  background-color: grey;
+  width: 385px;
+  height: 2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  background-color: #8ae6b2;
+  cursor: pointer;
+}
+.price-range {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px auto;
+}
+.rating-range {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 20px auto;
+}
+#rating-btn {
+  border: #8ae6b2 solid 1px;
+  border-radius: 5px;
+  background-color: white;
+  width: 40px;
+  height: 30px;
+}
+.freebies-checkboxes {
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+  gap: 10px;
+}
+.freebies-checkboxes>div {
+  display: flex;
+  align-items: center;
+}
+.amenities-checkboxes {
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+  gap: 10px;
+}
+.amenities-checkboxes>div {
+  display: flex;
+  align-items: center;
+}
+input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #8ae6b2;
+  margin-right: 10px;
 }
 .hotel-filters {
   display: flex;
@@ -251,36 +360,17 @@ export default {
 
 .hotel-search-bar {
   display: flex;
+  text-align: left;
+  justify-content: space-around;
+  background-color: white;
+  flex-direction: column;
+  width: 1290px;
+  height: 100px;
+  z-index: 2;
   margin: 100px auto 40px;
   padding: 10px;
   border: white solid 1px;
   box-shadow: 0px 3px 10px #d3d3d3;
   border-radius: 20px;
-  max-width: 1240px;
 }
-.hotel-search-box {
-  display: flex;
-  margin: 20px auto;
-  gap: 10px;
-  text-align: left;
-}
-.hotel-search-bar-box {
-  display: flex;
-  align-items: center;
-  margin: auto 10px;
-}
-.hotel-search-btn{
-  display: flex;
-  align-items: center;
-  margin: 6px auto;
-}
-
-#hotel-search-btn {
-  border: #8ae6b2 solid 1px;
-  border-radius: 5px;
-  background-color: #8ae6b2;
-  width: 55px;
-  height: 55px;
-}
-
 </style>
