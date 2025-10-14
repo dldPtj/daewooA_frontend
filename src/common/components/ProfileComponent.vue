@@ -11,19 +11,32 @@ export default{
       profileEmail: {},
       profileImg: {},
       backgroundImg: {},
+      uploadFileImg: null,
     };
   },
   methods: {
-    handleFileChange(event){
-      const file = event.target.files[0];
-      if(file){
-        if (this.backgroundImg) {
-          URL.revokeObjectURL(this.backgroundImg);
-        }
-        this.backgroundImg = URL.createObjectURL(file);
-      } else {
-        this.backgroundImg = null;
+    setFile(e){
+        this.uploadFileImg = e.target.files[0];
+    },
+    async uploadFile(){
+      const formData = new FormData();
+      formData.append("image", this.uploadFileImg);
+      try{
+        const res = await aTeamApi.put('/api/users/me/background-image',formData,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(()=>{
+          alert("이미지 업로드 성공");
+          window.location.reload();
+        });
+        console.log(res.data);
+
+      }catch (e){
+        console.error(e);
       }
+
     },
     profileModalOpen() {
       this.profileModal = !this.profileModal
@@ -97,16 +110,17 @@ export default{
       <!--      취소 버튼-->
       <img src="../../assets/ModalClose.png" alt="취소 사진" @click="profileModalClose" class="ModalCloseBtn">
       <h1>파일 업로드</h1>
-      <div>
-        <fieldset class="fieldModal">
-          <legend class="LegendLogin">파 일</legend>
-          <img v-if="previewImg" :src="previewImg" alt="미리보기 사진입니다.">
-          <!--          파일 넣는 곳-->
-          <input type="file"  class="LTextBox">
-        </fieldset>
-      </div>
-      <!--      클릭시 수정 완료-->
-      <button type="button" class="ModalBtnStyle" @change="handleFileChange" accept="image/*" ref="fileInput">업로드</button>
+      <form @submit.prevent="uploadFile">
+        <div>
+          <fieldset class="fieldModal">
+           <legend class="LegendLogin">파 일</legend>
+            <!--          파일 넣는 곳-->
+            <input type="file"  class="LTextBox" @change="setFile">
+          </fieldset>
+        </div>
+        <!--      클릭시 수정 완료-->
+        <button type="submit" class="ModalBtnStyle" >업로드</button>
+      </form>
     </div>
   </div>
 
