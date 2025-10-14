@@ -15,10 +15,9 @@ import ReservationPage from '../page/ReservationPage.vue';
 import PaymentAdd from '../page/PaymentAdd.vue';
 import LoginPage from '../page/LoginPage.vue';
 import SignUpPage from '../page/SignUpPage.vue';
-// import FirstPaymentAdd from '../components/FirstPaymentAdd.vue';
-// import Findpw from '../components/Findpw.vue';
-// import Identification from '../components/Identification.vue';
-// import Resetpw from '../components/Resetpw.vue';
+import FindPw from '../page/FindPw.vue';
+import IdentificationPage from '../page/IdentificationPage.vue';
+import Resetpw from '../page//ResetPw.vue';
 import ReservationComponent from '../common/components/ReservationComponent.vue'
 import AddCardComponent from "@/common/components/AddCardComponent.vue";
 
@@ -28,10 +27,10 @@ const router = createRouter({
     routes: [
         { path: '/', name: 'pagemove', component: PageMove },
         { path: '/homepage', name: 'homepage', component: HomePage },
-        { path: '/hotelsearchpage', name: 'hotelsearchpage', component: HotelSearchPage },
+        { path: '/hotelsearch', name: 'hotelsearchpage', component: HotelSearchPage },
         { path: '/headercomponent', name: 'headercomponent', component: HeaderComponent },
         { path: '/FooterComponent', name: 'FooterComponent', component: FooterComponent },
-        { path: '/hoteldetailpage', name: 'hoteldetailpage', component: HotelDetailPage },
+        { path: '/hoteldetail', name: 'hoteldetailpage', component: HotelDetailPage },
         { path: '/ProfileComponent', name: 'ProfileComponent', component: ProfileComponent },
         { path: '/paymentpage', name: 'paymentpage', component: PaymentPage },
         { path: '/favoritespage', name: 'favoritespage', component: FavoritesPage },
@@ -40,10 +39,9 @@ const router = createRouter({
         { path: '/paymentadd', name: 'paymentadd', component: PaymentAdd },
         { path: '/loginpage', name: 'loginpage', component: LoginPage },
         { path: '/signup', name: 'signup', component: SignUpPage },
-        // { path: '/firstpaymentadd', name: 'firstpaymentadd', component: FirstPaymentAdd },
-        // { path: '/findpw', name: 'findpw', component: Findpw },
-        // { path: '/identification', name: 'identification', component: Identification },
-        // { path: '/resetpw', name: 'resetpw', component: Resetpw },
+        { path: '/findpw', name: 'findpw', component: FindPw },
+        { path: '/identification', name: 'identification', component: IdentificationPage },
+        { path: '/resetpw', name: 'resetpw', component: Resetpw },
         { path: '/reservationComponent', name: 'reservationComponent', component: ReservationComponent },
         { path: '/addCardComponent', name: 'addCardComponent', component: AddCardComponent },
 
