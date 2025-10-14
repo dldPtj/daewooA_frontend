@@ -16,6 +16,7 @@ export default {
       changeLBtn1: true,
       changeLBtn2: false,
       timerId : null,
+      viewPassword : 'password',
     };
   },
   async mounted() {
@@ -55,9 +56,10 @@ export default {
     changeEyeImg(){
       if(this.eyeImg === eyeoff){
         this.eyeImg = eyeon;
-
+        this.changeInputType();
       } else {
         this.eyeImg = eyeoff;
+        this.changeInputType();
       }
     },
     changeLoginImg(img){
@@ -87,6 +89,13 @@ export default {
         this.changeLBtn2 = false;
       }
     },
+    changeInputType(){
+      if(this.viewPassword === 'password'){
+        this.viewPassword = 'text';
+      }else{
+        this.viewPassword = 'password';
+      }
+    },
   }
 
 };
@@ -106,7 +115,7 @@ export default {
       </fieldset>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Password</legend>
-        <input type="password" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw">
+        <input :type="viewPassword" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw">
         <div id = "eye-offBox">
           <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
         </div>
