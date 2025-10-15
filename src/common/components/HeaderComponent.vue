@@ -6,6 +6,7 @@ import aTeamApi from "@/util/axios";
     data(){
       return{
         profileName: {},
+        profileImg: {},
       };
     },
     async mounted() {
@@ -14,6 +15,15 @@ import aTeamApi from "@/util/axios";
       console.log('data >>> ', data);
       this.hotels = data || [];
       this.profileName = data.content.userName;
+      this.profileImg = data.content.imageUrl;
+    },
+    computed: {
+      headerImageUrl() {
+        const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+        return this.profileImg
+            ? `${baseUrl}${this.profileImg}`
+            : "";
+      },
     }
   }
 </script>
@@ -39,7 +49,8 @@ import aTeamApi from "@/util/axios";
           |
           <!-- 오른쪽 두번째 -->
           <div class="circle " @click="$router.push('/account')">
-            <div class="mini-circle">
+            <img :src="headerImageUrl" alt="프로필사진" id="headerImgSize">
+            <div class="mini-circle" >
               <div class="check"></div>
             </div>
           </div>
@@ -52,9 +63,17 @@ import aTeamApi from "@/util/axios";
     </nav>
 
   </div>
+
 </template>
 
 <style >
+#headerImgSize{
+  display: flex;
+  object-fit: cover;
+  border-radius: 100%;
+  width: 100%;
+  height: 100%;
+}
 .container{
   border: #42b983 solid 1px;
 }
