@@ -9,13 +9,16 @@ import router from "@/router";
 export default {
   data(){
     return{
-      eyeImg : eyeoff,
+      eyeImg1 : eyeoff,
+      eyeImg2 : eyeoff,
       loginImg: LoginImg1,
       loginImgBtn1: LoginImg1,
       loginImgBtn2: LoginImg2,
       timerId : null,
       changeLBtn1: true,
       changeLBtn2: false,
+      viewPassword: 'password',
+      viewConPassword : 'password',
     };
   },
   setup() {
@@ -61,17 +64,43 @@ export default {
   },
   methods: {
     changeEyeImg(){
-      if(this.eyeImg === eyeoff){
-        this.eyeImg = eyeon;
-
+      if(this.eyeImg1 === eyeoff){
+        this.eyeImg1 = eyeon;
+        this.changeInputType1();
       } else {
-        this.eyeImg = eyeoff;
+        this.eyeImg1 = eyeoff;
+        this.changeInputType1();
       }
     },
+
+    changeEyeImg2(){
+      if(this.eyeImg2 === eyeoff){
+        this.eyeImg2 = eyeon;
+        this.changeInputType2();
+      } else {
+        this.eyeImg2 = eyeoff;
+        this.changeInputType2();
+      }
+    },
+    changeInputType1() {
+      if (this.viewPassword === 'password') {
+        this.viewPassword = 'text';
+      } else {
+        this.viewPassword = 'password';
+      }
+    },
+    changeInputType2() {
+      if (this.viewConPassword === 'password') {
+        this.viewConPassword = 'text';
+      } else {
+        this.viewConPassword = 'password';
+      }
+    },
+
     changeLoginImg(img){
       if(img === this.loginImgBtn1){
         this.loginImg = LoginImg1;
-      }else {
+      }else if (img === this.loginImgBtn2){
         this.loginImg = LoginImg2;
       }
     },
@@ -139,16 +168,16 @@ export default {
       </div>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Password</legend>
-        <input type="password" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="signPw" v-model="state.form.signPw">
+        <input :type="viewPassword" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="signPw" v-model="state.form.signPw">
         <div id = "eye-offBox">
-          <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
+          <img :src="eyeImg1" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
         </div>
       </fieldset>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Confirm Password</legend>
-        <input type="password" placeholder="비밀번호를 한번더 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.confirmPw">
+        <input :type="viewConPassword" placeholder="비밀번호를 한번더 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.confirmPw">
         <div id = "eye-offBox">
-          <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
+          <img :src="eyeImg2" @click = "changeEyeImg2" id ="eye-off" alt="눈 감는 사진">
         </div>
       </fieldset>
       <div id = "AgreeLine">
