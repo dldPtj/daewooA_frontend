@@ -205,6 +205,7 @@ export default {
 }
 #PwdLine{
   margin-bottom: 40px;
+  display: flex;
 }
 #LoginBtn{
   margin-bottom: 16px;
@@ -245,7 +246,7 @@ input.LTextBox:focus{
   justify-content: center;
 }
 #LoginCheckboxLine{
-  margin-right: 230px;
+  margin-right: 224px;
 }
 .LoginCheckbox{
   width: 18px;

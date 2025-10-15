@@ -18,7 +18,7 @@ services:
       - mjc_network
 
   boot-app:
-    image: asjcell/backend_image:v1.1.0
+    image: asjcell/backend_image:v1.0.10
     build: .
     container_name: boot_container
     ports:
