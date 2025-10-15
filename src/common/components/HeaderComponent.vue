@@ -30,7 +30,7 @@ import aTeamApi from "@/util/axios";
       </div>
       <!-- 오른쪽 -->
       <div class="item">
-        <div class="flex vertical-center">
+        <div class="flex vertical-center" @click="$router.push('/favoritespage')">
           <!-- 오른쪽 첫번째 -->
           <img src="../../assets/heart.png" alt="하트 사진">
           <span>
