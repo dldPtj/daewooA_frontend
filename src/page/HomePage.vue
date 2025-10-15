@@ -1,30 +1,36 @@
 <script>
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
-import { aTeamApi } from '@/util/axios';
 import CityLists from "@/common/components/CityLists.vue";
+import { aTeamApi } from "@/util/axios";
+import SearchbarComponent from "@/common/components/SearchbarComponent.vue";
 
 export default {
   components: {
+    SearchbarComponent,
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     CityLists: CityLists,
+    Datepicker,
   },
   name: 'HomePage',
   data() {
     return {
-      cities: []
-    }
+      cities: [],
+      tour: null
+    };
   },
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
     const resultData = result.data.content;
     console.log('data >>> ', resultData);
     this.cities = resultData || [];
+
+    const tourResult = await aTeamApi.get('/api/travel-packages/main');
+    const tourResultData = tourResult.data.content;
+    this.tour = tourResultData[0];
   }
-}
-
-
+};
 </script>
 
 <template>
@@ -36,62 +42,15 @@ export default {
     <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진">
   </div>
 
-<!--메인화면 부분-->
+  <!--메인화면 부분-->
   <!--메인화면 상단 검색 바-->
   <div class="search-bar">
-      <div class="search-box-text">
+    <div class="search-box-text">
             <span>
                 Where are you staying?
             </span>
-      </div>
-    <div class="search-box">
-        <form class="enter-destination">
-          <fieldset>
-            <legend>
-              &nbsp;Enter Destination&nbsp;
-            </legend>
-            <!--도시, 호텔 선택 버튼-->
-            <button class="search-bar-box">
-              <img src="../assets/ion_bed.png" class="ion_bed" alt="침대 아이콘">&nbsp;도시와 호텔을 선택하세요
-            </button>
-          </fieldset>
-        </form>
-        <form class="check-in">
-          <fieldset>
-            <legend>
-              &nbsp;Check In&nbsp;
-            </legend>
-            <button class="search-bar-box">
-              날짜를 선택하세요&nbsp;&nbsp;<img class="ion_calendar" src="../assets/calendar.png" alt="달력 아이콘">
-            </button>
-          </fieldset>
-        </form>
-        <form class="check-out">
-          <fieldset>
-            <legend>
-              &nbsp;Check Out&nbsp;
-            </legend>
-            <button class="search-bar-box">
-              날짜를 선택하세요&nbsp;&nbsp;<img class="ion_calendar" src="../assets/calendar.png" alt="달력 아이콘">
-            </button>
-          </fieldset>
-        </form>
-        <form class="roomguests">
-          <fieldset>
-            <legend>
-              &nbsp;Room & Guests&nbsp;
-            </legend>
-            <button class="search-bar-box">
-              <img src="../assets/ion_user.png" class="ion_user" alt="유저 아이콘">&nbsp;방 개수, 인원 수를 선택하세요
-            </button>
-          </fieldset>
-        </form>
-      <div class="hotel-search-btn">
-        <button @click="$router.push('/hotelsearch')" id="hotel-search-btn">
-          <img src="../assets/search.png">
-        </button>
-      </div>
     </div>
+    <SearchbarComponent />
   </div>
 
   <!--도시 선택 부분-->
@@ -111,11 +70,10 @@ export default {
   </div>
 
   <div class="city-selection-imgs">
-    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city"/>
+    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city" />
   </div>
 
-
-<!--투어 선택 부분-->
+  <!--투어 선택 부분-->
   <div class="tour-selection-bar">
     <div class="tour-selection-text">
       <h2>
@@ -130,7 +88,6 @@ export default {
       <button class="tour-see-all-btn">See All</button>
     </div>
   </div>
-
   <!--투어 대표 이미지 및 설명-->
   <div class="tour">
     <div class="tour-description">
@@ -161,7 +118,8 @@ export default {
     </div>
   </div>
 
-  <FooterComponent/>
+  <FooterComponent />
+  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </template>
 
 <style>
@@ -174,21 +132,6 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-top: 50px;
-}
-.ion_bed {
-  width:24px;
-  height: 24px;
-  margin: auto 5px;
-}
-.ion_calendar {
-  width: 27px;
-  height: 27px;
-  margin: auto 5px;
-}
-.ion_user {
-  width: 30px;
-  height: 30px;
-  margin: auto 5px;
 }
 .search-bar {
   display: flex;
@@ -207,55 +150,10 @@ export default {
   z-index: 2;
 }
 .search-box-text {
-  margin: auto 30px;
+  margin-top: 20px;
+  margin-left: 30px;
   font-size: 20px;
 }
-.search-box {
-  display: flex;
-  justify-content: space-evenly;
-  margin: auto;
-  gap: 20px;
-}
-.enter-destination fieldset {
-  display: flex;
-  justify-content: left;
-  border-radius: 5px;
-  margin: auto 10px;
-  width: 400px;
-  height: 60px;
-}
-.check-in fieldset {
-  border-radius: 5px;
-  width: 200px;
-  height: 60px;
-}
-#checkin {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: white;
-  background-color: white;
-  margin: 5px auto;
-}
-.check-out fieldset {
-  border-radius: 5px;
-  width: 200px;
-  height: 60px;
-}
-#checkout {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: white;
-  background-color: white;
-  margin: 5px auto;
-}
-.roomguests fieldset {
-  border-radius: 5px;
-  width: 300px;
-  height: 60px;
-}
-
 .city-selection-bar {
   display: flex;
   justify-content: space-between;
@@ -268,13 +166,6 @@ export default {
 .city-selection-text {
   flex-direction: column;
   text-align: left;
-}
-.search-bar-box {
-  display: flex;
-  align-items: center;
-  margin: auto 20px;
-  border: white solid 1px;
-  background-color: white;
 }
 .city-see-all-btn {
   border: #8ae6b2 solid 1px;
@@ -345,9 +236,8 @@ export default {
   align-items: center;
   background-color: white;
   border-radius: 2px;
-  border: white solid 1px;
+  border: none;
   width: 490px;
   height: 50px;
 }
-
 </style>
