@@ -10,9 +10,12 @@ export default {
   computed: {
     fullImageUrl() {
       const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
-      return this.hotelInfo.imageUrls
-          ? `${baseUrl}${this.hotelInfo.imageUrls}`
+      return this.hotelInfo.imageUrls[0]
+          ? `${baseUrl}${this.hotelInfo.imageUrls[0]}`
           : "";
+    },
+    imageCount() {
+      return this.hotelInfo.imageUrls?.length || 0;
     },
   }
 };
@@ -21,9 +24,9 @@ export default {
 <template>
   <div class="hotel-1">
     <div class="hotel-img">
-      <img src="../components/hotel-img-1.png">
+      <img :src="fullImageUrl" alt="hotel image" class="hotel-img-size">
       <div class="hotel-img-count">
-        9 images
+        {{ imageCount }} images
       </div>
     </div>
     <!--호텔 정보-->
@@ -74,13 +77,16 @@ export default {
       <div class="hotel-liked-view">
         <!--호텔 찜하기 버튼-->
         <div class="hotel-liked">
-          <button id="hotel-liked-btn">
-            <i class='bxr  bx-heart'  ></i>
+          <button id="hotel-liked-btn" @click="togglefavorites('')">
+            <i class='bxr' :class="{
+              'bx-heart': favorite,
+              'bx-heart-square': favorite
+            }"  ></i>
           </button>
         </div>
         <!--호텔 보기 버튼-->
         <div class="hotel-view-place">
-          <button @click="$router.push('/hoteldetail')" id="view-place-btn">
+          <button @click="$router.push(`/hoteldetailpage?id=${hotelInfo.id}`)" id="view-place-btn">
             <span>View Place</span>
           </button>
         </div>
@@ -100,10 +106,17 @@ export default {
 
     </div>
   </div>
-  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </template>
 
 <style>
+.hotel-img-size {
+  display: flex;
+  object-fit: cover;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  width: 300px;
+  height: 273px;
+}
 .hotel-img-count {
   display: flex;
   justify-content: center;
@@ -145,10 +158,17 @@ export default {
   align-items: center;
   margin: 10px 240px 0 0;
 }
+.hotel-amenities {
+  display: flex;
+  align-items: center;
+}
 .hotel-liked {
   display: flex;
 }
 #hotel-liked-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
   background-color: white;
@@ -156,6 +176,7 @@ export default {
   height: 50px;
   text-align: center;
   padding: 7px;
+  font-size: 20px;
 }
 .hotel-view-place {
   display: flex;

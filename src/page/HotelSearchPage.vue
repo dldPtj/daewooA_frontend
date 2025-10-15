@@ -164,15 +164,15 @@ export default {
     <div class="filtered-hotel">
       <header class="accommodation">
         <div class="accommodation-selection">
-          <button role="tab" id="hotel-count">
+          <button id="hotel-count">
             <h3>Hotels</h3>
             <span>257 places</span>
           </button>
-          <button role="tab" id="motel-count">
+          <button id="motel-count">
             <h3>Motels</h3>
             <span>51 places</span>
           </button>
-          <button role="tab" id="resort-count">
+          <button id="resort-count">
             <h3>Resorts</h3>
             <span>72 places</span>
           </button>
@@ -315,11 +315,16 @@ input[type=checkbox] {
   font-weight: bold;
   color: #FF8682;
 }
+.accommodation {
+  width: 750px;
+}
 .accommodation-selection {
-  border-radius: 10px;
+  border-radius: 15px;
   box-shadow: 0px 3px 10px #d3d3d3;
 }
 #hotel-count {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
   border: white solid 1px;
   background-color: white;
   padding: 25px;
@@ -327,7 +332,7 @@ input[type=checkbox] {
   text-align: left;
 }
 #hotel-count:hover {
-  border-bottom: #8ae6b2 solid 5px;
+  box-shadow: 0px 5px #8ae6b2;
 }
 #motel-count {
   border: white solid 1px;
@@ -338,9 +343,11 @@ input[type=checkbox] {
   text-align: left;
 }
 #motel-count:hover {
-  border-bottom: #8ae6b2 solid 5px;
+  box-shadow: 0px 5px #8ae6b2;
 }
 #resort-count {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
   border: white solid 1px;
   border-left: #d3d3d3 solid 2px;
   padding: 25px;
@@ -349,7 +356,7 @@ input[type=checkbox] {
   text-align: left;
 }
 #resort-count:hover {
-  border-bottom: #8ae6b2 solid 5px;
+  box-shadow: 0px 5px #8ae6b2;
 }
 .hotel-search-main {
   display: flex;
