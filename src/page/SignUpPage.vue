@@ -46,7 +46,11 @@ export default {
             alert("정보를 가져오는데 실패했습니다.");
           }
         });
-      }else{
+      }
+      else if(state.form.signEmail == null || state.form.signPw == null || state.form.signName == null || state.form.signPhNum == null){
+       alert("입력되지 않은 정보가 있습니다. 모든 정보를 입력해주세요.");
+      }
+      else{
         alert("입력 하신 비밀번호가 정보가 일치 하지 않습니다. 비밀번호를 다시 입력하세요.");
       }
     };

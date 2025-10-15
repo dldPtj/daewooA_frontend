@@ -1,6 +1,4 @@
 <script>
-import eyeoff from '../assets/Eye off.png'
-import eyeon from '../assets/Eye.png'
 import LoginImg1 from '../assets/LoginImg1.jpg'
 import LoginImg2 from '../assets/LoginImg2.jpg'
 import { reactive } from "vue";
@@ -9,14 +7,12 @@ import router from "@/router";
 export default {
   data() {
     return {
-      eyeImg : eyeoff,
       loginImg: LoginImg1,
       loginImgBtn1: LoginImg1,
       loginImgBtn2: LoginImg2,
       changeLBtn1: true,
       changeLBtn2: false,
       timerId : null,
-      viewPassword : 'password',
     };
   },
   async mounted() {
@@ -27,41 +23,24 @@ export default {
   setup(){
     const state = reactive({
       form: {
-        userEmail: "",
-        userPw: "",
+        email: "",
       },
     });
     const submit = async () => {
-      const loginObj = {
-        email: state.form.userEmail,
-        password: state.form.userPw,
+      const forgotPwObj = {
+        email: state.form.email,
       };
-      await aTeamApi.post('/api/auth/login', loginObj).then(async (res) => {
-        alert("로그인 성공");
-        await router.push("/homepage");
-        let token = res.data.content.accessToken;
-        localStorage.setItem("token", token);
-      }).catch((error)=> {
-        if (error.response?.status === 500) {
-          alert("아이디와 비밀번호가 일치 하지 않습니다. 다시 로그인 해주세요.");
-        } else  {
-          alert("정보를 가져오는데 실패했습니다.");
-        }
+      await aTeamApi.post('/api/auth/forgot-password', forgotPwObj).then(async () => {
+        alert("인증 메일이 발송되었습니다.");
+        await router.push("/identification");
+      }).catch(()=> {
+          alert("해당 이메일에 등록된 정보가 없습니다.");
       });
     };
     return { state, submit };
   },
 
   methods: {
-    changeEyeImg(){
-      if(this.eyeImg === eyeoff){
-        this.eyeImg = eyeon;
-        this.changeInputType();
-      } else {
-        this.eyeImg = eyeoff;
-        this.changeInputType();
-      }
-    },
     changeLoginImg(img){
       if(img === this.loginImgBtn1){
         this.loginImg = LoginImg1;
@@ -89,13 +68,6 @@ export default {
         this.changeLBtn2 = false;
       }
     },
-    changeInputType(){
-      if(this.viewPassword === 'password'){
-        this.viewPassword = 'text';
-      }else{
-        this.viewPassword = 'password';
-      }
-    },
   }
 
 };
@@ -105,31 +77,16 @@ export default {
   <div id = "LoginMain">
     <div class="LoginBox">
       <div class="LoginText">
-        <h1>Login</h1>
+        <router-link to="/loginpage" id="backToLogin"><p >&lt; Back to Login</p></router-link>
+        <h1>비밀번호 찾기</h1>
         <br>
-        <a class="PlsL"> 로그인해주세요</a>
+        <a class="PlsL"> 비밀번호를 찾아보세요</a>
       </div>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">이메일</legend>
-        <input type="email" placeholder="이메일을 입력하세요." value="" class="LTextBox" id="userEmail" v-model="state.form.userEmail">
+        <input type="email" placeholder="이메일을 입력하세요." class="LTextBox" id="userEmail" v-model="state.form.email">
       </fieldset>
-      <fieldset class="fieldLogin">
-        <legend class="LegendLogin">Password</legend>
-        <input :type="viewPassword" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw">
-        <div id = "eye-offBox">
-          <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
-        </div>
-      </fieldset>
-      <div id = "PwdLine">
-        <span id="LoginCheckboxLine">
-        <input type="checkbox" class ="LoginCheckbox">  비밀번호 기억하기
-        </span>
-        <router-link to="/findpw" class = "FPwd">Forgot Password</router-link>
-      </div>
-      <button @click="submit" id="LoginBtn">Login</button>
-      <div id = "SignUpLink">
-        <router-link to="/signup" class="SignUpBtn">회원가입</router-link>
-      </div>
+      <button @click="submit" id="LoginBtn">제출</button>
       <div class="hr-sect">
         Or link with
       </div>
@@ -159,6 +116,20 @@ export default {
 </template>
 
 <style>
+#backToLogin{
+  display: flex;
+  margin-bottom: 20px;
+  font-family: Montserrat;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 100%;
+  color: black;
+  text-decoration-line: none;
+}
+#backToLogin:hover{
+  color: #9e9a9a;
+}
+
 * {
   margin:0;
   padding: 0;
@@ -188,6 +159,8 @@ export default {
   color: #112211;
 }
 
+
+
 .LoginIMG{
   width: 618px;
   height: 816px;
@@ -203,15 +176,11 @@ export default {
   height: 56px;
   border-radius: 4px;
 }
-#PwdLine{
-  margin-bottom: 40px;
-}
+
 #LoginBtn{
   margin-bottom: 16px;
 }
-#SignUpLink{
-  margin-bottom: 40px;
-}
+
 #LoginIconBoxes{
   margin-top: 40px;
   display: flex;
@@ -233,34 +202,7 @@ export default {
 input.LTextBox:focus{
   outline: none;
 }
-#eye-off{
-  width: 24px;
-  height: 24px;
-}
-#eye-offBox{
-  width: 48px;
-  height: 48px;
-  float: right;
-  display: flex;
-  justify-content: center;
-}
-#LoginCheckboxLine{
-  margin-right: 230px;
-}
-.LoginCheckbox{
-  width: 18px;
-  height: 18px;
-  border: black solid 2px;
-  position: relative;
-  top: 3px;
-}
-.FPwd{
-  color: #FF8682;
-  text-decoration: none;
-}
-.FPwd:hover{
-  color: #e0605d;
-}
+
 #LoginBtn{
   width: 100%;
   height: 48px;
@@ -272,13 +214,6 @@ input.LTextBox:focus{
 
 #LoginBtn:hover{
   background-color: #93efc6;
-  color: gray;
-}
-.SignUpBtn{
-  text-decoration: none;
-  color: black;
-}
-.SignUpBtn:hover{
   color: gray;
 }
 .LBtnGroup{

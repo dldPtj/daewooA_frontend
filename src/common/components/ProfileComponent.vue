@@ -1,14 +1,60 @@
 <script >
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import {aTeamApi} from "@/util/axios";
+
 export default{
   components: {HeaderComponent},
   data(){
     return{
+      profileModal : false,
       profileName: {},
       profileEmail: {},
-      profileImg:{},
+      profileImg: {},
+      backgroundImg: {},
+      uploadFileImg: null,
     };
+  },
+  methods: {
+    setFile(e){
+        this.uploadFileImg = e.target.files[0];
+    },
+    async uploadFile(){
+      const formData = new FormData();
+      formData.append("image", this.uploadFileImg);
+      try{
+        const res = await aTeamApi.put('/api/users/me/background-image',formData,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(()=>{
+          alert("이미지 업로드 성공");
+          window.location.reload();
+        });
+        console.log(res.data);
+
+      }catch (e){
+        console.error(e);
+      }
+
+    },
+    profileModalOpen() {
+      this.profileModal = !this.profileModal
+    },
+    profileModalClose() {
+      if (this.profileModal === true) {
+        this.profileModal = false;
+      }
+    },
+  },
+  watch: {
+    profileModal: function (val) {
+      if (val) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
   },
   async mounted() {
     const res = await aTeamApi.get('/api/users/me/profileAll');
@@ -18,7 +64,24 @@ export default{
     this.profileName = data.content.userName;
     this.profileEmail = data.content.email;
     this.profileImg = data.content.imageUrl;
-  }
+    this.backgroundImg = data.content.backGroundImageUrl;
+
+  },
+  computed: {
+    accountImageUrl() {
+      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      return this.profileImg
+          ? `${baseUrl}${this.profileImg}`
+          : "";
+    },
+    accountBackImgUrl(){
+      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      return this.backgroundImg
+          ? `${baseUrl}${this.backgroundImg}`
+          : "../../assets/AcoountCoverDefault.jpg";
+    }
+  },
+
 }
 
 </script>
@@ -26,13 +89,14 @@ export default{
 <template>
   <HeaderComponent/>
   <div id ="accountImgMain">
-    <img src="../../assets/AcoountCoverDefault.jpg" id="CoverImg">
-    <button type="button" id = "accountImgUpload"><img src="../../assets/AcoountUploadImgIcon.png"><a>upload new cover</a></button>
+    <img :src="accountBackImgUrl" id="CoverImg">
+    <button type="button" id = "accountImgUpload" @click="profileModalOpen"><img src="../../assets/AcoountUploadImgIcon.png"><a>upload new cover</a></button>
+
   </div>
   <div id = "accountProfile">
     <div id = "accountProfileMain">
       <div id="AccountProfileImg">
-        <img :src="profileImg">
+        <img :src="accountImageUrl" class="accountImgSize">
         <div id="ProfileImgModify"><img src="../../assets/Pencil.png"></div>
       </div>
       <div id ="AccountProfileMainT">
@@ -41,10 +105,35 @@ export default{
       </div>
     </div>
   </div>
+  <div class="AccountModalWrap" v-show="profileModal">
+    <div class="ACModalContainer">
+      <!--      취소 버튼-->
+      <img src="../../assets/ModalClose.png" alt="취소 사진" @click="profileModalClose" class="ModalCloseBtn">
+      <h1>파일 업로드</h1>
+      <form @submit.prevent="uploadFile">
+        <div>
+          <fieldset class="fieldModal">
+           <legend class="LegendLogin">파 일</legend>
+            <!--          파일 넣는 곳-->
+            <input type="file"  class="LTextBox" @change="setFile">
+          </fieldset>
+        </div>
+        <!--      클릭시 수정 완료-->
+        <button type="submit" class="ModalBtnStyle" >업로드</button>
+      </form>
+    </div>
+  </div>
 
 </template>
 
 <style >
+.accountImgSize{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 100%;
+}
 #accountImgMain{
   display: flex;
   position: relative;
@@ -57,7 +146,7 @@ export default{
 #CoverImg{
   display: flex;
   object-fit: cover;
-  width: 1232px;
+  width: 100%;
   height: 350px;
 }
 #accountImgUpload{
@@ -68,6 +157,10 @@ export default{
   margin: 276px 26px 26px 1026px;
   background-color: #8DD3BB;
   border: none;
+  z-index: 2;
+}
+#accountImgUpload:hover{
+  background-color: #9e9a9a;
 }
 #accountImgUpload a{
   display: flex;
@@ -90,7 +183,12 @@ export default{
   height: 44px;
   border-radius: 44px;
   background-color: #FF8682;
-  margin: 111px 0 0 111px;
+  margin: -39px 0 0 111px;
+  z-index: 3;
+  position: absolute;
+}
+#ProfileImgModify:hover{
+  background-color: #9e9a9a;
 }
 #ProfileImgModify img {
   margin: auto;
