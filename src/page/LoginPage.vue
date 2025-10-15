@@ -188,16 +188,6 @@ export default {
   color: #112211;
 }
 
-.fade-in-enter-active,
-.fade-in-leave-active{
-  transition: opacity 0.5s ease;
-}
-.fade-in-enter-from,
-.fade-in-leave-to{
-  opacity: 0;
-}
-
-
 .LoginIMG{
   width: 618px;
   height: 816px;
