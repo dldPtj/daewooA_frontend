@@ -1,4 +1,5 @@
 <script >
+import html2canvas from "html2canvas";
 
 export default {
   props: {
@@ -8,12 +9,26 @@ export default {
     checkoutDate: String,
     hotelCheckinTime: String,
     hotelCheckoutTime: String,
-  }
+  },
+  methods: {
+    async downloadTicketBtn(){
+      const element = this.$refs.downloadTicket;
+      const canvas = await html2canvas(element);
+      const image = canvas.toDataURL("image/png");
+
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = "ticket.png";
+      link.click();
+    }
+  },
+
+
 };
 </script>
 
 <template>
-  <div class= "ReservationList" >
+  <div class= "ReservationList"  ref="downloadTicket">
     <div class="ReservationImage">
       <img src="../../assets/CommonProfileImg.png" alt="호텔 이미지가 나옵니다." id="ProfileImg">
     </div>
@@ -49,7 +64,7 @@ export default {
       <p>방번호</p>
       <a>{{roomNumber}}</a>
     </div>
-    <button type="button" id="TicketBtn">
+    <button type="button" id="TicketBtn" @onclick="downloadTicketBtn">
       Download Ticket
     </button>
     <button type="button" id="MoreBtn">
@@ -78,6 +93,10 @@ export default {
   justify-content: center;
   background-color: #8DD3BB;
   border: none;
+}
+
+#TicketBtn:hover{
+  background-color: #9e9a9a;
 }
 .Room_num_Text a{
   font-family: Montserrat;
