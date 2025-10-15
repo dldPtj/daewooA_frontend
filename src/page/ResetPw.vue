@@ -131,7 +131,7 @@ export default {
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Create Password</legend>
         <input :type="viewPassword" placeholder="새로운 비밀번호를 입력하세요." class="LTextBox" id="userPw"
-               v-model="state.form.newPassword">
+               v-model="state.form.newPassword" autocomplete = "off">
         <div id="eye-offBox">
           <img :src="eyeImg1" @click="changeEyeImg1" id="eye-off" alt="눈 감는 사진">
         </div>
@@ -139,7 +139,7 @@ export default {
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Enter Code</legend>
         <input :type="viewConPassword" placeholder="다시 한번 입력하세요." class="LTextBox" id="userPw"
-               v-model="state.form.confirmPassword">
+               v-model="state.form.confirmPassword" autocomplete = "off">
         <div id="eye-offBox">
           <img :src="eyeImg2" @click="changeEyeImg2" id="eye-off" alt="눈 감는 사진">
         </div>
@@ -168,20 +168,6 @@ export default {
 </template>
 
 <style>
-#backToLogin {
-  display: flex;
-  margin-bottom: 20px;
-  font-family: Montserrat;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 100%;
-  color: black;
-  text-decoration-line: none;
-}
-
-#backToLogin:hover {
-  color: #9e9a9a;
-}
 
 * {
   margin: 0;
@@ -238,18 +224,6 @@ export default {
   margin-bottom: 16px;
 }
 
-#LoginIconBoxes {
-  margin-top: 40px;
-  display: flex;
-}
-
-#fBtn {
-  margin-right: 16px;
-}
-
-#GBtn {
-  margin-right: 16px;
-}
 
 .LTextBox {
   display: flex;
@@ -278,36 +252,6 @@ input.LTextBox:focus {
   color: gray;
 }
 
-.LBtnGroup {
-  border: #8DD3BB solid 1px;
-  width: 160px;
-  height: 56px;
-  background-color: white;
-}
-
-.LBtnGroup:hover {
-  background-color: #D9D9D9;
-}
-
-.hr-sect {
-  display: flex;
-  flex-basis: 100%;
-  align-items: center;
-  color: rgba(0, 0, 0, 0.25);
-  font-size: 15px;
-  margin: 8px 0px;
-}
-
-.hr-sect::before,
-.hr-sect::after {
-  content: "";
-  flex-grow: 1;
-  background: rgba(0, 0, 0, 0.25);
-  height: 1px;
-  font-size: 0px;
-  line-height: 0px;
-  margin: 0px 16px;
-}
 
 .NSelectPicBtn {
   display: flex;

@@ -115,7 +115,7 @@ export default {
       </fieldset>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Password</legend>
-        <input :type="viewPassword" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw">
+        <input :type="viewPassword" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.userPw" autocomplete = "off">
         <div id = "eye-offBox">
           <img :src="eyeImg" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
         </div>

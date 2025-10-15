@@ -168,14 +168,14 @@ export default {
       </div>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Password</legend>
-        <input :type="viewPassword" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="signPw" v-model="state.form.signPw">
+        <input :type="viewPassword" placeholder="비밀번호를 입력하세요." value="" class="LTextBox" id="signPw" v-model="state.form.signPw" autocomplete = "off">
         <div id = "eye-offBox">
           <img :src="eyeImg1" @click = "changeEyeImg" id ="eye-off" alt="눈 감는 사진">
         </div>
       </fieldset>
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">Confirm Password</legend>
-        <input :type="viewConPassword" placeholder="비밀번호를 한번더 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.confirmPw">
+        <input :type="viewConPassword" placeholder="비밀번호를 한번더 입력하세요." value="" class="LTextBox" id="userPw" v-model="state.form.confirmPw" autocomplete = "off">
         <div id = "eye-offBox">
           <img :src="eyeImg2" @click = "changeEyeImg2" id ="eye-off" alt="눈 감는 사진">
         </div>
