@@ -40,15 +40,19 @@ export default {
           {{ cityInfo.price }}원
         </h3>
       </div>
-      <div class="hotel-book-btn">
-        <button id="bookhotel">Book a Hotel</button>
-      </div>
+    </div>
+    <div class="hotel-book-btn">
+      <button id="bookhotel">Book a Hotel</button>
     </div>
 
   </div>
 </template>
 
 <style>
+.first-city:hover {
+  transition: transform 0.3s ease-out;
+  transform: translateY(-7px);
+}
 .city-img-container {
   border-radius: 15px;
   width: 300px;
@@ -65,11 +69,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: absolute;
   text-align: left;
-  top: 1250px;
   width: 250px;
-  margin: auto 25px;
+  margin: -140px 25px 25px;
 }
 .city-content {
   display: flex;
@@ -78,15 +80,21 @@ export default {
   z-index: 2;
   color: white;
 }
+.city-title {
+  text-shadow: 0 0 5px black;
+}
 .city-detail {
   max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 13px;
+  text-shadow: 0 0 5px black;
 }
 .homepage-hotel-price {
   display: flex;
   z-index: 2;
   color: white;
+  text-shadow: 0 0 5px black;
 }
 #bookhotel {
   width: 250px;
@@ -98,14 +106,14 @@ export default {
 }
 .hotel-book-btn {
   display: flex;
-  position: absolute;
   align-items: center;
   justify-content: center;
-  top: 70px;
+  margin: -10px auto;
 }
 #bookhotel:hover {
   border-radius: 5px;
-  border: #8ae6b2 solid 3px;
+  border: #8ae6b2 solid 1px;
+  box-shadow: inset 0px 0px 10px #8ae6b2;
   background-color: white;
 }
 </style>
