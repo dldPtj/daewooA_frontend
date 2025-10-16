@@ -12,14 +12,22 @@ export default {
   },
   methods: {
     async downloadTicketBtn(){
-      const element = this.$refs.downloadTicket;
-      const canvas = await html2canvas(element);
-      const image = canvas.toDataURL("image/png");
+      const element = document.getElementById("downloadTicket");
 
-      const link = document.createElement("a");
-      link.href = image;
-      link.download = "ticket.png";
-      link.click();
+      html2canvas(element).then(canvas => {
+        const imageUrl = canvas.toDataURL('image/png');
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = imageUrl;
+        downloadLink.download = 'ticket.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        console.log(downloadLink);
+        document.body.removeChild(downloadLink);
+
+
+      })
+
     }
   },
 
@@ -28,7 +36,7 @@ export default {
 </script>
 
 <template>
-  <div class= "ReservationList"  ref="downloadTicket">
+  <div class= "ReservationList"  id="downloadTicket">
     <div class="ReservationImage">
       <img src="../../assets/CommonProfileImg.png" alt="호텔 이미지가 나옵니다." id="ProfileImg">
     </div>
@@ -64,7 +72,7 @@ export default {
       <p>방번호</p>
       <a>{{roomNumber}}</a>
     </div>
-    <button type="button" id="TicketBtn" @onclick="downloadTicketBtn">
+    <button type="button" id="TicketBtn" @click="downloadTicketBtn">
       Download Ticket
     </button>
     <button type="button" id="MoreBtn">
