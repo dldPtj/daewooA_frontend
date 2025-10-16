@@ -1,4 +1,4 @@
-<script >
+<script>
 import html2canvas from "html2canvas";
 
 export default {
@@ -9,9 +9,10 @@ export default {
     checkoutDate: String,
     hotelCheckinTime: String,
     hotelCheckoutTime: String,
+
   },
   methods: {
-    async downloadTicketBtn(){
+    async downloadTicketBtn() {
       const element = document.getElementById("downloadTicket");
 
       html2canvas(element).then(canvas => {
@@ -36,18 +37,18 @@ export default {
 </script>
 
 <template>
-  <div class= "ReservationList"  id="downloadTicket">
+  <div class="ReservationList" >
     <div class="ReservationImage">
       <img src="../../assets/CommonProfileImg.png" alt="호텔 이미지가 나옵니다." id="ProfileImg">
     </div>
     <div class="Reservation_CheckInOut_Day">
       <a>Check-In</a><br>
-      <span>{{checkinDate}}</span>
+      <span>{{ checkinDate }}</span>
     </div>
     <div id="StickBar">—</div>
-    <div class ="Reservation_CheckInOut_Day">
+    <div class="Reservation_CheckInOut_Day">
       <a>Check-Out</a><br>
-      <span>{{checkoutDate}}</span>
+      <span>{{ checkoutDate }}</span>
     </div>
     <div class="OutLineStyle">
       <a class="OtherLine"></a>
@@ -60,9 +61,9 @@ export default {
     </div>
     <div class="check_Time_Text">
       <p>체크인</p>
-      <a>{{hotelCheckinTime}}</a>
+      <a>{{ hotelCheckinTime }}</a>
       <p>체크아웃</p>
-      <a>{{hotelCheckoutTime}}</a>
+      <a>{{ hotelCheckoutTime }}</a>
     </div>
 
     <div class="Room_num_img">
@@ -70,7 +71,7 @@ export default {
     </div>
     <div class="Room_num_Text">
       <p>방번호</p>
-      <a>{{roomNumber}}</a>
+      <a>{{ roomNumber }}</a>
     </div>
     <button type="button" id="TicketBtn" @click="downloadTicketBtn">
       Download Ticket
@@ -79,12 +80,223 @@ export default {
       >
     </button>
   </div>
+
+  <div class="ticketImg" id="downloadTicket">
+    <div class="ticketDate">
+      <a class="ticketDateFont">{{ checkinDate }}</a>
+      <p class="ticketCheckFont" style="margin-bottom: 16px">Check-In</p>
+      <img src="../../assets/ticketImg.png" alt="이 그림 사이에 건물이 끼어있습니다." class="TicketImg1">
+      <img src="../../assets/building.png" alt="건물사진" class="TicketBuilding">
+      <img src="../../assets/ticketImg.png" alt="이 그림 사이에 건물이 끼어있습니다." class="TicketImg1">
+      <a class="ticketDateFont" style="margin-top: 16px">{{ checkoutDate }}</a>
+      <p class="ticketCheckFont">Check-Out</p>
+    </div>
+    <div class="ticketDetail">
+      <div class="ticketDetailTop">
+        <div class="ticketProfile">
+          <div class="ticketProfileImg">
+            <img src="" alt="사용자의 프로필 사진이 들어갑니다.">
+          </div>
+          <div class="ticketProfileName">
+            James Doe
+          </div>
+        </div>
+        <div class="ticketRoomDetail">
+          Superior room - 1 double bed or 2 twin beds
+        </div>
+      </div>
+      <div class="ticketDetailMiddle">
+        <div class="ticketDetailBox">
+          <div class="Check_Time_Imges">
+            <img src="../../assets/clock.png">
+          </div>
+          <div class="check_Time_Text">
+            <p>체크인</p>
+            <a>{{ hotelCheckinTime }}</a>
+          </div>
+        </div>
+        <div class="ticketDetailBox">
+          <div class="Check_Time_Imges">
+            <img src="../../assets/clock.png">
+          </div>
+          <div class="check_Time_Text">
+            <p>체크아웃</p>
+            <a>{{ hotelCheckoutTime }}</a>
+          </div>
+        </div>
+        <div class="ticketDetailBox">
+          <div class="Check_Time_Imges">
+            <img src="../../assets/door.png">
+          </div>
+          <div class="check_Time_Text">
+            <p>방번호</p>
+            <a>{{ roomNumber }}</a>
+          </div>
+        </div>
+      </div>
+      <div class="ticketDetailBottom">
+        <div class="ticketCountry">
+          <a class="ticketDateFont">EK</a>
+          <p class="ticketCheckFont">ABC12345</p>
+        </div>
+        <div class="barcodeImg">
+          <img src="../../assets/barcode.png" alt="바코드 입니다.">
+        </div>
+      </div>
+  </div>
+    <div class="ticketHotelImg">
+      <img src="../../assets/HotelDefaultImg.png">
+    </div>
+  </div>
 </template>
 
-<style >
-#ProfileImg{
+<style>
+#downloadTicket{
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  opacity: 1;
+  visibility: visible;
+}
+.ticketHotelImg{
+  display: flex;
+  justify-content: center;
+  width: 375px;
   object-fit: cover;
 }
+.barcodeImg{
+  display: flex;
+}
+.barcodeImg img{
+  width: 240px;
+  height: 75px;
+  margin-top: 44px;
+}
+.ticketCountry{
+  display: flex;
+  width: 60px;
+  margin: 37px 0 34px 30px;
+  flex-direction: column;
+}
+.ticketDetailBottom{
+  display: flex;
+  width: 375px;
+  justify-content: space-between;
+
+}
+.ticketDetailBox {
+  display: flex;
+
+}
+
+.ticketDetailMiddle {
+  display: flex;
+  text-align: left;
+  gap: 32px;
+  padding: 24px;
+}
+
+.ticketRoomDetail {
+  width: 228px;
+  display: flex;
+  margin: auto 0;
+  font-family: Acme;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 100%;
+  text-align: right;
+
+}
+
+.ticketProfileName {
+  display: flex;
+  margin: auto 0;
+  font-family: Acme;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 100%;
+
+}
+
+.ticketProfile {
+  display: flex;
+  width: 205px;
+  gap: 16px
+}
+
+.ticketProfileImg {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  border-radius: 48px;
+  border: white solid 1px;
+  background: #9e9a9a;
+}
+
+.ticketDetailTop {
+  display: flex;
+  padding: 24px 24px;
+  justify-content: space-between;
+  width: 610px;
+  background: #8DD3BB;
+}
+
+.ticketDetail {
+  display: flex;
+  flex-direction: column;
+  width: 610px;
+  border: #2c3e50 solid 1px;
+}
+
+.ticketDateFont {
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 100%;
+  text-align: left;
+  margin-bottom: 4px;
+
+}
+
+.ticketCheckFont {
+  font-family: Montserrat;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  text-align: left;
+
+}
+
+.TicketBuilding {
+  width: 24px;
+  height: 24px;
+}
+
+.TicketImg1 {
+  width: 26px;
+  height: 36px;
+}
+
+.ticketDate {
+  display: flex;
+  flex-direction: column;
+  width: 246px;
+  border: #42b983 solid 1px;
+  padding: 34px 24px;
+  background: #EBF6F2;
+}
+
+.ticketImg {
+  display: flex;
+  width: 1231px;
+  border: #FF8682 solid 1px;
+}
+
+
+#ProfileImg {
+  object-fit: cover;
+}
+
 #MoreBtn {
   width: 48px;
   height: 48px;
@@ -92,7 +304,8 @@ export default {
   border: #8DD3BB solid 1px;
   background-color: white;
 }
-#TicketBtn{
+
+#TicketBtn {
   width: 152px;
   height: 48px;
   display: flex;
@@ -103,10 +316,11 @@ export default {
   border: none;
 }
 
-#TicketBtn:hover{
+#TicketBtn:hover {
   background-color: #9e9a9a;
 }
-.Room_num_Text a{
+
+.Room_num_Text a {
   font-family: Montserrat;
   font-weight: 500;
   font-size: 16px;
@@ -114,38 +328,46 @@ export default {
   line-height: 100%;
 
 }
-.Room_num_Text p{
+
+.Room_num_Text p {
   font-family: Montserrat;
   font-weight: 600;
   font-size: 12px;
   line-height: 100%;
 }
-.Room_num_Text{
+
+.Room_num_Text {
   margin-top: 30px;
 }
-.Room_num_img{
+
+.Room_num_img {
   margin-top: 30px;
   margin-left: 24px;
   margin-right: 10px;
 }
-.Check_Time_Imges{
+
+.Check_Time_Imges {
   margin: auto 10px auto 0;
 }
-.Check_Time_Imges img{
+
+.Check_Time_Imges img {
   display: flex;
   margin: 0px 0 8px 0;
 }
-.check_Time_Text{
+
+.check_Time_Text {
   margin: auto 0;
 }
-.check_Time_Text p{
+
+.check_Time_Text p {
   font-family: Montserrat;
   font-weight: 600;
   font-size: 12px;
   line-height: 100%;
 
 }
-.check_Time_Text a{
+
+.check_Time_Text a {
   display: flex;
   margin-bottom: 12px;
   font-family: Montserrat;
@@ -155,11 +377,13 @@ export default {
   line-height: 100%;
 
 }
-.OutLineStyle{
+
+.OutLineStyle {
   display: flex;
   margin: auto 24px;
 }
-#StickBar{
+
+#StickBar {
   margin: auto 14px;
   font-family: Montserrat;
   font-weight: 600;
@@ -167,10 +391,12 @@ export default {
   leading-trim: NONE;
   line-height: 100%;
 }
-.Reservation_CheckInOut_Day{
+
+.Reservation_CheckInOut_Day {
   margin: auto 0 auto;
 }
-.ReservationCheckInOut a{
+
+.ReservationCheckInOut a {
   font-family: Montserrat;
   font-weight: 400;
   font-size: 16px;
@@ -178,7 +404,8 @@ export default {
   line-height: 100%;
   color: #9e9a9a;
 }
-.ReservationCheckInOut span{
+
+.ReservationCheckInOut span {
   font-family: Montserrat;
   font-weight: 600;
   font-size: 20px;
@@ -186,18 +413,20 @@ export default {
   line-height: 100%;
 
 }
-.ReservationImage{
+
+.ReservationImage {
   display: flex;
   background-color: white;
   width: 80px;
   height: 80px;
   margin: auto 32px auto 24px;
 }
-.ReservationList{
+
+.ReservationList {
   box-shadow: 0px 2px 5px #d3d3d3;
   display: flex;
   margin-top: 16px;
   width: 1232px;
-  height: 144px;
+  min-height: 144px;
 }
 </style>
