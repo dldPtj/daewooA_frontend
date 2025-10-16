@@ -1,8 +1,14 @@
 <script>
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
+import router from "@/router";
 
 export default {
+  methods: {
+    router() {
+      return router
+    }
+  },
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
@@ -190,7 +196,7 @@ export default {
             ₩<span id="room-price">240,000</span><small>/night</small>
           </div>
           <div class="room-book">
-            <button id="room-book-btn">Book now</button>
+            <button id="room-book-btn" @click="$router.push('/paymentpage')">Book now</button>
           </div>
         </div>
       </div>

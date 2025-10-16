@@ -38,7 +38,7 @@ export default {
       };
       await aTeamApi.post('/api/auth/login', loginObj).then(async (res) => {
         alert("로그인 성공");
-        await router.push("/homepage");
+        await router.push("/");
         let token = res.data.content.accessToken;
         localStorage.setItem("token", token);
       }).catch((error)=> {
