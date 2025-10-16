@@ -1,30 +1,62 @@
 <script>
-import HeaderComponent from "@/common/components/HeaderComponent.vue";
-import FooterComponent from "@/common/components/FooterComponent.vue";
-import router from "@/router";
+import HeaderComponent from '@/common/components/HeaderComponent.vue';
+import FooterComponent from '@/common/components/FooterComponent.vue';
+import aTeamApi from '@/util/axios';
 
 export default {
-  methods: {
-    router() {
-      return router
+  name: 'HotelDetailPage',
+  components: { HeaderComponent, FooterComponent },
+  data() {
+    return {
+      hotelInfo: {},
+      favorite: false
+    };
+  },
+  async mounted() {
+    const hotelId = this.$route.query.id;
+
+    if (!hotelId) {
+      console.warn('호텔 ID가 없습니다.');
+      this.$router.push('/hotels');
+      return;
+    }
+
+    try {
+      const result = await aTeamApi.get(`/api/hotels/detail/${hotelId}`);
+      this.hotelInfo = result.data;
+      console.log('hotelInfo', this.hotelInfo);
+    } catch (error) {
+      console.error('호텔 정보 로드 실패:', error);
     }
   },
-  components: {
-    HeaderComponent: HeaderComponent,
-    FooterComponent: FooterComponent,
+  methods: {
+    togglefavorites() {
+      this.favorite = !this.favorite;
+    },
+    // 각 이미지 URL에 base URL을 안전하게 붙여서 반환
+    getFullImageUrl(url) {
+      if (!url) return '';
+      // 이미 절대 URL이면 그대로 반환
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      // Vue CLI 환경에서 process.env.VUE_APP_API_URL 사용
+      const base = process.env.VUE_APP_API_URL || '';
+      return `${base}${url}`;
+    }
   }
-}
+};
 </script>
+
 
 <template>
   <div class="hoteldetail-page">
     <div>
-    <HeaderComponent />
+      <HeaderComponent />
     </div>
 
     <!--나라 > 도시 > 호텔 이름-->
     <div class="country-city-hotelname">
-      <span class="hd-country">Turkey</span>&nbsp;>&nbsp;<span class="hd-city">Istanbul</span>&nbsp;>&nbsp;<span class="hd-hotelname">해튼호텔</span>
+      <span class="hd-country">Turkey</span>&nbsp;>&nbsp;<span class="hd-city">Istanbul</span
+      >&nbsp;>&nbsp;<span class="hd-hotelname">{{ hotelInfo.name }}</span>
     </div>
 
     <!--호텔 디테일 정보-->
@@ -32,13 +64,22 @@ export default {
       <!--호텔 디테일 왼쪽 (호텔 이름, 등급, 위치, 리뷰 평점 및 개수)-->
       <div class="hotel-detail-left">
         <div class="hotel-namegrade">
-          <span id="hotel-detail-name">해튼호텔</span>&nbsp;&nbsp;&nbsp;<span id="grade-stars">☆☆☆☆☆</span>&nbsp;<span id="grade">5</span> Star Hotel
+          <span id="hotel-detail-name">{{ hotelInfo.name }}</span
+          >&nbsp;&nbsp;&nbsp;
+          <span
+            id="grade-stars"
+            v-for="value in hotelInfo.grade"
+            :key="value"
+            style="font-size: 20px"
+            >★</span
+          >&nbsp; <span id="grade">{{ hotelInfo.grade }}</span
+          >&nbsp;Star Hotel
         </div>
         <!--호텔 위치-->
         <div class="hoteldetail-location">
-          <img src="@/assets/ion-location.png">
+          <i class="bx bx-location"></i>
           <span id="address">
-            <small>Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</small>
+            <small>{{ hotelInfo.address }}</small>
           </span>
         </div>
 
@@ -46,7 +87,7 @@ export default {
         <div class="hoteldetail-rating-count">
           <!--호텔 리뷰 평점-->
           <div class="hotel-review-avg">
-            <span id="review-rating">4.2</span>
+            <span id="review-rating">{{ hotelInfo.rating }}</span>
           </div>
           <!--호텔 만족도-->
           <div class="hoteldetail-satisfaction">
@@ -54,62 +95,66 @@ export default {
           </div>
           <!--호텔 평점 개수-->
           <div class="hoteldetail-review-count">
-            <span id="review-count">371</span>reviews
+            <span id="review-count">{{ hotelInfo.reviewCount }}</span
+            >&nbsp;reviews
           </div>
         </div>
-
       </div>
 
       <!--호텔 디테일 오른쪽 (찜, 공유, 가격, 예약)-->
       <div class="hotel-detail-right">
         <div class="hoteldetail-price">
-          ₩<span id="hoteldetail-price">240,000</span>/night
+          ₩<span id="hoteldetail-price">{{ hotelInfo.price }}</span
+          >/night
         </div>
         <div class="hoteldetail-btns">
           <div class="hoteldetail-heart">
-            <button id="hoteldetail-favorite-btn">
-              <img src="../assets/emptyheart.png">
+            <button id="hoteldetail-favorite-btn" @click="togglefavorites()">
+              <i class='bxr' :class="{
+              'bx-heart': !favorite,
+              'bx-heart-square': favorite
+            }" :style="{ 'font-size': favorite ? '60px' : '30px', 'color': '#8ae6b2' }"  ></i>
             </button>
           </div>
           <div class="hoteldetail-share">
             <button id="hoteldetail-share-btn">
-              <img src="../assets/share.png">
+              <i class='bx  bx-share'  style='font-size: 25px'></i>
             </button>
           </div>
           <div class="hoteldetail-book">
-            <button id="hoteldetail-book-btn">
-              Book now
-            </button>
+            <button id="hoteldetail-book-btn">Book now</button>
           </div>
         </div>
-
       </div>
-
     </div>
 
     <!--호텔 이미지-->
     <div class="hotel-detail-img">
-      <div class="hoteldetail-img-main">
-        <img src="../assets/hoteldetail-main-img.png">
-      </div>
-      <div class="hoteldetail-imgs">
-        <div class="hoteldetail-imgs-up">
-          <div class="hoteldetail-img-1">
-            <img src="../assets/hoteldetail-img-1.png">
-          </div>
-          <div class="hoteldetail-img-2">
-            <img src="../assets/hoteldetail-img-2.png">
+      <!-- 이미지가 있을 때 -->
+      <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls.length">
+        <!-- 메인 이미지 (첫번째) -->
+        <div class="hoteldetail-img-main">
+          <img :src="getFullImageUrl(hotelInfo.imageUrls[0])" :alt="hotelInfo.name + ' main image'" />
+        </div>
+
+        <!-- 나머지 썸네일들 -->
+        <div class="hoteldetail-imgs" v-if="hotelInfo.imageUrls.length > 1">
+          <div
+            v-for="(url, index) in hotelInfo.imageUrls.slice(1)"
+            :key="index"
+            class="hoteldetail-img-thumb"
+          >
+            <img :src="getFullImageUrl(url)" :alt="hotelInfo.name + ' image ' + (index+2)" />
           </div>
         </div>
-        <div class="hoteldetail-imgs-down">
-          <div class="hoteldetail-img-3">
-            <img src="../assets/hoteldetail-img-3.png">
-          </div>
-          <div class="hoteldetail-img-4">
-            <img src="../assets/hoteldetail-img-4.png">
-          </div>
+      </template>
+
+      <!-- 이미지가 없을 때 -->
+      <template v-else>
+        <div class="no-image-placeholder">
+          <span>이미지가 없습니다</span>
         </div>
-      </div>
+      </template>
     </div>
 
     <!--호텔 개요-->
@@ -118,12 +163,12 @@ export default {
         <h3>Overview</h3>
       </div>
       <div class="hotel-overview-text">
-        반다르 힐리르 지역에 위치한 대형 호텔로 쇼핑몰과 관광지가 가까워 접근성이 뛰어납니다. 실외 수영장, 스파, 피트니스 센터, 그리고 가족 단위 여행객을 위한 키즈 풀까지 갖추고 있어 편리하고 실속 있는 여행을 원하는 분들에게 적합합니다. 넓은 객실과 모던한 시설은 물론, 비즈니스 센터와 회의실도 완비되어 있어 단체 관광이나 기업 연수에도 어울립니다.
+        {{ hotelInfo.overview }}
       </div>
       <div class="hotel-overview-boxes">
         <div class="hotelrating-avg-now">
           <div class="rating">
-            <h1>4.2</h1>
+            <h1>{{ hotelInfo.rating }}</h1>
           </div>
           <!--호텔 만족도-->
           <div class="hoteldetail-overview-satisfaction">
@@ -131,13 +176,14 @@ export default {
           </div>
           <!--호텔 리뷰 개수-->
           <div class="hoteldetail-review-count">
-            <span id="review-count">371</span>reviews
+            <span id="review-count">{{ hotelInfo.reviewCount }}</span
+            >reviews
           </div>
         </div>
 
         <div class="hotelfeatures">
           <div class="stars-img">
-            <img src="../assets/stars.png">
+            <img src="../assets/stars.png" />
           </div>
           <div class="hotel-feature">
             <span id="feature-1">Near park</span>
@@ -145,7 +191,7 @@ export default {
         </div>
         <div class="hotelfeatures">
           <div class="stars-img">
-            <img src="../assets/stars.png">
+            <img src="../assets/stars.png" />
           </div>
           <div class="hotel-feature">
             <span id="feature-2">Near nightlife</span>
@@ -153,7 +199,7 @@ export default {
         </div>
         <div class="hotelfeatures">
           <div class="stars-img">
-            <img src="../assets/stars.png">
+            <img src="../assets/stars.png" />
           </div>
           <div class="hotel-feature">
             <span id="feature-3">Near theater</span>
@@ -161,7 +207,7 @@ export default {
         </div>
         <div class="hotelfeatures">
           <div class="stars-img">
-            <img src="../assets/stars.png">
+            <img src="../assets/stars.png" />
           </div>
           <div class="hotel-feature">
             <span id="feature-4">Clean Hotel</span>
@@ -182,19 +228,18 @@ export default {
         <div class="leftroom-sec">
           <!--객실 이미지-->
           <div class="leftroom-img">
-            <img src="../assets/leftroom-1.png">
+            <img src="../assets/leftroom-1.png" />
           </div>
           <!--객실 타입-->
           <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view"></span> - <span id="bed-counts">1 double bed or 2 twin beds</span>
+            <span id="roomtype">Superior room</span> - <span id="room-view"></span> -
+            <span id="bed-counts">1 double bed or 2 twin beds</span>
           </div>
         </div>
 
         <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
         <div class="leftroom-sec">
-          <div class="room-price">
-            ₩<span id="room-price">240,000</span><small>/night</small>
-          </div>
+          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
           <div class="room-book">
             <button id="room-book-btn" @click="$router.push('/paymentpage')">Book now</button>
           </div>
@@ -207,19 +252,18 @@ export default {
         <div class="leftroom-sec">
           <!--객실 이미지-->
           <div class="leftroom-img">
-            <img src="../assets/leftroom-2.png">
+            <img src="../assets/leftroom-2.png" />
           </div>
           <!--객실 타입-->
           <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> - <span id="bed-counts">1 double bed or 2 twin beds</span>
+            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
+            <span id="bed-counts">1 double bed or 2 twin beds</span>
           </div>
         </div>
 
         <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
         <div class="leftroom-sec">
-          <div class="room-price">
-            ₩<span id="room-price">240,000</span><small>/night</small>
-          </div>
+          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
           <div class="room-book">
             <button id="room-book-btn">Book now</button>
           </div>
@@ -232,19 +276,18 @@ export default {
         <div class="leftroom-sec">
           <!--객실 이미지-->
           <div class="leftroom-img">
-            <img src="../assets/leftroom-3.png">
+            <img src="../assets/leftroom-3.png" />
           </div>
           <!--객실 타입-->
           <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> - <span id="bed-counts">1 double bed or 2 twin beds</span>
+            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
+            <span id="bed-counts">1 double bed or 2 twin beds</span>
           </div>
         </div>
 
         <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
         <div class="leftroom-sec">
-          <div class="room-price">
-            ₩<span id="room-price">240,000</span><small>/night</small>
-          </div>
+          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
           <div class="room-book">
             <button id="room-book-btn">Book now</button>
           </div>
@@ -257,19 +300,18 @@ export default {
         <div class="leftroom-sec">
           <!--객실 이미지-->
           <div class="leftroom-img">
-            <img src="../assets/leftroom-4.png">
+            <img src="../assets/leftroom-4.png" />
           </div>
           <!--객실 타입-->
           <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> - <span id="bed-counts">1 double bed or 2 twin beds</span>
+            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
+            <span id="bed-counts">1 double bed or 2 twin beds</span>
           </div>
         </div>
 
         <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
         <div class="leftroom-sec">
-          <div class="room-price">
-            ₩<span id="room-price">240,000</span><small>/night</small>
-          </div>
+          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
           <div class="room-book">
             <button id="room-book-btn">Book now</button>
           </div>
@@ -284,18 +326,16 @@ export default {
           <h2>지도보기</h2>
         </div>
         <div class="googlemaps-btn">
-          <button id="googlemaps-btn">
-            View on google maps
-          </button>
+          <button id="googlemaps-btn">View on google maps</button>
         </div>
       </div>
       <!--지도-->
-      <div class="map">
-
-      </div>
+      <div class="map"></div>
       <!--주소-->
       <div class="hoteldetail-address">
-        <img src="../assets/ion-location.png"><span id="address">Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</span>
+        <img src="../assets/ion-location.png" /><span id="address"
+          >Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</span
+        >
       </div>
     </div>
 
@@ -306,17 +346,17 @@ export default {
       </div>
       <div class="amenities-lists">
         <ul class="amenities-lists-column" style="list-style: none">
-          <li><img src="../assets/icon_pool.png">&nbsp;Outdoor pool</li>
-          <li><img src="../assets/icon_pool.png">&nbsp;Indoor pool</li>
-          <li><img src="../assets/icon_spa.png">&nbsp;Spa and wellness center</li>
-          <li><img src="../assets/icon_restaurant.png">&nbsp;Restaurant</li>
-          <li><img src="../assets/icon_room-service.png">&nbsp;Room service</li>
+          <li><img src="../assets/icon_pool.png" />&nbsp;Outdoor pool</li>
+          <li><img src="../assets/icon_pool.png" />&nbsp;Indoor pool</li>
+          <li><img src="../assets/icon_spa.png" />&nbsp;Spa and wellness center</li>
+          <li><img src="../assets/icon_restaurant.png" />&nbsp;Restaurant</li>
+          <li><img src="../assets/icon_room-service.png" />&nbsp;Room service</li>
         </ul>
         <ul class="amenities-lists-column" style="list-style: none">
-          <li><img src="../assets/icon_fitness.png">&nbsp;Fitness center</li>
-          <li><img src="../assets/icon_wine.png">&nbsp;Bar/Lounge</li>
-          <li><img src="../assets/icon_wifi.png">&nbsp;Free Wi-Fi</li>
-          <li><img src="../assets/icon_breakfast.png">&nbsp;Tea/coffee machine</li>
+          <li><img src="../assets/icon_fitness.png" />&nbsp;Fitness center</li>
+          <li><img src="../assets/icon_wine.png" />&nbsp;Bar/Lounge</li>
+          <li><img src="../assets/icon_wifi.png" />&nbsp;Free Wi-Fi</li>
+          <li><img src="../assets/icon_breakfast.png" />&nbsp;Tea/coffee machine</li>
           <li class="lastlist">+<span id="left-amenities">24</span>&nbsp;more</li>
         </ul>
       </div>
@@ -342,9 +382,7 @@ export default {
           <div class="reviews-satisfaction">
             <span id="satisfaction">Very Good</span>
           </div>
-          <div class="reviews-count">
-            <span id="review-count">371</span>verified reviews
-          </div>
+          <div class="reviews-count"><span id="review-count">371</span>verified reviews</div>
         </div>
       </div>
 
@@ -352,41 +390,39 @@ export default {
       <div class="review-lists">
         <!--리뷰 내용(프로필, 리뷰평점, 이름, 리뷰내용)-->
         <div class="review-info">
-          <div class="review-profile">
-
-          </div>
+          <div class="review-profile"></div>
           <div class="review-info-in">
             <div class="reviewer-rating-name">
               <span id="review-rating">5.0 Amazing</span> | 이예서
             </div>
             <div class="review-content">
-              "말라카 구시가지의 한복판에 자리한 고요하고 휴식이 가득한 공간. 강변의 깨끗한 루프탑 수영장이 특히 인상 깊었고, 객실마다 밤마다 향 오일 램프가 켜져 있어 정말 좋았다"고 감탄했습니다.
+              "말라카 구시가지의 한복판에 자리한 고요하고 휴식이 가득한 공간. 강변의 깨끗한 루프탑
+              수영장이 특히 인상 깊었고, 객실마다 밤마다 향 오일 램프가 켜져 있어 정말 좋았다"고
+              감탄했습니다.
             </div>
           </div>
         </div>
         <!--리뷰 신고버튼-->
         <button class="review-report-btn">
-          <i class='bxr  bx-flag-alt-2' ></i>
+          <i class="bxr bx-flag-alt-2"></i>
         </button>
       </div>
       <!--리뷰 페이지 처리부분-->
       <div class="review-page">
         <button id="review-back-btn">
-          <i class='bxr  bx-chevron-left'></i>
+          <i class="bxr bx-chevron-left"></i>
         </button>
         1 of 40
         <button id="review-next-btn">
-          <i class='bxr  bx-chevron-right'  style='color:#000000'></i>
+          <i class="bxr bx-chevron-right" style="color: #000000"></i>
         </button>
       </div>
-
     </div>
 
     <div>
       <FooterComponent />
     </div>
   </div>
-  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </template>
 
 <style>
@@ -407,7 +443,7 @@ export default {
   border: white;
 }
 .review-lists {
-  border-bottom: #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
 }
 #review-rating {
   font-weight: bold;
@@ -454,7 +490,7 @@ export default {
 }
 .reviews-rating-avg {
   display: flex;
-  border-bottom: #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
   justify-items: left;
   margin: 20px auto;
   padding-bottom: 20px;
@@ -479,7 +515,7 @@ export default {
   width: 1250px;
 }
 .lastlist {
-  color: #FF8682;
+  color: #ff8682;
   font-weight: bold;
 }
 .amenities-lists-column li {
@@ -501,16 +537,20 @@ export default {
   width: 1250px;
 }
 .hotel-detail-amenities {
-  border-bottom: #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
   margin: 0 auto;
   width: 1250px;
+}
+.hoteldetail-location {
+  display: flex;
+  align-items: center;
 }
 .hoteldetail-address {
   text-align: left;
   margin: 10px auto;
   width: 1240px;
   padding-bottom: 70px;
-  border-bottom: #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
 }
 .map {
   width: 1232px;
@@ -553,7 +593,7 @@ export default {
   justify-content: space-between;
   margin: 10px auto;
   padding: 10px;
-  border-bottom: #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
 }
 .leftroom-sec {
   display: flex;
@@ -586,7 +626,7 @@ export default {
   text-align: left;
   margin: 20px auto;
   padding-bottom: 50px;
-  border-bottom: #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
 }
 .hotelrating-avg-now {
   border: #8ae6b2 solid 1px;
@@ -604,35 +644,37 @@ export default {
 }
 .hotel-overview {
   margin: auto;
-  max-width: 1240px;
-}
-.hoteldetail-img-3 {
-  border-top-right-radius: 5px;
-}
-.hoteldetail-img-4 {
-  border-bottom-right-radius: 5px;
-}
-.hoteldetail-img-main {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-.hoteldetail-imgs {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: auto 10px;
+  width: 1240px;
 }
 .hotel-detail-img {
   display: flex;
+  gap: 10px;
   width: 1250px;
   margin: 20px auto;
   padding-bottom: 70px;
-  border-bottom: #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
+}
+.hoteldetail-img-main img {
+  width: 610px;
+  height: 550px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.hoteldetail-imgs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hoteldetail-img-thumb img {
+  width: 300px;
+  height: 270px;
+  object-fit: cover;
+  border-radius: 10px;
 }
 .hoteldetail-price {
   font-size: 20px;
   font-weight: bold;
-  color: #FF8682;
+  color: #ff8682;
   text-align: right;
 }
 #hoteldetail-book-btn {
@@ -643,6 +685,9 @@ export default {
   height: 45px;
 }
 #hoteldetail-share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -650,6 +695,9 @@ export default {
   height: 45px;
 }
 #hoteldetail-favorite-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -693,11 +741,22 @@ export default {
   justify-content: center;
   margin: 60px 1050px 0 0;
 }
-.hd-country{
-  color: #FF8682;
+.hd-country {
+  color: #ff8682;
 }
 .hd-city {
-  color: #FF8682;
+  color: #ff8682;
 }
-
+.no-image-placeholder {
+  width: 100%;
+  height: 400px;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  font-size: 18px;
+  font-weight: bold;
+}
 </style>

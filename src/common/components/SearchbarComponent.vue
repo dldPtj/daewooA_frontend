@@ -236,6 +236,10 @@ export default {
   margin: auto;
   gap: 20px;
 }
+.enter-destination fieldset:hover {
+  border: #8ae6b2 solid 1px;
+  box-shadow: 0px 0px 10px #8ae6b2;
+}
 .enter-destination fieldset {
   display: flex;
   justify-content: left;
@@ -243,6 +247,9 @@ export default {
   margin: auto 10px;
   width: 400px;
   height: 60px;
+}
+.enter-destination fieldset legend {
+  background-color: white;
 }
 .city-hotel-select {
   display: flex;
@@ -289,10 +296,24 @@ export default {
   width: 200px;
   height: 60px;
 }
+.check-in fieldset:hover {
+  border: #8ae6b2 solid 1px;
+  box-shadow: 0px 0px 10px #8ae6b2;
+}
+.check-in fieldset legend {
+  background-color: white;
+}
 .check-out fieldset {
   border-radius: 5px;
   width: 200px;
   height: 60px;
+}
+.check-out fieldset:hover {
+  border: #8ae6b2 solid 1px;
+  box-shadow: 0px 0px 10px #8ae6b2;
+}
+.check-out fieldset legend {
+  background-color: white;
 }
 .datepicker .dp__input {
   display: flex;
@@ -307,6 +328,13 @@ export default {
   border-radius: 5px;
   width: 300px;
   height: 60px;
+}
+.roomguests fieldset:hover {
+  border: #8ae6b2 solid 1px;
+  box-shadow: 0px 0px 10px #8ae6b2;
+}
+.roomguests fieldset legend {
+  background-color: white;
 }
 .roomguests-btn {
   display: flex;

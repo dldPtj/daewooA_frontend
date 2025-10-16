@@ -200,7 +200,6 @@ export default {
     </div>
   </div>
   <FooterComponent />
-  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
 </template>
 
 <style >

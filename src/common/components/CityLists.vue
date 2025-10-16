@@ -51,7 +51,7 @@ export default {
 <style>
 .first-city:hover {
   transition: transform 0.3s ease-out;
-  transform: translateY(-7px);
+  transform: translateY(-15px);
 }
 .city-img-container {
   border-radius: 15px;
@@ -112,8 +112,7 @@ export default {
 }
 #bookhotel:hover {
   border-radius: 5px;
-  border: #8ae6b2 solid 1px;
-  box-shadow: inset 0px 0px 10px #8ae6b2;
-  background-color: white;
+  border: #67bd95 solid 1px;
+  background-color: #6ec89e;
 }
 </style>

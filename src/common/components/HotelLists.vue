@@ -1,6 +1,11 @@
 <script>
 export default {
   name: "HotelLists",
+  data() {
+    return {
+      favorite: false,
+    }
+  },
   props: {
     hotelInfo: {
       type: Object,
@@ -17,6 +22,11 @@ export default {
     imageCount() {
       return this.hotelInfo.imageUrls?.length || 0;
     },
+  },
+  methods: {
+    togglefavorites() {
+      this.favorite = !this.favorite;
+    }
   }
 };
 </script>
@@ -24,10 +34,25 @@ export default {
 <template>
   <div class="hotel-1">
     <div class="hotel-img">
-      <img :src="fullImageUrl" alt="hotel image" class="hotel-img-size">
-      <div class="hotel-img-count">
-        {{ imageCount }} images
+      <div v-if="hotelInfo.imageUrls && hotelInfo.imageUrls.length > 0">
+        <!-- 이미지가 있을 때 -->
+        <div class="hotel-img-count">
+          {{ imageCount }} images
+        </div>
+        <img
+          :src="fullImageUrl"
+          alt="hotel image"
+          class="hotel-img-size"
+        >
       </div>
+      <!-- 이미지가 없을 때 (회색 배경 div) -->
+      <div
+        v-else
+        class="hotel-img-placeholder"
+      >
+        No Image
+      </div>
+
     </div>
     <!--호텔 정보-->
     <div class="hotel-info">
@@ -77,11 +102,11 @@ export default {
       <div class="hotel-liked-view">
         <!--호텔 찜하기 버튼-->
         <div class="hotel-liked">
-          <button id="hotel-liked-btn" @click="togglefavorites('')">
+          <button id="hotel-liked-btn" @click="togglefavorites()">
             <i class='bxr' :class="{
-              'bx-heart': favorite,
+              'bx-heart': !favorite,
               'bx-heart-square': favorite
-            }"  ></i>
+            }" :style="{ 'font-size': favorite ? '65px' : '30px', 'color': '#8ae6b2' }"  ></i>
           </button>
         </div>
         <!--호텔 보기 버튼-->
@@ -116,6 +141,19 @@ export default {
   border-bottom-left-radius: 15px;
   width: 300px;
   height: 273px;
+}
+.hotel-img-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  width: 300px;
+  height: 273px;
+  background-color: #666; /* 회색 배경 */
+  color: #303030;
+  font-size: 18px;
+  font-weight: bold;
 }
 .hotel-img-count {
   display: flex;
@@ -169,7 +207,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: #8ae6b2 solid 1px;
+  border: #8ae6b2 solid 2px;
   border-radius: 5px;
   background-color: white;
   width: 50px;
