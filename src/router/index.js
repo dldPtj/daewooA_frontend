@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 // 뷰 컴포넌트 import
-import PageMove from '../page/PageMove.vue';
 import HomePage from "../page/HomePage.vue";
 import HotelSearchPage from '../page/HotelSearchPage.vue';
 import HeaderComponent from '../common/components/HeaderComponent.vue';
@@ -25,8 +24,7 @@ const router = createRouter({
     history: createWebHistory(),
 
     routes: [
-        { path: '/', name: 'pagemove', component: PageMove },
-        { path: '/homepage', name: 'homepage', component: HomePage },
+        { path: '/', name: 'homepage', component: HomePage },
         { path: '/hotelsearchpage', name: 'hotelsearchpage', component: HotelSearchPage },
         { path: '/headercomponent', name: 'headercomponent', component: HeaderComponent },
         { path: '/FooterComponent', name: 'FooterComponent', component: FooterComponent },
@@ -35,7 +33,7 @@ const router = createRouter({
         { path: '/paymentpage', name: 'paymentpage', component: PaymentPage },
         { path: '/favoritespage', name: 'favoritespage', component: FavoritesPage },
         { path: '/account', name: 'account', component: AccountPage },
-        { path: '/reservation', name: 'reservation', component: ReservationPage },
+        { path: '/reservation', name: 'reservation', component: ReservationPage},
         { path: '/paymentadd', name: 'paymentadd', component: PaymentAdd },
         { path: '/loginpage', name: 'loginpage', component: LoginPage },
         { path: '/signup', name: 'signup', component: SignUpPage },

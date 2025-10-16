@@ -241,7 +241,7 @@ export default {
         <div class="leftroom-sec">
           <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
           <div class="room-book">
-            <button id="room-book-btn">Book now</button>
+            <button id="room-book-btn" @click="$router.push('/paymentpage')">Book now</button>
           </div>
         </div>
       </div>

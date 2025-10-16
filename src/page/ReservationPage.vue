@@ -14,13 +14,6 @@ export default {
   },
   data() {
     return {
-      // hotelName: {},
-      // roomNumber: {},
-      // checkinDate: {},
-      // checkoutDate: {},
-      // HotelCheckinTime: {},
-      // HotelCheckoutTime: {},
-      // HotelImageUrl: {},
       reservations:[],
     }
   },
@@ -29,13 +22,6 @@ export default {
     const data = res.data.content;
     console.log('data >>> ', data);
     this.reservations = data;
-    // this.hotelName = data.content.hotelName;
-    // this.roomNumber = data.content.roomNumber;
-    // this.checkinDate = data.content.checkinDate;
-    // this.checkoutDate = data.content.checkoutDate;
-    // this.HotelCheckinTime = data.content.HotelCheckinTime;
-    // this.HotelCheckoutTime = data.content.HotelCheckoutTime;
-    // this.HotelImageUrl = data.content.HotelImageUrl;
 
   }
 }
@@ -76,6 +62,7 @@ export default {
                            :checkout-date="item.checkoutDate"
                            :hotel-checkin-time="item.hotelCheckinTime"
                            :hotel-checkout-time="item.hotelCheckoutTime"
+
     />
   </div>
 
