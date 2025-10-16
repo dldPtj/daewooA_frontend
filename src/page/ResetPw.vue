@@ -47,7 +47,8 @@ export default {
           }
       ).then(async () => {
         alert("비밀번호가 수정 되었습니다.");
-        await router.push("/");
+        localStorage.removeItem("FindPwToken");
+        await router.push("/loginpage");
       }).catch(() => {
         alert("비밀번호가 일치하지 않습니다.");
       });
