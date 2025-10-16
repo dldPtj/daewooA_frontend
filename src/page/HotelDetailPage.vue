@@ -9,28 +9,43 @@ export default {
   data() {
     return {
       hotelInfo: {},
+      favorite: false
     };
   },
   async mounted() {
-    // ✅ 쿼리스트링으로 전달된 id 받기
     const hotelId = this.$route.query.id;
 
     if (!hotelId) {
       console.warn('호텔 ID가 없습니다.');
-      this.$router.push('/hotels'); // 예외 처리 (선택)
+      this.$router.push('/hotels');
       return;
     }
 
     try {
-      // ✅ 백엔드에서 해당 호텔 정보 요청
       const result = await aTeamApi.get(`/api/hotels/detail/${hotelId}`);
       this.hotelInfo = result.data;
+      console.log('hotelInfo', this.hotelInfo);
     } catch (error) {
       console.error('호텔 정보 로드 실패:', error);
     }
   },
+  methods: {
+    togglefavorites() {
+      this.favorite = !this.favorite;
+    },
+    // 각 이미지 URL에 base URL을 안전하게 붙여서 반환
+    getFullImageUrl(url) {
+      if (!url) return '';
+      // 이미 절대 URL이면 그대로 반환
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      // Vue CLI 환경에서 process.env.VUE_APP_API_URL 사용
+      const base = process.env.VUE_APP_API_URL || '';
+      return `${base}${url}`;
+    }
+  }
 };
 </script>
+
 
 <template>
   <div class="hoteldetail-page">
@@ -94,13 +109,16 @@ export default {
         </div>
         <div class="hoteldetail-btns">
           <div class="hoteldetail-heart">
-            <button id="hoteldetail-favorite-btn">
-              <img src="../assets/emptyheart.png" />
+            <button id="hoteldetail-favorite-btn" @click="togglefavorites()">
+              <i class='bxr' :class="{
+              'bx-heart': !favorite,
+              'bx-heart-square': favorite
+            }" :style="{ 'font-size': favorite ? '60px' : '30px', 'color': '#8ae6b2' }"  ></i>
             </button>
           </div>
           <div class="hoteldetail-share">
             <button id="hoteldetail-share-btn">
-              <img src="../assets/share.png" />
+              <i class='bx  bx-share'  style='font-size: 25px'></i>
             </button>
           </div>
           <div class="hoteldetail-book">
@@ -112,27 +130,31 @@ export default {
 
     <!--호텔 이미지-->
     <div class="hotel-detail-img">
-      <div class="hoteldetail-img-main">
-        <img src="../assets/hoteldetail-main-img.png" />
-      </div>
-      <div class="hoteldetail-imgs">
-        <div class="hoteldetail-imgs-up">
-          <div class="hoteldetail-img-1">
-            <img src="../assets/hoteldetail-img-1.png" />
-          </div>
-          <div class="hoteldetail-img-2">
-            <img src="../assets/hoteldetail-img-2.png" />
+      <!-- 이미지가 있을 때 -->
+      <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls.length">
+        <!-- 메인 이미지 (첫번째) -->
+        <div class="hoteldetail-img-main">
+          <img :src="getFullImageUrl(hotelInfo.imageUrls[0])" :alt="hotelInfo.name + ' main image'" />
+        </div>
+
+        <!-- 나머지 썸네일들 -->
+        <div class="hoteldetail-imgs" v-if="hotelInfo.imageUrls.length > 1">
+          <div
+            v-for="(url, index) in hotelInfo.imageUrls.slice(1)"
+            :key="index"
+            class="hoteldetail-img-thumb"
+          >
+            <img :src="getFullImageUrl(url)" :alt="hotelInfo.name + ' image ' + (index+2)" />
           </div>
         </div>
-        <div class="hoteldetail-imgs-down">
-          <div class="hoteldetail-img-3">
-            <img src="../assets/hoteldetail-img-3.png" />
-          </div>
-          <div class="hoteldetail-img-4">
-            <img src="../assets/hoteldetail-img-4.png" />
-          </div>
+      </template>
+
+      <!-- 이미지가 없을 때 -->
+      <template v-else>
+        <div class="no-image-placeholder">
+          <span>이미지가 없습니다</span>
         </div>
-      </div>
+      </template>
     </div>
 
     <!--호텔 개요-->
@@ -401,7 +423,6 @@ export default {
       <FooterComponent />
     </div>
   </div>
-  <link href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css" rel="stylesheet" />
 </template>
 
 <style>
@@ -625,28 +646,30 @@ export default {
   margin: auto;
   width: 1240px;
 }
-.hoteldetail-img-3 {
-  border-top-right-radius: 5px;
-}
-.hoteldetail-img-4 {
-  border-bottom-right-radius: 5px;
-}
-.hoteldetail-img-main {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-.hoteldetail-imgs {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: auto 10px;
-}
 .hotel-detail-img {
   display: flex;
+  gap: 10px;
   width: 1250px;
   margin: 20px auto;
   padding-bottom: 70px;
   border-bottom: #d9d9d9 solid 1px;
+}
+.hoteldetail-img-main img {
+  width: 610px;
+  height: 550px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.hoteldetail-imgs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hoteldetail-img-thumb img {
+  width: 300px;
+  height: 270px;
+  object-fit: cover;
+  border-radius: 10px;
 }
 .hoteldetail-price {
   font-size: 20px;
@@ -662,6 +685,9 @@ export default {
   height: 45px;
 }
 #hoteldetail-share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -669,6 +695,9 @@ export default {
   height: 45px;
 }
 #hoteldetail-favorite-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -717,5 +746,17 @@ export default {
 }
 .hd-city {
   color: #ff8682;
+}
+.no-image-placeholder {
+  width: 100%;
+  height: 400px;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>

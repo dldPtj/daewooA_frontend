@@ -27,10 +27,10 @@ const router = createRouter({
     routes: [
         { path: '/', name: 'pagemove', component: PageMove },
         { path: '/homepage', name: 'homepage', component: HomePage },
-        { path: '/hotelsearch', name: 'hotelsearchpage', component: HotelSearchPage },
+        { path: '/hotelsearchpage', name: 'hotelsearchpage', component: HotelSearchPage },
         { path: '/headercomponent', name: 'headercomponent', component: HeaderComponent },
         { path: '/FooterComponent', name: 'FooterComponent', component: FooterComponent },
-        { path: '/hoteldetail', name: 'hoteldetailpage', component: HotelDetailPage },
+        { path: '/hoteldetailpage', name: 'hoteldetailpage', component: HotelDetailPage },
         { path: '/ProfileComponent', name: 'ProfileComponent', component: ProfileComponent },
         { path: '/paymentpage', name: 'paymentpage', component: PaymentPage },
         { path: '/favoritespage', name: 'favoritespage', component: FavoritesPage },

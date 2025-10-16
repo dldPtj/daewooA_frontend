@@ -34,10 +34,25 @@ export default {
 <template>
   <div class="hotel-1">
     <div class="hotel-img">
-      <img :src="fullImageUrl" alt="hotel image" class="hotel-img-size">
-      <div class="hotel-img-count">
-        {{ imageCount }} images
+      <div v-if="hotelInfo.imageUrls && hotelInfo.imageUrls.length > 0">
+        <!-- 이미지가 있을 때 -->
+        <div class="hotel-img-count">
+          {{ imageCount }} images
+        </div>
+        <img
+          :src="fullImageUrl"
+          alt="hotel image"
+          class="hotel-img-size"
+        >
       </div>
+      <!-- 이미지가 없을 때 (회색 배경 div) -->
+      <div
+        v-else
+        class="hotel-img-placeholder"
+      >
+        No Image
+      </div>
+
     </div>
     <!--호텔 정보-->
     <div class="hotel-info">
@@ -126,6 +141,19 @@ export default {
   border-bottom-left-radius: 15px;
   width: 300px;
   height: 273px;
+}
+.hotel-img-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  width: 300px;
+  height: 273px;
+  background-color: #666; /* 회색 배경 */
+  color: #303030;
+  font-size: 18px;
+  font-weight: bold;
 }
 .hotel-img-count {
   display: flex;
