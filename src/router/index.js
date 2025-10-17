@@ -28,7 +28,7 @@ const router = createRouter({
         { path: '/hotelsearchpage', name: 'hotelsearchpage', component: HotelSearchPage },
         { path: '/headercomponent', name: 'headercomponent', component: HeaderComponent },
         { path: '/FooterComponent', name: 'FooterComponent', component: FooterComponent },
-        { path: '/hoteldetail', name: 'hoteldetailpage', component: HotelDetailPage },
+        { path: '/hoteldetailpage', name: 'hoteldetailpage', component: HotelDetailPage }, //path 수정하지 말아주세요
         { path: '/ProfileComponent', name: 'ProfileComponent', component: ProfileComponent },
         { path: '/paymentpage', name: 'paymentpage', component: PaymentPage },
         { path: '/favoritespage', name: 'favoritespage', component: FavoritesPage },

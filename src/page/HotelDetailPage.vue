@@ -41,6 +41,13 @@ export default {
       // Vue CLI 환경에서 process.env.VUE_APP_API_URL 사용
       const base = process.env.VUE_APP_API_URL || '';
       return `${base}${url}`;
+    },
+    scrollToTarget() {
+      // ref로 연결된 요소를 찾아서 scrollIntoView 메소드 호출
+      this.$refs.targetElement.scrollIntoView({
+        behavior: 'smooth', // 부드러운 스크롤
+        block: 'center'      // 요소를 화면 상단에 맞춤
+      });
     }
   }
 };
@@ -122,7 +129,7 @@ export default {
             </button>
           </div>
           <div class="hoteldetail-book">
-            <button id="hoteldetail-book-btn">Book now</button>
+            <button id="hoteldetail-book-btn" @click="scrollToTarget">Book now</button>
           </div>
         </div>
       </div>
@@ -130,32 +137,43 @@ export default {
 
     <!--호텔 이미지-->
     <div class="hotel-detail-img">
-      <!-- 이미지가 있을 때 -->
-      <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls.length">
-        <!-- 메인 이미지 (첫번째) -->
-        <div class="hoteldetail-img-main">
-          <img :src="getFullImageUrl(hotelInfo.imageUrls[0])" :alt="hotelInfo.name + ' main image'" />
-        </div>
-
-        <!-- 나머지 썸네일들 -->
-        <div class="hoteldetail-imgs" v-if="hotelInfo.imageUrls.length > 1">
-          <div
-            v-for="(url, index) in hotelInfo.imageUrls.slice(1)"
-            :key="index"
-            class="hoteldetail-img-thumb"
-          >
-            <img :src="getFullImageUrl(url)" :alt="hotelInfo.name + ' image ' + (index+2)" />
+      <!-- 메인(첫 번째) 이미지 -->
+      <div class="hoteldetail-img-main">
+        <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[0]">
+          <img
+            :src="getFullImageUrl(hotelInfo.imageUrls[0])"
+            :alt="hotelInfo.name + ' main image'"
+          />
+        </template>
+        <template v-else>
+          <div class="no-image-slot main">
+            <span>이미지가 없습니다</span>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
 
-      <!-- 이미지가 없을 때 -->
-      <template v-else>
-        <div class="no-image-placeholder">
-          <span>이미지가 없습니다</span>
+      <!-- 나머지 4개 썸네일 -->
+      <div class="hoteldetail-imgs">
+        <div
+          v-for="index in 4"
+          :key="index"
+          class="hoteldetail-img-thumb"
+        >
+          <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[index]">
+            <img
+              :src="getFullImageUrl(hotelInfo.imageUrls[index])"
+              :alt="hotelInfo.name + ' image ' + (index+1)"
+            />
+          </template>
+          <template v-else>
+            <div class="no-image-slot">
+              <span>이미지가 없습니다</span>
+            </div>
+          </template>
         </div>
-      </template>
+      </div>
     </div>
+
 
     <!--호텔 개요-->
     <div class="hotel-overview">
@@ -216,7 +234,7 @@ export default {
       </div>
     </div>
     <!--호텔 잔여 객실-->
-    <div class="hotel-leftrooms">
+    <div class="hotel-leftrooms" ref="targetElement">
       <div class="hotel-leftrooms-title">
         <h3>잔여 객실</h3>
       </div>
@@ -654,22 +672,49 @@ export default {
   padding-bottom: 70px;
   border-bottom: #d9d9d9 solid 1px;
 }
+
+/* 메인 이미지 */
 .hoteldetail-img-main img {
   width: 610px;
   height: 550px;
   object-fit: cover;
   border-radius: 10px;
 }
+
+/* 썸네일 그룹 */
 .hoteldetail-imgs {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 10px;
 }
+
+/* 썸네일 이미지 */
 .hoteldetail-img-thumb img {
   width: 300px;
   height: 270px;
   object-fit: cover;
   border-radius: 10px;
+}
+
+/* “이미지가 없습니다” 회색 박스 */
+.no-image-slot {
+  background-color: #d9d9d9;
+  color: #555;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 270px;
+}
+
+/* 메인 이미지가 비었을 때 회색 박스 */
+.no-image-slot.main {
+  width: 610px;
+  height: 550px;
 }
 .hoteldetail-price {
   font-size: 20px;
@@ -746,17 +791,5 @@ export default {
 }
 .hd-city {
   color: #ff8682;
-}
-.no-image-placeholder {
-  width: 100%;
-  height: 400px;
-  background-color: #d9d9d9;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #555;
-  font-size: 18px;
-  font-weight: bold;
 }
 </style>
