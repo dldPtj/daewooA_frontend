@@ -2,14 +2,15 @@
 import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import aTeamApi from '@/util/axios';
+import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
 
 export default {
   name: 'HotelDetailPage',
-  components: { HeaderComponent, FooterComponent },
+  components: { LeftRoomLists, HeaderComponent, FooterComponent },
   data() {
     return {
       hotelInfo: {},
-      favorite: false
+      favorite: false,
     };
   },
   async mounted() {
@@ -42,17 +43,22 @@ export default {
       const base = process.env.VUE_APP_API_URL || '';
       return `${base}${url}`;
     },
-    scrollToTarget() {
+    scrollToRooms() {
       // ref로 연결된 요소를 찾아서 scrollIntoView 메소드 호출
-      this.$refs.targetElement.scrollIntoView({
-        behavior: 'smooth', // 부드러운 스크롤
-        block: 'center'      // 요소를 화면 상단에 맞춤
+      this.$refs.hotelrooms.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
       });
-    }
-  }
+    },
+    scrollToReviews() {
+      this.$refs.reviews.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    },
+  },
 };
 </script>
-
 
 <template>
   <div class="hoteldetail-page">
@@ -91,7 +97,7 @@ export default {
         </div>
 
         <!--호텔 리뷰 평점 및 개수-->
-        <div class="hoteldetail-rating-count">
+        <div class="hoteldetail-rating-count" @click="scrollToReviews">
           <!--호텔 리뷰 평점-->
           <div class="hotel-review-avg">
             <span id="review-rating">{{ hotelInfo.rating }}</span>
@@ -117,19 +123,23 @@ export default {
         <div class="hoteldetail-btns">
           <div class="hoteldetail-heart">
             <button id="hoteldetail-favorite-btn" @click="togglefavorites()">
-              <i class='bxr' :class="{
-              'bx-heart': !favorite,
-              'bx-heart-square': favorite
-            }" :style="{ 'font-size': favorite ? '60px' : '30px', 'color': '#8ae6b2' }"  ></i>
+              <i
+                class="bxr"
+                :class="{
+                  'bx-heart': !favorite,
+                  'bx-heart-square': favorite,
+                }"
+                :style="{ 'font-size': favorite ? '60px' : '30px', color: '#8ae6b2' }"
+              ></i>
             </button>
           </div>
           <div class="hoteldetail-share">
             <button id="hoteldetail-share-btn">
-              <i class='bx  bx-share'  style='font-size: 25px'></i>
+              <i class="bx bx-share" style="font-size: 25px"></i>
             </button>
           </div>
           <div class="hoteldetail-book">
-            <button id="hoteldetail-book-btn" @click="scrollToTarget">Book now</button>
+            <button id="hoteldetail-book-btn" @click="scrollToRooms">Book now</button>
           </div>
         </div>
       </div>
@@ -154,15 +164,11 @@ export default {
 
       <!-- 나머지 4개 썸네일 -->
       <div class="hoteldetail-imgs">
-        <div
-          v-for="index in 4"
-          :key="index"
-          class="hoteldetail-img-thumb"
-        >
+        <div v-for="index in 4" :key="index" class="hoteldetail-img-thumb">
           <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[index]">
             <img
               :src="getFullImageUrl(hotelInfo.imageUrls[index])"
-              :alt="hotelInfo.name + ' image ' + (index+1)"
+              :alt="hotelInfo.name + ' image ' + (index + 1)"
             />
           </template>
           <template v-else>
@@ -173,7 +179,6 @@ export default {
         </div>
       </div>
     </div>
-
 
     <!--호텔 개요-->
     <div class="hotel-overview">
@@ -234,107 +239,12 @@ export default {
       </div>
     </div>
     <!--호텔 잔여 객실-->
-    <div class="hotel-leftrooms" ref="targetElement">
+    <div class="hotel-leftrooms" ref="hotelrooms">
       <div class="hotel-leftrooms-title">
         <h3>잔여 객실</h3>
       </div>
       <!--잔여 객실 리스트-->
-
-      <!--첫번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-1.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view"></span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn" @click="$router.push('/paymentpage')">Book now</button>
-          </div>
-        </div>
-      </div>
-
-      <!--두번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-2.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn">Book now</button>
-          </div>
-        </div>
-      </div>
-
-      <!--세번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-3.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn">Book now</button>
-          </div>
-        </div>
-      </div>
-
-      <!--네번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-4.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn">Book now</button>
-          </div>
-        </div>
-      </div>
+      <LeftRoomLists v-for="room in hotelInfo.rooms" :key="room.id" :roomInfo="room"/>
     </div>
 
     <!--호텔 위치 지도-->
@@ -380,7 +290,7 @@ export default {
       </div>
     </div>
     <!--호텔 리뷰-->
-    <div class="hotel-reviews">
+    <div class="hotel-reviews" ref="reviews">
       <div class="hotel-reviews-top">
         <div class="hotel-reviews-title">
           <h3>Reviews</h3>
@@ -393,14 +303,16 @@ export default {
       <div class="reviews-rating-avg">
         <!--리뷰 평점-->
         <div class="reviews-rating">
-          <span id="reviews-rating">4.2</span>
+          <span id="reviews-rating">{{ hotelInfo.rating }}</span>
         </div>
         <!--리뷰 만족도와 개수-->
         <div class="satis-count">
           <div class="reviews-satisfaction">
             <span id="satisfaction">Very Good</span>
           </div>
-          <div class="reviews-count"><span id="review-count">371</span>verified reviews</div>
+          <div class="reviews-count">
+            <span id="review-count">{{ hotelInfo.reviewCount }}&nbsp;</span>verified reviews
+          </div>
         </div>
       </div>
 
@@ -523,6 +435,9 @@ export default {
   width: 130px;
   height: 50px;
 }
+#write-review-btn:hover {
+  background-color: #6acd97;
+}
 .hotel-reviews-top {
   display: flex;
   justify-content: space-between;
@@ -583,38 +498,14 @@ export default {
   width: 180px;
   height: 40px;
 }
+#googlemaps-btn:hover {
+  background-color: #6acd97;
+}
 .hotel-map-top {
   display: flex;
   justify-content: space-between;
   margin: 40px auto;
   width: 1240px;
-}
-#room-book-btn {
-  border: #8ae6b2 solid 1px;
-  border-radius: 5px;
-  background-color: #8ae6b2;
-  width: 120px;
-  height: 40px;
-}
-.room-book {
-  margin: 0 0 0 50px;
-}
-.room-price {
-  font-size: 30px;
-  margin: auto;
-}
-.leftroom-type {
-  margin: auto 15px;
-}
-.leftroom {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px auto;
-  padding: 10px;
-  border-bottom: #d9d9d9 solid 1px;
-}
-.leftroom-sec {
-  display: flex;
 }
 .hotel-leftrooms-title {
   margin: 30px 0 20px 10px;
@@ -729,6 +620,9 @@ export default {
   width: 150px;
   height: 45px;
 }
+#hoteldetail-book-btn:hover {
+  background-color: #6acd97;
+}
 #hoteldetail-share-btn {
   display: flex;
   align-items: center;
@@ -739,6 +633,9 @@ export default {
   width: 45px;
   height: 45px;
 }
+#hoteldetail-share-btn:hover {
+  background-color: #d3d3d3;
+}
 #hoteldetail-favorite-btn {
   display: flex;
   align-items: center;
@@ -748,6 +645,9 @@ export default {
   border-radius: 5px;
   width: 45px;
   height: 45px;
+}
+#hoteldetail-favorite-btn:hover {
+  background-color: #d3d3d3;
 }
 .hoteldetail-btns {
   justify-content: center;
