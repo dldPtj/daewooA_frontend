@@ -6,17 +6,22 @@ export default{
   components: {HeaderComponent},
   data(){
     return{
+      fileModal: false,
       profileModal : false,
       profileName: {},
       profileEmail: {},
       profileImg: {},
       backgroundImg: {},
       uploadFileImg: null,
+      uploadProfileFileImg: null,
     };
   },
   methods: {
     setFile(e){
         this.uploadFileImg = e.target.files[0];
+    },
+    setProfileFile(e){
+      this.uploadProfileFileImg = e.target.files[0];
     },
     async uploadFile(){
       const formData = new FormData();
@@ -36,19 +41,61 @@ export default{
       }catch (e){
         console.error(e);
       }
+    },
+
+    async uploadProfileFile(){
+      const formData = new FormData();
+      formData.append("image", this.uploadProfileFileImg);
+      try{
+        const res = await aTeamApi.put('/api/users/me/profile-image',formData,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }).then(()=>{
+          alert("이미지 업로드 성공");
+          window.location.reload();
+        });
+        console.log(res.data);
+
+      }catch (e){
+        console.error(e);
+      }
+    },
+    profileModalOpen(e) {
+      if(e === this.a){
+        this.profileModal = !this.profileModal;
+      }else if(e === this.b){
+        this.fileModal = !this.fileModal;
+      }
 
     },
-    profileModalOpen() {
-      this.profileModal = !this.profileModal
+    fileModalOpen(e) {
+     if(e === this.b){
+        this.fileModal = !this.fileModal;
+      }
+
     },
-    profileModalClose() {
-      if (this.profileModal === true) {
+    profileModalClose(e) {
+      if (this.profileModal === true || e === this.a) {
         this.profileModal = false;
       }
     },
+    fileModalClose(e) {
+      if (this.fileModal === true || e === this.a) {
+        this.fileModal = false;
+      }
+    }
   },
   watch: {
     profileModal: function (val) {
+      if (val) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    },
+    fileModal: function (val) {
       if (val) {
         document.body.style.overflow = 'hidden';
       } else {
@@ -65,7 +112,6 @@ export default{
     this.profileEmail = data.content.email;
     this.profileImg = data.content.imageUrl;
     this.backgroundImg = data.content.backGroundImageUrl;
-
   },
   computed: {
     accountImageUrl() {
@@ -78,8 +124,8 @@ export default{
       const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
       return this.backgroundImg
           ? `${baseUrl}${this.backgroundImg}`
-          : "../../assets/AcoountCoverDefault.jpg";
-    }
+          : "../../assets/asseAcoountCoverDefaultts/.jpg";
+    },
   },
 
 }
@@ -90,14 +136,14 @@ export default{
   <HeaderComponent/>
   <div id ="accountImgMain">
     <img :src="accountBackImgUrl" id="CoverImg">
-    <button type="button" id = "accountImgUpload" @click="profileModalOpen"><img src="../../assets/AcoountUploadImgIcon.png"><a>upload new cover</a></button>
+    <button type="button" id = "accountImgUpload" @click="fileModalOpen()"><img src="../../assets/AcoountUploadImgIcon.png"><a>upload new cover</a></button>
 
   </div>
   <div id = "accountProfile">
     <div id = "accountProfileMain">
       <div id="AccountProfileImg">
         <img :src="accountImageUrl" class="accountImgSize">
-        <div id="ProfileImgModify"><img src="../../assets/Pencil.png"></div>
+        <button id="ProfileImgModify" @click="profileModalOpen()"><img src="../../assets/Pencil.png"></button>
       </div>
       <div id ="AccountProfileMainT">
         <h3>{{ profileName }}</h3>
@@ -105,12 +151,13 @@ export default{
       </div>
     </div>
   </div>
-  <div class="AccountModalWrap" v-show="profileModal">
+  <form @submit.prevent="uploadFile">
+  <div class="AccountModalWrap" v-show="fileModal">
     <div class="ACModalContainer">
       <!--      취소 버튼-->
-      <img src="../../assets/ModalClose.png" alt="취소 사진" @click="profileModalClose" class="ModalCloseBtn">
-      <h1>파일 업로드</h1>
-      <form @submit.prevent="uploadFile">
+      <img src="../../assets/ModalClose.png" alt="취소 사진" @click="fileModalClose()" class="ModalCloseBtn">
+      <h1>배경 이미지 업로드</h1>
+
         <div>
           <fieldset class="fieldModal">
            <legend class="LegendLogin">파 일</legend>
@@ -120,10 +167,31 @@ export default{
         </div>
         <!--      클릭시 수정 완료-->
         <button type="submit" class="ModalBtnStyle" >업로드</button>
-      </form>
+
     </div>
   </div>
+  </form>
 
+  <form @submit.prevent="uploadProfileFile">
+    <div class="AccountModalWrap" v-show="profileModal">
+      <div class="ACModalContainer">
+        <!--      취소 버튼-->
+        <img src="../../assets/ModalClose.png" alt="취소 사진" @click="profileModalClose()" class="ModalCloseBtn">
+        <h1>프로필 업로드</h1>
+
+        <div>
+          <fieldset class="fieldModal">
+            <legend class="LegendLogin">파 일</legend>
+            <!--          파일 넣는 곳-->
+            <input type="file"  class="LTextBox" @change="setProfileFile">
+          </fieldset>
+        </div>
+        <!--      클릭시 수정 완료-->
+        <button type="submit" class="ModalBtnStyle" >업로드</button>
+
+      </div>
+    </div>
+  </form>
 </template>
 
 <style >
@@ -145,7 +213,7 @@ export default{
 
 #CoverImg{
   display: flex;
-  object-fit: cover;
+  object-fit: fill;
   width: 100%;
   height: 350px;
 }
@@ -186,6 +254,7 @@ export default{
   margin: -39px 0 0 111px;
   z-index: 3;
   position: absolute;
+  border: none;
 }
 #ProfileImgModify:hover{
   background-color: #9e9a9a;
