@@ -133,7 +133,7 @@ export default {
         <div class="tour-price">
           From
           <br />
-          <h2>$700</h2>
+          <h2>₩{{ tours.price }}</h2>
         </div>
       </div>
       <h5>
@@ -303,6 +303,9 @@ export default {
 }
 .flight-book-btn {
   margin-top: 140px;
+}
+#bookflight:hover {
+  background-color: #d3d3d3;
 }
 #bookflight {
   display: flex;
