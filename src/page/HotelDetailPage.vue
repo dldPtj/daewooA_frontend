@@ -2,14 +2,15 @@
 import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import aTeamApi from '@/util/axios';
+import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
 
 export default {
   name: 'HotelDetailPage',
-  components: { HeaderComponent, FooterComponent },
+  components: { LeftRoomLists, HeaderComponent, FooterComponent },
   data() {
     return {
       hotelInfo: {},
-      favorite: false
+      favorite: false,
     };
   },
   async mounted() {
@@ -41,11 +42,23 @@ export default {
       // Vue CLI 환경에서 process.env.VUE_APP_API_URL 사용
       const base = process.env.VUE_APP_API_URL || '';
       return `${base}${url}`;
-    }
-  }
+    },
+    scrollToRooms() {
+      // ref로 연결된 요소를 찾아서 scrollIntoView 메소드 호출
+      this.$refs.hotelrooms.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    },
+    scrollToReviews() {
+      this.$refs.reviews.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    },
+  },
 };
 </script>
-
 
 <template>
   <div class="hoteldetail-page">
@@ -84,7 +97,7 @@ export default {
         </div>
 
         <!--호텔 리뷰 평점 및 개수-->
-        <div class="hoteldetail-rating-count">
+        <div class="hoteldetail-rating-count" @click="scrollToReviews">
           <!--호텔 리뷰 평점-->
           <div class="hotel-review-avg">
             <span id="review-rating">{{ hotelInfo.rating }}</span>
@@ -110,19 +123,23 @@ export default {
         <div class="hoteldetail-btns">
           <div class="hoteldetail-heart">
             <button id="hoteldetail-favorite-btn" @click="togglefavorites()">
-              <i class='bxr' :class="{
-              'bx-heart': !favorite,
-              'bx-heart-square': favorite
-            }" :style="{ 'font-size': favorite ? '60px' : '30px', 'color': '#8ae6b2' }"  ></i>
+              <i
+                class="bxr"
+                :class="{
+                  'bx-heart': !favorite,
+                  'bx-heart-square': favorite,
+                }"
+                :style="{ 'font-size': favorite ? '60px' : '30px', color: '#8ae6b2' }"
+              ></i>
             </button>
           </div>
           <div class="hoteldetail-share">
             <button id="hoteldetail-share-btn">
-              <i class='bx  bx-share'  style='font-size: 25px'></i>
+              <i class="bx bx-share" style="font-size: 25px"></i>
             </button>
           </div>
           <div class="hoteldetail-book">
-            <button id="hoteldetail-book-btn">Book now</button>
+            <button id="hoteldetail-book-btn" @click="scrollToRooms">Book now</button>
           </div>
         </div>
       </div>
@@ -130,31 +147,37 @@ export default {
 
     <!--호텔 이미지-->
     <div class="hotel-detail-img">
-      <!-- 이미지가 있을 때 -->
-      <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls.length">
-        <!-- 메인 이미지 (첫번째) -->
-        <div class="hoteldetail-img-main">
-          <img :src="getFullImageUrl(hotelInfo.imageUrls[0])" :alt="hotelInfo.name + ' main image'" />
-        </div>
-
-        <!-- 나머지 썸네일들 -->
-        <div class="hoteldetail-imgs" v-if="hotelInfo.imageUrls.length > 1">
-          <div
-            v-for="(url, index) in hotelInfo.imageUrls.slice(1)"
-            :key="index"
-            class="hoteldetail-img-thumb"
-          >
-            <img :src="getFullImageUrl(url)" :alt="hotelInfo.name + ' image ' + (index+2)" />
+      <!-- 메인(첫 번째) 이미지 -->
+      <div class="hoteldetail-img-main">
+        <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[0]">
+          <img
+            :src="getFullImageUrl(hotelInfo.imageUrls[0])"
+            :alt="hotelInfo.name + ' main image'"
+          />
+        </template>
+        <template v-else>
+          <div class="no-image-slot main">
+            <span>이미지가 없습니다</span>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
 
-      <!-- 이미지가 없을 때 -->
-      <template v-else>
-        <div class="no-image-placeholder">
-          <span>이미지가 없습니다</span>
+      <!-- 나머지 4개 썸네일 -->
+      <div class="hoteldetail-imgs">
+        <div v-for="index in 4" :key="index" class="hoteldetail-img-thumb">
+          <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[index]">
+            <img
+              :src="getFullImageUrl(hotelInfo.imageUrls[index])"
+              :alt="hotelInfo.name + ' image ' + (index + 1)"
+            />
+          </template>
+          <template v-else>
+            <div class="no-image-slot">
+              <span>이미지가 없습니다</span>
+            </div>
+          </template>
         </div>
-      </template>
+      </div>
     </div>
 
     <!--호텔 개요-->
@@ -216,107 +239,12 @@ export default {
       </div>
     </div>
     <!--호텔 잔여 객실-->
-    <div class="hotel-leftrooms">
+    <div class="hotel-leftrooms" ref="hotelrooms">
       <div class="hotel-leftrooms-title">
         <h3>잔여 객실</h3>
       </div>
       <!--잔여 객실 리스트-->
-
-      <!--첫번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-1.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view"></span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn" @click="$router.push('/paymentpage')">Book now</button>
-          </div>
-        </div>
-      </div>
-
-      <!--두번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-2.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn">Book now</button>
-          </div>
-        </div>
-      </div>
-
-      <!--세번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-3.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn">Book now</button>
-          </div>
-        </div>
-      </div>
-
-      <!--네번째 객실-->
-      <div class="leftroom">
-        <!--객실 리스트 왼쪽 편(객실이미지, 객실타입 및 침대개수)-->
-        <div class="leftroom-sec">
-          <!--객실 이미지-->
-          <div class="leftroom-img">
-            <img src="../assets/leftroom-4.png" />
-          </div>
-          <!--객실 타입-->
-          <div class="leftroom-type">
-            <span id="roomtype">Superior room</span> - <span id="room-view">City view</span> -
-            <span id="bed-counts">1 double bed or 2 twin beds</span>
-          </div>
-        </div>
-
-        <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
-        <div class="leftroom-sec">
-          <div class="room-price">₩<span id="room-price">240,000</span><small>/night</small></div>
-          <div class="room-book">
-            <button id="room-book-btn">Book now</button>
-          </div>
-        </div>
-      </div>
+      <LeftRoomLists v-for="room in hotelInfo.rooms" :key="room.id" :roomInfo="room"/>
     </div>
 
     <!--호텔 위치 지도-->
@@ -362,7 +290,7 @@ export default {
       </div>
     </div>
     <!--호텔 리뷰-->
-    <div class="hotel-reviews">
+    <div class="hotel-reviews" ref="reviews">
       <div class="hotel-reviews-top">
         <div class="hotel-reviews-title">
           <h3>Reviews</h3>
@@ -375,14 +303,16 @@ export default {
       <div class="reviews-rating-avg">
         <!--리뷰 평점-->
         <div class="reviews-rating">
-          <span id="reviews-rating">4.2</span>
+          <span id="reviews-rating">{{ hotelInfo.rating }}</span>
         </div>
         <!--리뷰 만족도와 개수-->
         <div class="satis-count">
           <div class="reviews-satisfaction">
             <span id="satisfaction">Very Good</span>
           </div>
-          <div class="reviews-count"><span id="review-count">371</span>verified reviews</div>
+          <div class="reviews-count">
+            <span id="review-count">{{ hotelInfo.reviewCount }}&nbsp;</span>verified reviews
+          </div>
         </div>
       </div>
 
@@ -505,6 +435,9 @@ export default {
   width: 130px;
   height: 50px;
 }
+#write-review-btn:hover {
+  background-color: #6acd97;
+}
 .hotel-reviews-top {
   display: flex;
   justify-content: space-between;
@@ -565,38 +498,14 @@ export default {
   width: 180px;
   height: 40px;
 }
+#googlemaps-btn:hover {
+  background-color: #6acd97;
+}
 .hotel-map-top {
   display: flex;
   justify-content: space-between;
   margin: 40px auto;
   width: 1240px;
-}
-#room-book-btn {
-  border: #8ae6b2 solid 1px;
-  border-radius: 5px;
-  background-color: #8ae6b2;
-  width: 120px;
-  height: 40px;
-}
-.room-book {
-  margin: 0 0 0 50px;
-}
-.room-price {
-  font-size: 30px;
-  margin: auto;
-}
-.leftroom-type {
-  margin: auto 15px;
-}
-.leftroom {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px auto;
-  padding: 10px;
-  border-bottom: #d9d9d9 solid 1px;
-}
-.leftroom-sec {
-  display: flex;
 }
 .hotel-leftrooms-title {
   margin: 30px 0 20px 10px;
@@ -654,22 +563,49 @@ export default {
   padding-bottom: 70px;
   border-bottom: #d9d9d9 solid 1px;
 }
+
+/* 메인 이미지 */
 .hoteldetail-img-main img {
   width: 610px;
   height: 550px;
   object-fit: cover;
   border-radius: 10px;
 }
+
+/* 썸네일 그룹 */
 .hoteldetail-imgs {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 10px;
 }
+
+/* 썸네일 이미지 */
 .hoteldetail-img-thumb img {
   width: 300px;
   height: 270px;
   object-fit: cover;
   border-radius: 10px;
+}
+
+/* “이미지가 없습니다” 회색 박스 */
+.no-image-slot {
+  background-color: #d9d9d9;
+  color: #555;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 270px;
+}
+
+/* 메인 이미지가 비었을 때 회색 박스 */
+.no-image-slot.main {
+  width: 610px;
+  height: 550px;
 }
 .hoteldetail-price {
   font-size: 20px;
@@ -684,6 +620,9 @@ export default {
   width: 150px;
   height: 45px;
 }
+#hoteldetail-book-btn:hover {
+  background-color: #6acd97;
+}
 #hoteldetail-share-btn {
   display: flex;
   align-items: center;
@@ -694,6 +633,9 @@ export default {
   width: 45px;
   height: 45px;
 }
+#hoteldetail-share-btn:hover {
+  background-color: #d3d3d3;
+}
 #hoteldetail-favorite-btn {
   display: flex;
   align-items: center;
@@ -703,6 +645,9 @@ export default {
   border-radius: 5px;
   width: 45px;
   height: 45px;
+}
+#hoteldetail-favorite-btn:hover {
+  background-color: #d3d3d3;
 }
 .hoteldetail-btns {
   justify-content: center;
@@ -746,17 +691,5 @@ export default {
 }
 .hd-city {
   color: #ff8682;
-}
-.no-image-placeholder {
-  width: 100%;
-  height: 400px;
-  background-color: #d9d9d9;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #555;
-  font-size: 18px;
-  font-weight: bold;
 }
 </style>

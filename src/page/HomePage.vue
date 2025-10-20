@@ -133,11 +133,11 @@ export default {
         <div class="tour-price">
           From
           <br />
-          <h2>$700</h2>
+          <h2>₩{{ tours.price }}</h2>
         </div>
       </div>
       <h5>
-        오래된 시간의 숨결이 머무는 도시, 말라카(Melaka).<br>말레이시아의 작은 보석 같은 이 도시는 동서양 문화가 만나는 관문이자, 세계문화유산으로 지정된 매혹적인 여행지입니다. 단 하루만 머물러도 그 깊은 매력에 빠지고, 며칠을 살아보면 다시 찾고 싶은 마음이 샘솟는 곳. 이제 저희 여행사가 준비한 특별한 말라카 투어상품과 함께 그 여정을 시작해 보세요.
+        {{ tours.description }}
       </h5>
       <div class="flight-book-btn">
         <button id="bookflight">Book Flight</button>
@@ -278,6 +278,9 @@ export default {
   margin: auto;
 }
 .tour-description {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   margin: 0 0 0 50px;
   border: #8ae6b2 solid 1px;
   background-color: #8ae6b2;
@@ -286,17 +289,23 @@ export default {
   max-width: 530px;
   text-align: left;
 }
+.tour-top-items {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .tour-price {
   border-radius: 5px;
   border: #8ae6b2 solid 1px;
   background-color: white;
   text-align: center;
-  margin-left: 420px;
-  margin-top: -100px;
   padding: 5px;
 }
 .flight-book-btn {
-  margin-top: 200px;
+  margin-top: 140px;
+}
+#bookflight:hover {
+  background-color: #d3d3d3;
 }
 #bookflight {
   display: flex;
