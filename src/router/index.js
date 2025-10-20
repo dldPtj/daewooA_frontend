@@ -21,6 +21,7 @@ import ReservationComponent from '../common/components/ReservationComponent.vue'
 import AddCardComponent from "@/common/components/AddCardComponent.vue";
 import logoutHeaderComponent from "@/common/components/LogoutHeaderComponent.vue";
 import LoginHeaderComponent from "@/common/components/LoginHeaderComponent.vue";
+import LeavePhoneNum from  "@/common/components/LeavePhoneNum.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -46,6 +47,7 @@ const router = createRouter({
         { path: '/addCardComponent', name: 'addCardComponent', component: AddCardComponent },
         { path: '/logoutHeaderComponent', name: 'logoutHeaderComponent', component: logoutHeaderComponent },
         { path: '/loginHeaderComponent', name: 'loginHeaderComponent', component: LoginHeaderComponent },
+        { path: '/leavePhoneNum', name: 'leavePhoneNum', component: LeavePhoneNum },
 
     ],
 });

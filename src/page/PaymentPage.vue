@@ -1,11 +1,12 @@
 <script>
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
-
+import LeavePhoneNum from "@/common/components/LeavePhoneNum.vue"
 export default {
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
+    LeavePhoneNum: LeavePhoneNum,
   }
 }
 </script>
@@ -51,18 +52,7 @@ export default {
       </div>
 <!--      전화번호 입력후 버튼을 누르면 결제수단 선택가능한 부분의 뒷배경-->
       <div id="pUnderContainer">
-        <p id="pUnderTitle">Login or Sign up to book</p>
-        <input type="text" id="pPhonNumInput" placeholder="Phone Number">
-        <p id="pUnderText">예약확인 문자/전화를 위해 전화번호를 남겨주세요</p>
-        <button id="pContinueBtn">Continue</button>
-        <div class="hr-sect">
-          Or
-        </div>
-        <div id ="PaymentIconBoxes">
-          <button type="button" id ="fBtn" class="pBtnGroup"><img src="../assets/facebookLogin.png"></button>
-          <button type="button" id = "GBtn" class="pBtnGroup"><img src="../assets/googleLogin.png"></button>
-          <button type="button" id = "ABtn" class="pBtnGroup"><img src="../assets/appleLogin.png"></button>
-        </div>
+        <LeavePhoneNum/>
         <button type="button" id = "EBtn" class="pBtnGroupEmail"><img src="../assets/icon_email.png"> <a>Continue with email</a></button>
       </div>
     </div>
