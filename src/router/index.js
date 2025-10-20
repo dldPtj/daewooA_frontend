@@ -19,7 +19,7 @@ import IdentificationPage from '../page/IdentificationPage.vue';
 import Resetpw from '../page//ResetPw.vue';
 import ReservationComponent from '../common/components/ReservationComponent.vue'
 import AddCardComponent from "@/common/components/AddCardComponent.vue";
-
+import logoutHeaderComponent from "@/common/components/LogoutHeaderComponent.vue";
 const router = createRouter({
     history: createWebHistory(),
 
@@ -42,6 +42,7 @@ const router = createRouter({
         { path: '/resetpw', name: 'resetpw', component: Resetpw },
         { path: '/reservationComponent', name: 'reservationComponent', component: ReservationComponent },
         { path: '/addCardComponent', name: 'addCardComponent', component: AddCardComponent },
+        { path: '/logoutHeaderComponent', name: 'logoutHeaderComponent', component: logoutHeaderComponent },
 
     ],
 });

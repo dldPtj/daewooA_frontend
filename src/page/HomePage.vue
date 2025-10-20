@@ -2,21 +2,28 @@
 import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import CityLists from '@/common/components/CityLists.vue';
-import { aTeamApi } from '@/util/axios';
+import {aTeamApi} from '@/util/axios';
+import logoutHeaderComponent from "@/common/components/LogoutHeaderComponent.vue";
 
 export default {
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     CityLists: CityLists,
+    logoutHeaderComponent: logoutHeaderComponent,
   },
   name: 'HomePage',
   data() {
     return {
       cities: [],
       tours: [],
+      token: localStorage.getItem('token'),
+
     };
   },
+
+
+
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
     const resultData = result.data.content;
@@ -27,17 +34,29 @@ export default {
     const mainData = mainRes.data.content || mainRes.data;
     console.log('main data >>> ', mainData);
     this.tours = mainData || [];
+
+    window.addEventListener("token-changed", this.updateToken);
   },
+  beforeUnmount() {
+    window.removeEventListener("token-changed", this.updateToken);
+  },
+  methods:{
+    updateToken(){
+      this.token = localStorage.getItem("token");
+    }
+  }
 };
 </script>
 
 <template>
   <!--HeaderComponent 부분-->
-  <HeaderComponent />
+
+    <HeaderComponent v-if="token"/>
+    <logoutHeaderComponent v-else/>
 
   <!--메인 사진-->
   <div class="main-photo">
-    <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진" />
+    <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진"/>
   </div>
 
   <!--메인화면 부분-->
@@ -97,7 +116,7 @@ export default {
   <div class="city-selection-bar">
     <div class="city-selection-text">
       <h2>여행에 빠지다</h2>
-      <br />
+      <br/>
       <h4>특가상품으로 진행하는 여행을 예약해보세요</h4>
     </div>
     <div class="city-see-all">
@@ -106,14 +125,14 @@ export default {
   </div>
 
   <div class="city-selection-imgs">
-    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city" />
+    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city"/>
   </div>
 
   <!--투어 선택 부분-->
   <div class="tour-selection-bar">
     <div class="tour-selection-text">
       <h2>여행 더보기</h2>
-      <br />
+      <br/>
       <h4>
         Going somewhere to celebrate this season? Whether you’re going home or somewhere to roam,
         we’ve got the travel tools to get you to your destination.
@@ -132,26 +151,27 @@ export default {
         </h1>
         <div class="tour-price">
           From
-          <br />
+          <br/>
           <h2>$700</h2>
         </div>
       </div>
       <h5>
-        오래된 시간의 숨결이 머무는 도시, 말라카(Melaka).<br>말레이시아의 작은 보석 같은 이 도시는 동서양 문화가 만나는 관문이자, 세계문화유산으로 지정된 매혹적인 여행지입니다. 단 하루만 머물러도 그 깊은 매력에 빠지고, 며칠을 살아보면 다시 찾고 싶은 마음이 샘솟는 곳. 이제 저희 여행사가 준비한 특별한 말라카 투어상품과 함께 그 여정을 시작해 보세요.
+        오래된 시간의 숨결이 머무는 도시, 말라카(Melaka).<br>말레이시아의 작은 보석 같은 이 도시는 동서양 문화가 만나는 관문이자, 세계문화유산으로 지정된 매혹적인 여행지입니다. 단 하루만 머물러도
+        그 깊은 매력에 빠지고, 며칠을 살아보면 다시 찾고 싶은 마음이 샘솟는 곳. 이제 저희 여행사가 준비한 특별한 말라카 투어상품과 함께 그 여정을 시작해 보세요.
       </h5>
       <div class="flight-book-btn">
         <button id="bookflight">Book Flight</button>
       </div>
     </div>
     <div class="tour-imgs">
-      <img src="../assets/melaka-tour1.png" />
-      <img src="../assets/melaka-tour2.png" />
-      <img src="../assets/melaka-tour3.png" />
-      <img src="../assets/melaka-tour4.png" />
+      <img src="../assets/melaka-tour1.png"/>
+      <img src="../assets/melaka-tour2.png"/>
+      <img src="../assets/melaka-tour3.png"/>
+      <img src="../assets/melaka-tour4.png"/>
     </div>
   </div>
 
-  <FooterComponent />
+  <FooterComponent/>
 </template>
 
 <style>
@@ -160,15 +180,18 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
+
 .search-bar:hover {
   border: #8ae6b2 solid 1px;
   box-shadow: 0px 0px 20px #8ae6b2;
 }
+
 .main-photo {
   display: flex;
   justify-content: space-around;
   margin-top: 50px;
 }
+
 .search-bar {
   display: flex;
   text-align: left;
@@ -185,11 +208,13 @@ export default {
   height: 150px;
   z-index: 2;
 }
+
 .search-box-text {
   margin-top: 20px;
   margin-left: 30px;
   font-size: 20px;
 }
+
 .home-enter-destination fieldset {
   align-items: center;
   border-radius: 5px;
@@ -197,15 +222,18 @@ export default {
   width: 400px;
   height: 60px;
 }
+
 .home-option-select {
   display: flex;
   align-items: center;
   margin: -5px 10px;
 }
+
 .home-search-input {
   margin: 10px;
   color: #9e9a9a;
 }
+
 .home-checkinout fieldset {
   display: flex;
   align-items: center;
@@ -214,11 +242,13 @@ export default {
   width: 200px;
   height: 60px;
 }
+
 .home-roomguests fieldset {
   border-radius: 5px;
   width: 300px;
   height: 60px;
 }
+
 .city-selection-bar {
   display: flex;
   justify-content: space-between;
@@ -232,6 +262,7 @@ export default {
   flex-direction: column;
   text-align: left;
 }
+
 .city-see-all-btn {
   border: #8ae6b2 solid 2px;
   border-radius: 8px;
@@ -239,9 +270,11 @@ export default {
   width: 70px;
   height: 45px;
 }
+
 .city-see-all-btn:hover {
   background-color: #8ae6b2;
 }
+
 .city-selection-imgs {
   display: flex;
   justify-content: center;
@@ -257,6 +290,7 @@ export default {
   width: 1350px;
   padding: 0 50px 0 50px;
 }
+
 .tour-selection-text {
   text-align: left;
   max-width: 1100px;
@@ -269,14 +303,17 @@ export default {
   width: 70px;
   height: 45px;
 }
+
 .tour-see-all-btn:hover {
   background-color: #8ae6b2;
 }
+
 .tour {
   display: flex;
   width: 1350px;
   margin: auto;
 }
+
 .tour-description {
   margin: 0 0 0 50px;
   border: #8ae6b2 solid 1px;
@@ -286,6 +323,7 @@ export default {
   max-width: 530px;
   text-align: left;
 }
+
 .tour-price {
   border-radius: 5px;
   border: #8ae6b2 solid 1px;
@@ -295,9 +333,11 @@ export default {
   margin-top: -100px;
   padding: 5px;
 }
+
 .flight-book-btn {
   margin-top: 200px;
 }
+
 #bookflight {
   display: flex;
   justify-content: center;

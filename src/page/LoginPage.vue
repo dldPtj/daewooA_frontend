@@ -38,9 +38,10 @@ export default {
       };
       await aTeamApi.post('/api/auth/login', loginObj).then(async (res) => {
         alert("로그인 성공");
-        await router.push("/");
         let token = res.data.content.accessToken;
         localStorage.setItem("token", token);
+        window.dispatchEvent(new Event("token-changed"));
+        await router.push("/");
       }).catch((error)=> {
         if (error.response?.status === 500) {
           alert("아이디와 비밀번호가 일치 하지 않습니다. 다시 로그인 해주세요.");
