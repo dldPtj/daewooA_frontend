@@ -52,8 +52,8 @@ export default {
       </div>
 <!--      전화번호 입력후 버튼을 누르면 결제수단 선택가능한 부분의 뒷배경-->
       <div id="pUnderContainer">
-        <LeavePhoneNum/>
-        <button type="button" id = "EBtn" class="pBtnGroupEmail"><img src="../assets/icon_email.png"> <a>Continue with email</a></button>
+        <LeavePhoneNum />
+
       </div>
     </div>
     <div id="paymentList">
