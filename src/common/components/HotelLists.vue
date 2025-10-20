@@ -216,6 +216,9 @@ export default {
   padding: 7px;
   font-size: 20px;
 }
+#hotel-liked-btn:hover {
+  background-color: #d3d3d3;
+}
 .hotel-view-place {
   display: flex;
 }
@@ -228,6 +231,9 @@ export default {
   text-align: center;
   margin: 0 0 0 10px;
   padding: 7px;
+}
+#view-place-btn:hover {
+  background-color: #6acd97;
 }
 .hotel-liked-view {
   display: flex;

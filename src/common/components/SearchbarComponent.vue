@@ -442,4 +442,7 @@ export default {
   width: 55px;
   height: 55px;
 }
+#hotel-search-btn:hover {
+  background-color: #6acd97;
+}
 </style>
