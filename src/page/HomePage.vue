@@ -28,6 +28,16 @@ export default {
     console.log('main data >>> ', mainData);
     this.tours = mainData || [];
   },
+  methods: {
+    getFullImageUrl(url) {
+      if (!url) return '';
+      // 이미 절대 URL이면 그대로 반환
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      // Vue CLI 환경에서 process.env.VUE_APP_API_URL 사용
+      const base = process.env.VUE_APP_API_URL || '';
+      return `${base}${url}`;
+    },
+  }
 };
 </script>
 
@@ -143,11 +153,21 @@ export default {
         <button id="bookflight">Book Flight</button>
       </div>
     </div>
-    <div class="tour-imgs">
-      <img src="../assets/melaka-tour1.png" />
-      <img src="../assets/melaka-tour2.png" />
-      <img src="../assets/melaka-tour3.png" />
-      <img src="../assets/melaka-tour4.png" />
+    <div class="tour-gallery">
+      <div v-for="index in 4" :key="index" class="tour-imgs">
+        <div v-if="tours.imageUrls && tours.imageUrls[index-1]" class="tour-image-container">
+          <img
+            :src="getFullImageUrl(tours.imageUrls[index-1])"
+            :alt="tours.name + ' image ' + (index + 1)"
+            class="tour-image-size"
+          />
+        </div>
+        <div v-else>
+          <div class="no-tour-image-slot">
+            <span>이미지가 없습니다</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -316,5 +336,41 @@ export default {
   border: none;
   width: 490px;
   height: 50px;
+}
+.tour-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-left: 30px;
+  max-width: 650px;
+}
+.tour-image-container {
+  border-radius: 15px;
+  width: 330px;
+  height: 200px;
+  overflow: hidden;
+}
+.tour-image-size {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: #8ae6b2 solid 2px;
+}
+.no-tour-image-slot {
+  background-color: #d9d9d9;
+  color: #555;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 330px;
+  height: 200px;
+}
+.no-tour-image-slot.main {
+  width: 330px;
+  height: 200px;
 }
 </style>
