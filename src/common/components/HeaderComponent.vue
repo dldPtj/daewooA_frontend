@@ -28,10 +28,10 @@ export default {
     },
   },
   methods: {
-    menuModalOpen(){
+    menuModalOpen() {
       this.menuModal = !this.menuModal
     },
-    logout(){
+    logout() {
       localStorage.removeItem("token");
       router.push("/loginpage");
     }
@@ -51,16 +51,18 @@ export default {
       </div>
       <!-- 오른쪽 -->
       <div class="item">
-        <div class="flex vertical-center" @click="$router.push('/favoritespage')">
+        <div class="flex vertical-center">
           <!-- 오른쪽 첫번째 -->
-          <img src="../../assets/heart.png" alt="하트 사진">
-          <span>
+          <div  @click="$router.push('/favoritespage')" style="display: flex; margin-right: 32px" >
+            <img src="../../assets/heart.png" alt="하트 사진">
+            <span style="display: flex; margin: 0 16px 0 4px">
                         찜하기
                     </span>
-          |
+            |
+          </div>
           <!-- 오른쪽 두번째 -->
           <div class="dropdownMenu" @click="menuModalOpen">
-            <div class="circle " >
+            <div class="circle ">
               <img :src="headerImageUrl" alt="프로필사진" id="headerImgSize">
               <div class="mini-circle">
                 <div class="check"></div>
@@ -82,14 +84,14 @@ export default {
         <img :src="headerImageUrl" alt="프로필 이미지">
       </div>
       <div class="menuProfileName">
-        <a>{{profileName}}</a>
+        <a>{{ profileName }}</a>
         <p>Online</p>
       </div>
     </div>
     <hr>
     <div class="menuMiddle">
       <div class="goToBtn" @click="$router.push('/account')">
-        <div class="gotoMain" ><img src="../../assets/userImg.png" alt="사람이미지"> <a>계정</a></div>
+        <div class="gotoMain"><img src="../../assets/userImg.png" alt="사람이미지"> <a>계정</a></div>
         <div>&gt;</div>
       </div>
       <div class="goToBtn">
@@ -103,7 +105,7 @@ export default {
     </div>
     <hr>
     <div class="menuUnder">
-      <div class="goToBtn" @click ="logout">
+      <div class="goToBtn" @click="logout">
         <div class="gotoMain"><img src="../../assets/Logout.png" alt="로그아웃 이미지"> <a>로그아웃</a></div>
         <div>&gt;</div>
       </div>
@@ -158,7 +160,8 @@ export default {
   border: none;
   background: #9e9a9a;
 }
-.menuProfileImg img{
+
+.menuProfileImg img {
   display: flex;
   object-fit: cover;
   border-radius: 100%;
