@@ -3,14 +3,13 @@ import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import CityLists from '@/common/components/CityLists.vue';
 import {aTeamApi} from '@/util/axios';
-import logoutHeaderComponent from "@/common/components/LogoutHeaderComponent.vue";
 
 export default {
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     CityLists: CityLists,
-    logoutHeaderComponent: logoutHeaderComponent,
+
   },
   name: 'HomePage',
   data() {
@@ -21,7 +20,6 @@ export default {
 
     };
   },
-
 
 
   async mounted() {
@@ -40,8 +38,8 @@ export default {
   beforeUnmount() {
     window.removeEventListener("token-changed", this.updateToken);
   },
-  methods:{
-    updateToken(){
+  methods: {
+    updateToken() {
       this.token = localStorage.getItem("token");
     }
   }
@@ -50,10 +48,7 @@ export default {
 
 <template>
   <!--HeaderComponent 부분-->
-
-    <HeaderComponent v-if="token"/>
-    <logoutHeaderComponent v-else/>
-
+  <HeaderComponent/>
   <!--메인 사진-->
   <div class="main-photo">
     <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진"/>

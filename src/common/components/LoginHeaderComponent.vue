@@ -1,18 +1,40 @@
 <script>
+import aTeamApi from "@/util/axios";
+
 
 export default {
   name: 'HeaderComponent',
   data() {
     return {
-     menuModal: false,
+      profileName: {},
+      profileImg: {},
+      menuModal: false,
     };
   },
-
+  async mounted() {
+    const res = await aTeamApi.get('/api/users/me/profileAll');
+    const data = res.data;
+    console.log('data >>> ', data);
+    this.hotels = data || [];
+    this.profileName = data.content.userName;
+    this.profileImg = data.content.imageUrl;
+  },
+  computed: {
+    headerImageUrl() {
+      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      return this.profileImg
+          ? `${baseUrl}${this.profileImg}`
+          : "";
+    },
+  },
   methods: {
     menuModalOpen() {
       this.menuModal = !this.menuModal
     },
-
+    logout() {
+      localStorage.removeItem("token");
+      window.location.reload();
+    }
   }
 }
 </script>
@@ -41,12 +63,13 @@ export default {
           <!-- 오른쪽 두번째 -->
           <div class="dropdownMenu" @click="menuModalOpen">
             <div class="circle ">
+              <img :src="headerImageUrl" alt="프로필사진" id="headerImgSize">
               <div class="mini-circle">
                 <div class="check"></div>
               </div>
             </div>
             <span>
-              로그인이 필요한 서비스 입니다.
+                        {{ profileName }}
             </span>
           </div>
         </div>
@@ -58,15 +81,23 @@ export default {
   <div class="menuModal" v-show="menuModal">
     <div class="menuTop">
       <div class="menuProfileImg">
-
+        <img :src="headerImageUrl" alt="프로필 이미지">
       </div>
       <div class="menuProfileName">
-        <a>로그인을 하세요.</a>
-        <p>Offline</p>
+        <a>{{ profileName }}</a>
+        <p>Online</p>
       </div>
     </div>
     <hr>
     <div class="menuMiddle">
+      <div class="goToBtn" @click="$router.push('/account')">
+        <div class="gotoMain"><img src="../../assets/userImg.png" alt="사람이미지"> <a>계정</a></div>
+        <div>&gt;</div>
+      </div>
+      <div class="goToBtn">
+        <div class="gotoMain"><img src="../../assets/card.png" alt="카드이미지"> <a>결제 내역</a></div>
+        <div>&gt;</div>
+      </div>
       <div class="goToBtn">
         <div class="gotoMain"><img src="../../assets/settings.png" alt="설정이미지"> <a>설정</a></div>
         <div>&gt;</div>
@@ -74,8 +105,8 @@ export default {
     </div>
     <hr>
     <div class="menuUnder">
-      <div class="goToBtn" @click="$router.push('/loginpage')">
-        <div class="gotoMain"><img src="../../assets/Logout.png" alt="로그인 이미지"> <a>로그인</a></div>
+      <div class="goToBtn" @click="logout">
+        <div class="gotoMain"><img src="../../assets/Logout.png" alt="로그아웃 이미지"> <a>로그아웃</a></div>
         <div>&gt;</div>
       </div>
     </div>
