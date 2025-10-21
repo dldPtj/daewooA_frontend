@@ -22,6 +22,7 @@ import AddCardComponent from "@/common/components/AddCardComponent.vue";
 import logoutHeaderComponent from "@/common/components/LogoutHeaderComponent.vue";
 import LoginHeaderComponent from "@/common/components/LoginHeaderComponent.vue";
 import LeavePhoneNum from  "@/common/components/LeavePhoneNum.vue";
+import TosspageMoveComponent from "@/common/components/TosspageMoveComponent.vue"
 
 const router = createRouter({
     history: createWebHistory(),
@@ -48,6 +49,7 @@ const router = createRouter({
         { path: '/logoutHeaderComponent', name: 'logoutHeaderComponent', component: logoutHeaderComponent },
         { path: '/loginHeaderComponent', name: 'loginHeaderComponent', component: LoginHeaderComponent },
         { path: '/leavePhoneNum', name: 'leavePhoneNum', component: LeavePhoneNum },
+        { path: '/tosspagemoveComponent', name: 'tosspagemoveComponent', component: TosspageMoveComponent },
 
     ],
 });

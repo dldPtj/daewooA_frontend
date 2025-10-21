@@ -164,6 +164,12 @@ export default {
   justify-content: center;
   align-items: center;
 }
+.AddNewCard:hover{
+  cursor: pointer;
+}
+.AddNewCard:active{
+  background: #9e9a9a;
+}
 
 
 </style>

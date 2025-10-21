@@ -228,8 +228,13 @@ export default{
   z-index: 2;
 }
 #accountImgUpload:hover{
-  background-color: #9e9a9a;
+  background-color: #b6b2b2;
+  cursor: pointer;
 }
+#accountImgUpload:active{
+  background: #9e9a9a;
+}
+
 #accountImgUpload a{
   display: flex;
   position: relative;
@@ -257,7 +262,11 @@ export default{
   border: none;
 }
 #ProfileImgModify:hover{
-  background-color: #9e9a9a;
+  background-color: #b6b2b2;
+  cursor: pointer;
+}
+#ProfileImgModify:active{
+  background: #9e9a9a;
 }
 #ProfileImgModify img {
   margin: auto;

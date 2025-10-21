@@ -1,12 +1,19 @@
 <script >
-
+export default {
+  emits: ['toggle-child'], // 이벤트 정의
+  methods: {
+    hideMe() {
+      this.$emit('toggle-child', false);
+    }
+  }
+};
 </script>
 
 <template>
   <p id="pUnderTitle">Login or Sign up to book</p>
   <input type="text" id="pPhonNumInput" placeholder="Phone Number">
   <p id="pUnderText">예약확인 문자/전화를 위해 전화번호를 남겨주세요</p>
-  <button id="pContinueBtn">Continue</button>
+  <button id="pContinueBtn" @click="hideMe">Continue</button>
   <div class="hr-sect">
     Or
   </div>

@@ -343,8 +343,11 @@ export default {
 }
 
 .AccountListBox button:hover{
-  background-color: #9e9a9a;
+  background-color: #b6b2b2;
   border: #8DD3BB solid 1px;
+}
+.AccountListBox button:active{
+  background: #9e9a9a;
 }
 .AccountListBox button img{
   margin-bottom: -2px;

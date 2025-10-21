@@ -2,12 +2,25 @@
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import LeavePhoneNum from "@/common/components/LeavePhoneNum.vue"
+import TosspageMoveComponent from "@/common/components/TosspageMoveComponent.vue"
+
 export default {
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     LeavePhoneNum: LeavePhoneNum,
-  }
+    TosspageMoveComponent: TosspageMoveComponent,
+  },
+  data() {
+      return {
+        showChild: true
+      };
+    },
+    methods: {
+      handleToggle(value) {
+        this.showChild = value;
+      }
+    },
 }
 </script>
 
@@ -52,8 +65,8 @@ export default {
       </div>
 <!--      전화번호 입력후 버튼을 누르면 결제수단 선택가능한 부분의 뒷배경-->
       <div id="pUnderContainer">
-        <LeavePhoneNum />
-
+        <LeavePhoneNum  v-if="showChild === true " @toggle-child="handleToggle"/>
+        <TosspageMoveComponent v-if="showChild === false"/>
       </div>
     </div>
     <div id="paymentList">

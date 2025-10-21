@@ -21,17 +21,17 @@ export default {
   <div class="container">
     <nav class="nav-container">
       <!-- 왼쪽 -->
-      <div class="item" @click="$router.push('/')">
+      <div class="go-to-home" @click="$router.push('/')" id="item">
                 <span>
                     <img src="../../assets/ion_bed.png" alt="침대 사진">
                     hotels
                 </span>
       </div>
       <!-- 오른쪽 -->
-      <div class="item">
+      <div class="item2">
         <div class="flex vertical-center">
           <!-- 오른쪽 첫번째 -->
-          <div  @click="$router.push('/favoritespage')" style="display: flex; margin-right: 16px" >
+          <div  @click="$router.push('/favoritespage')" style="display: flex; margin-right: 16px;" class="go-to-favorite" >
             <img src="../../assets/heart.png" alt="하트 사진">
             <span style="display: flex; margin: 0 16px 0 4px">
                         찜하기
@@ -83,6 +83,12 @@ export default {
 </template>
 
 <style>
+.go-to-home:hover{
+  cursor: pointer;
+}
+.go-to-favorite:hover{
+  cursor: pointer;
+}
 .gotoMain {
   display: flex;
   gap: 8px;
@@ -98,6 +104,9 @@ export default {
   display: flex;
   justify-content: space-between;
   width: 265px;
+}
+.goToBtn:hover{
+  cursor: pointer;
 }
 
 .menuProfileName {
@@ -164,14 +173,10 @@ export default {
 .dropdownMenu {
   display: flex;
 }
-
-#headerImgSize {
-  display: flex;
-  object-fit: cover;
-  border-radius: 100%;
-  width: 100%;
-  height: 100%;
+.dropdownMenu:hover{
+  cursor: pointer;
 }
+
 
 .container {
   border: #42b983 solid 1px;
