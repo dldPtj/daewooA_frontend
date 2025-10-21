@@ -3,6 +3,7 @@ import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import ProfileComponent from "@/common/components/ProfileComponent.vue";
 import {aTeamApi} from "@/util/axios";
+import {reactive} from "vue";
 export default {
   components: {
     HeaderComponent: HeaderComponent,
@@ -88,7 +89,37 @@ export default {
     }catch (err){
       console.error(err);
     }
-  }
+  },
+  setup() {
+    const state = reactive({
+      form: {
+        newPassword: "",
+        currentPassword: "",
+        confirmNewPassword: ""
+      },
+    });
+    const submit = async () => {
+      const forgotPwObj = {
+        newPassword: state.form.newPassword,
+        currentPassword: state.form.currentPassword,
+        confirmNewPassword: state.form.confirmNewPassword
+      };
+      await aTeamApi.put('/api/users/me/password', forgotPwObj,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+          }
+      ).then(async () => {
+        alert("비밀번호가 수정 되었습니다.");
+        window.location.reload();
+      }).catch((err) => {
+        alert("비밀번호가 일치하지 않습니다.");
+        console.error(err);
+      });
+    };
+    return {state, submit};
+  },
 }
 </script>
 
@@ -192,18 +223,24 @@ export default {
       <h1>비밀번호 수정</h1>
       <div>
         <fieldset class="fieldModal">
-          <legend class="LegendLogin">비밀 번호</legend>
+          <legend class="LegendLogin">currentPassword</legend>
           <!--          수정할 이름 입력 하는곳-->
-          <input type="text" placeholder="비밀번호를 입력하세요." class="LTextBox">
+          <input type="text" placeholder="현재 비밀번호를 입력하세요." class="LTextBox" v-model="state.form.currentPassword" >
         </fieldset>
         <fieldset class="fieldModal">
-          <legend class="LegendLogin">Password</legend>
+          <legend class="LegendLogin">newPassword</legend>
           <!--          비밀번호 입력하는 곳-->
-          <input type="password" placeholder="현재 비밀번호를 입력하세요." class="LTextBox">
+          <input type="password" placeholder="새로운 비밀번호를 입력하세요." class="LTextBox" v-model="state.form.newPassword">
         </fieldset>
+        <fieldset class="fieldModal">
+          <legend class="LegendLogin">confirmNewPassword</legend>
+          <!--          비밀번호 입력하는 곳-->
+          <input type="password" placeholder="한번더 비밀번호를 입력하세요." class="LTextBox" v-model="state.form.confirmNewPassword">
+        </fieldset>
+
       </div>
       <!--      클릭시 수정 완료-->
-      <button type="button" class="ModalBtnStyle">수정</button>
+      <button type="button" class="ModalBtnStyle" @click="submit">수정</button>
     </div>
   </div>
 
