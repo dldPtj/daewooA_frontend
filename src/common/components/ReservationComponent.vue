@@ -165,7 +165,7 @@ export default {
 <style>
 #downloadTicket{
   position: relative;
-  left: 1px;
+  left: -9999px;
   top: 0;
   opacity: 1;
   visibility: visible;
@@ -250,6 +250,7 @@ export default {
   object-fit: fill;
   width: 100%;
   height: 100%;
+  border-radius: 100%;
 
 }
 
