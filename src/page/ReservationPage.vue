@@ -10,7 +10,6 @@ export default {
     FooterComponent: FooterComponent,
     ProfileComponent: ProfileComponent,
     ReservationComponent: ReservationComponent,
-
   },
   data() {
     return {
@@ -22,8 +21,8 @@ export default {
     const data = res.data.content;
     console.log('data >>> ', data);
     this.reservations = data;
+  },
 
-  }
 }
 </script>
 
@@ -58,10 +57,15 @@ export default {
                            :key = "index"
                            :hotel-name="item.hotelName"
                            :room-number="item.roomNumber"
-                           :checkin-date="item.checkinDate"
-                           :checkout-date="item.checkoutDate"
-                           :hotel-checkin-time="item.hotelCheckinTime"
-                           :hotel-checkout-time="item.hotelCheckoutTime"
+                           :check-in-date="item.checkInDate"
+                           :check-out-date="item.checkOutDate"
+                           :check-in-time="item.checkInTime"
+                           :check-out-time="item.checkOutTime"
+                           :booking-reference="item.bookingReference"
+                           :room-bed-info="item.roomBedInfo"
+                           :room-name="item.roomName"
+                           :user-name="item.userName"
+                           :user-profile-image-url="item.userProfileImageUrl"
 
     />
   </div>

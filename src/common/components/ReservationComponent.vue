@@ -5,17 +5,26 @@ export default {
   props: {
     hotelName: String,
     roomNumber: String,
-    checkinDate: String,
-    checkoutDate: String,
-    hotelCheckinTime: String,
-    hotelCheckoutTime: String,
+    checkInDate: String,
+    checkOutDate: String,
+    checkInTime: String,
+    checkOutTime: String,
+    userName: String,
+    roomName: String,
+    roomBedInfo: String,
+    bookingReference: String,
+    userProfileImageUrl:String
 
   },
   methods: {
     async downloadTicketBtn() {
       const element = document.getElementById("downloadTicket");
 
-      html2canvas(element).then(canvas => {
+      html2canvas(element,{
+        useCORS: true,
+        allowTaint: false,
+        scale: 2
+      }).then(canvas => {
         const imageUrl = canvas.toDataURL('image/png');
 
         const downloadLink = document.createElement('a');
@@ -23,32 +32,35 @@ export default {
         downloadLink.download = 'ticket.png';
         document.body.appendChild(downloadLink);
         downloadLink.click();
-        console.log(downloadLink);
         document.body.removeChild(downloadLink);
-
 
       })
 
+    },
+    getFullUrl(path) {
+      const baseUrl = process.env.VUE_APP_API_URL;
+      return path.startsWith('http')
+          ? path
+          : `${baseUrl}${path}`;
     }
   },
 
-
-};
+}
 </script>
 
 <template>
   <div class="ReservationList" >
-    <div class="ReservationImage">
-      <img src="../../assets/CommonProfileImg.png" alt="호텔 이미지가 나옵니다." id="ProfileImg">
+    <div class="ReservationImage" >
+      <img src="" alt="호텔 이미지가 나옵니다." id="ProfileImg">
     </div>
     <div class="Reservation_CheckInOut_Day">
       <a>Check-In</a><br>
-      <span>{{ checkinDate }}</span>
+      <span>{{ checkInDate }}</span>
     </div>
     <div id="StickBar">—</div>
     <div class="Reservation_CheckInOut_Day">
       <a>Check-Out</a><br>
-      <span>{{ checkoutDate }}</span>
+      <span>{{ checkOutDate }}</span>
     </div>
     <div class="OutLineStyle">
       <a class="OtherLine"></a>
@@ -61,9 +73,9 @@ export default {
     </div>
     <div class="check_Time_Text">
       <p>체크인</p>
-      <a>{{ hotelCheckinTime }}</a>
+      <a>{{ checkInTime }}</a>
       <p>체크아웃</p>
-      <a>{{ hotelCheckoutTime }}</a>
+      <a>{{ checkOutTime }}</a>
     </div>
 
     <div class="Room_num_img">
@@ -83,26 +95,26 @@ export default {
 
   <div class="ticketImg" id="downloadTicket">
     <div class="ticketDate">
-      <a class="ticketDateFont">{{ checkinDate }}</a>
+      <a class="ticketDateFont">{{ checkInDate }}</a>
       <p class="ticketCheckFont" style="margin-bottom: 16px">Check-In</p>
       <img src="../../assets/ticketImg.png" alt="이 그림 사이에 건물이 끼어있습니다." class="TicketImg1">
       <img src="../../assets/building.png" alt="건물사진" class="TicketBuilding">
       <img src="../../assets/ticketImg.png" alt="이 그림 사이에 건물이 끼어있습니다." class="TicketImg1">
-      <a class="ticketDateFont" style="margin-top: 16px">{{ checkoutDate }}</a>
+      <a class="ticketDateFont" style="margin-top: 16px">{{ checkOutDate }}</a>
       <p class="ticketCheckFont">Check-Out</p>
     </div>
     <div class="ticketDetail">
       <div class="ticketDetailTop">
         <div class="ticketProfile">
-          <div class="ticketProfileImg">
-            <img src="" alt="사용자의 프로필 사진이 들어갑니다.">
+          <div class="ticketProfileImg" >
+            <img :src="getFullUrl(userProfileImageUrl)" alt="사용자 프로필">
           </div>
           <div class="ticketProfileName">
-            James Doe
+            {{ userName }}
           </div>
         </div>
         <div class="ticketRoomDetail">
-          Superior room - 1 double bed or 2 twin beds
+          {{roomName}}  {{roomBedInfo}}
         </div>
       </div>
       <div class="ticketDetailMiddle">
@@ -112,7 +124,7 @@ export default {
           </div>
           <div class="check_Time_Text">
             <p>체크인</p>
-            <a>{{ hotelCheckinTime }}</a>
+            <a>{{ checkInTime }}</a>
           </div>
         </div>
         <div class="ticketDetailBox">
@@ -121,7 +133,7 @@ export default {
           </div>
           <div class="check_Time_Text">
             <p>체크아웃</p>
-            <a>{{ hotelCheckoutTime }}</a>
+            <a>{{ checkOutTime }}</a>
           </div>
         </div>
         <div class="ticketDetailBox">
@@ -136,7 +148,7 @@ export default {
       </div>
       <div class="ticketDetailBottom">
         <div class="ticketCountry">
-          <a class="ticketDateFont">EK</a>
+          <a class="ticketDateFont">{{bookingReference}}</a>
           <p class="ticketCheckFont">ABC12345</p>
         </div>
         <div class="barcodeImg">
@@ -152,7 +164,7 @@ export default {
 
 <style>
 #downloadTicket{
-  position: absolute;
+  position: relative;
   left: -9999px;
   top: 0;
   opacity: 1;
@@ -231,6 +243,15 @@ export default {
   border-radius: 48px;
   border: white solid 1px;
   background: #9e9a9a;
+
+}
+.ticketProfileImg img {
+  display: flex;
+  object-fit: fill;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+
 }
 
 .ticketDetailTop {
@@ -317,7 +338,11 @@ export default {
 }
 
 #TicketBtn:hover {
-  background-color: #9e9a9a;
+  background-color: #b6b2b2;
+  cursor: pointer;
+}
+#TicketBtn:active{
+  background: #9e9a9a;
 }
 
 .Room_num_Text a {

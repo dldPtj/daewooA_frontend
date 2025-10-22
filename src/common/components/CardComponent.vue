@@ -61,6 +61,9 @@ export default {
   width: 24px;
   height: 24px;
 }
+.cardListTop img:hover{
+  cursor: pointer;
+}
 .cardPw{
   display: flex;
   flex-direction: column;

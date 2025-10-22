@@ -2,21 +2,26 @@
 import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import CityLists from '@/common/components/CityLists.vue';
-import { aTeamApi } from '@/util/axios';
+import {aTeamApi} from '@/util/axios';
 
 export default {
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     CityLists: CityLists,
+
   },
   name: 'HomePage',
   data() {
     return {
       cities: [],
       tours: [],
+      token: localStorage.getItem('token'),
+
     };
   },
+
+
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
     const resultData = result.data.content;
@@ -27,6 +32,11 @@ export default {
     const mainData = mainRes.data.content || mainRes.data;
     console.log('main data >>> ', mainData);
     this.tours = mainData || [];
+
+    window.addEventListener("token-changed", this.updateToken);
+  },
+  beforeUnmount() {
+    window.removeEventListener("token-changed", this.updateToken);
   },
   methods: {
     getFullImageUrl(url) {
@@ -43,11 +53,10 @@ export default {
 
 <template>
   <!--HeaderComponent 부분-->
-  <HeaderComponent />
-
+  <HeaderComponent/>
   <!--메인 사진-->
   <div class="main-photo">
-    <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진" />
+    <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진"/>
   </div>
 
   <!--메인화면 부분-->
@@ -107,7 +116,7 @@ export default {
   <div class="city-selection-bar">
     <div class="city-selection-text">
       <h2>여행에 빠지다</h2>
-      <br />
+      <br/>
       <h4>특가상품으로 진행하는 여행을 예약해보세요</h4>
     </div>
     <div class="city-see-all">
@@ -116,14 +125,14 @@ export default {
   </div>
 
   <div class="city-selection-imgs">
-    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city" />
+    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city"/>
   </div>
 
   <!--투어 선택 부분-->
   <div class="tour-selection-bar">
     <div class="tour-selection-text">
       <h2>여행 더보기</h2>
-      <br />
+      <br/>
       <h4>
         Going somewhere to celebrate this season? Whether you’re going home or somewhere to roam,
         we’ve got the travel tools to get you to your destination.
@@ -171,7 +180,7 @@ export default {
     </div>
   </div>
 
-  <FooterComponent />
+  <FooterComponent/>
 </template>
 
 <style>
@@ -180,15 +189,18 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
+
 .search-bar:hover {
   border: #8ae6b2 solid 1px;
   box-shadow: 0px 0px 20px #8ae6b2;
 }
+
 .main-photo {
   display: flex;
   justify-content: space-around;
   margin-top: 50px;
 }
+
 .search-bar {
   display: flex;
   text-align: left;
@@ -205,11 +217,13 @@ export default {
   height: 150px;
   z-index: 2;
 }
+
 .search-box-text {
   margin-top: 20px;
   margin-left: 30px;
   font-size: 20px;
 }
+
 .home-enter-destination fieldset {
   align-items: center;
   border-radius: 5px;
@@ -217,15 +231,18 @@ export default {
   width: 400px;
   height: 60px;
 }
+
 .home-option-select {
   display: flex;
   align-items: center;
   margin: -5px 10px;
 }
+
 .home-search-input {
   margin: 10px;
   color: #9e9a9a;
 }
+
 .home-checkinout fieldset {
   display: flex;
   align-items: center;
@@ -234,11 +251,13 @@ export default {
   width: 200px;
   height: 60px;
 }
+
 .home-roomguests fieldset {
   border-radius: 5px;
   width: 300px;
   height: 60px;
 }
+
 .city-selection-bar {
   display: flex;
   justify-content: space-between;
@@ -252,6 +271,7 @@ export default {
   flex-direction: column;
   text-align: left;
 }
+
 .city-see-all-btn {
   border: #8ae6b2 solid 2px;
   border-radius: 8px;
@@ -259,9 +279,11 @@ export default {
   width: 70px;
   height: 45px;
 }
+
 .city-see-all-btn:hover {
   background-color: #8ae6b2;
 }
+
 .city-selection-imgs {
   display: flex;
   justify-content: center;
@@ -277,6 +299,7 @@ export default {
   width: 1350px;
   padding: 0 50px 0 50px;
 }
+
 .tour-selection-text {
   text-align: left;
   max-width: 1100px;
@@ -289,14 +312,17 @@ export default {
   width: 70px;
   height: 45px;
 }
+
 .tour-see-all-btn:hover {
   background-color: #8ae6b2;
 }
+
 .tour {
   display: flex;
   width: 1350px;
   margin: auto;
 }
+
 .tour-description {
   display: flex;
   flex-direction: column;
@@ -321,12 +347,14 @@ export default {
   text-align: center;
   padding: 5px;
 }
+
 .flight-book-btn {
   margin-top: 140px;
 }
 #bookflight:hover {
   background-color: #d3d3d3;
 }
+
 #bookflight {
   display: flex;
   justify-content: center;
