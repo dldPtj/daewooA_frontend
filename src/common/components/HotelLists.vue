@@ -57,17 +57,33 @@ export default {
     <!--호텔 정보-->
     <div class="hotel-info">
       <!--호텔 이름-->
-      <div class="hotel-name">
-        <h3 id="hotel-name-1">
-          {{ hotelInfo.name }}
-        </h3>
-      </div>
-      <!--호텔 위치-->
-      <div class="hotel-location">
-        <i class='bx  bx-location'  ></i>
-        <span id="address">
-          <small>{{ hotelInfo.address }}</small>
-        </span>
+      <div class="hotellist-top-item">
+        <div class="hotellist-top-item-left">
+          <div class="hotel-name">
+            <h3 id="hotel-name-1">
+              {{ hotelInfo.name }}
+            </h3>
+          </div>
+          <!--호텔 위치-->
+          <div class="hotel-location">
+            <i class='bx  bx-location'  ></i>
+            <span id="address">
+              <small>{{ hotelInfo.address }}</small>
+            </span>
+          </div>
+        </div>
+        <!--호텔 가격-->
+        <div class="hotel-price">
+          <div>
+            <small>starting from</small>
+          </div>
+          <div class="price">
+            <b><span id="hotel-price">₩{{ hotelInfo.price }}</span></b><small>/night</small>
+          </div>
+          <div class="tax">
+            <small>excl. tax</small>
+          </div>
+        </div>
       </div>
 
       <!--호텔 등급과 편의시설-->
@@ -116,24 +132,17 @@ export default {
           </button>
         </div>
       </div>
-      <!--호텔 가격-->
-      <div class="hotel-price">
-        <div>
-          <small>starting from</small>
-        </div>
-        <div class="price">
-          <b><span id="hotel-price">₩{{ hotelInfo.price }}</span></b><small>/night</small>
-        </div>
-        <div class="tax">
-          <small>excl. tax</small>
-        </div>
-      </div>
 
     </div>
   </div>
 </template>
 
 <style>
+.hotellist-top-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .hotel-img-size {
   display: flex;
   object-fit: cover;
@@ -176,9 +185,6 @@ export default {
   text-align: right;
 }
 .hotel-price {
-  display: flex;
-  position: absolute;
-  margin: 0 0 0 300px;
   flex-direction: column;
   color: grey;
 }
