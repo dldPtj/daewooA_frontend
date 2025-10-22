@@ -75,7 +75,11 @@ export default {
 </template>
 
 <style>
-
+* {
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
 #ReservationDropDownStyle{
   margin-top: 20px;
   display: flex;
@@ -94,7 +98,7 @@ export default {
 #ReservationMain{
   text-align: left;
   width: 1232px;
-  margin: 40px auto 119px;
+  margin: 40px auto 0;
 }
 #ReservationSub{
   display: flex;
