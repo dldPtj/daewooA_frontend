@@ -91,9 +91,9 @@ export default {
         Or link with
       </div>
       <div id ="LoginIconBoxes">
-        <button type="button" id ="fBtn" class="LBtnGroup"><img src="../assets/facebookLogin.png"></button>
+        <button type="button" id ="fBtn" class="LBtnGroup"><img src="../assets/Naver.png"></button>
         <button type="button" id = "GBtn" class="LBtnGroup"><img src="../assets/googleLogin.png"></button>
-        <button type="button" id = "ABtn" class="LBtnGroup"><img src="../assets/appleLogin.png"></button>
+        <button type="button" id = "ABtn" class="LBtnGroup"><img src="../assets/Kakao.png"></button>
       </div>
     </div>
     <div class="LoginImages">
@@ -217,11 +217,20 @@ input.LTextBox:focus{
   color: gray;
 }
 .LBtnGroup{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: #8DD3BB solid 1px;
   width: 160px;
   height: 56px;
   background-color: white;
 }
+.LBtnGroup img {
+  display: flex;
+  width: 24px;
+  height: 24px;
+}
+
 .LBtnGroup:hover{
   background-color: #D9D9D9;
 }

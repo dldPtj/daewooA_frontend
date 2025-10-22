@@ -20,7 +20,11 @@ export default {
     async downloadTicketBtn() {
       const element = document.getElementById("downloadTicket");
 
-      html2canvas(element).then(canvas => {
+      html2canvas(element,{
+        useCORS: true,
+        allowTaint: false,
+        scale: 2
+      }).then(canvas => {
         const imageUrl = canvas.toDataURL('image/png');
 
         const downloadLink = document.createElement('a');
@@ -160,8 +164,8 @@ export default {
 
 <style>
 #downloadTicket{
-  position: absolute;
-  left: -9999px;
+  position: relative;
+  left: 1px;
   top: 0;
   opacity: 1;
   visibility: visible;
@@ -239,6 +243,14 @@ export default {
   border-radius: 48px;
   border: white solid 1px;
   background: #9e9a9a;
+
+}
+.ticketProfileImg img {
+  display: flex;
+  object-fit: fill;
+  width: 100%;
+  height: 100%;
+
 }
 
 .ticketDetailTop {

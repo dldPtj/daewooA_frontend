@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <button type="button" id="MoveTossPage"><img src="../../assets/tossImg.png"> </button>
+  <button type="button" id="MoveTossPage" ><img src="../../assets/tossImg.png"> </button>
 </template>
 
 <style >
