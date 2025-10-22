@@ -566,7 +566,7 @@ export default {
 
 /* 메인 이미지 */
 .hoteldetail-img-main img {
-  width: 610px;
+  width: 630px;
   height: 550px;
   object-fit: cover;
   border-radius: 10px;
@@ -681,10 +681,9 @@ export default {
   flex-direction: column;
 }
 .country-city-hotelname {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 60px 1050px 0 0;
+  width: 1240px;
+  margin: 40px auto 0px;
+  text-align: left;
 }
 .hd-country {
   color: #ff8682;
