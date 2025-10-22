@@ -39,9 +39,14 @@ export default {
     window.removeEventListener("token-changed", this.updateToken);
   },
   methods: {
-    updateToken() {
-      this.token = localStorage.getItem("token");
-    }
+    getFullImageUrl(url) {
+      if (!url) return '';
+      // 이미 절대 URL이면 그대로 반환
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      // Vue CLI 환경에서 process.env.VUE_APP_API_URL 사용
+      const base = process.env.VUE_APP_API_URL || '';
+      return `${base}${url}`;
+    },
   }
 };
 </script>
@@ -146,23 +151,32 @@ export default {
         </h1>
         <div class="tour-price">
           From
-          <br/>
-          <h2>$700</h2>
+          <br />
+          <h2>₩{{ tours.price }}</h2>
         </div>
       </div>
       <h5>
-        오래된 시간의 숨결이 머무는 도시, 말라카(Melaka).<br>말레이시아의 작은 보석 같은 이 도시는 동서양 문화가 만나는 관문이자, 세계문화유산으로 지정된 매혹적인 여행지입니다. 단 하루만 머물러도
-        그 깊은 매력에 빠지고, 며칠을 살아보면 다시 찾고 싶은 마음이 샘솟는 곳. 이제 저희 여행사가 준비한 특별한 말라카 투어상품과 함께 그 여정을 시작해 보세요.
+        {{ tours.description }}
       </h5>
       <div class="flight-book-btn">
         <button id="bookflight">Book Flight</button>
       </div>
     </div>
-    <div class="tour-imgs">
-      <img src="../assets/melaka-tour1.png"/>
-      <img src="../assets/melaka-tour2.png"/>
-      <img src="../assets/melaka-tour3.png"/>
-      <img src="../assets/melaka-tour4.png"/>
+    <div class="tour-gallery">
+      <div v-for="index in 4" :key="index" class="tour-imgs">
+        <div v-if="tours.imageUrls && tours.imageUrls[index-1]" class="tour-image-container">
+          <img
+            :src="getFullImageUrl(tours.imageUrls[index-1])"
+            :alt="tours.name + ' image ' + (index + 1)"
+            class="tour-image-size"
+          />
+        </div>
+        <div v-else>
+          <div class="no-tour-image-slot">
+            <span>이미지가 없습니다</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -310,6 +324,9 @@ export default {
 }
 
 .tour-description {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   margin: 0 0 0 50px;
   border: #8ae6b2 solid 1px;
   background-color: #8ae6b2;
@@ -318,19 +335,24 @@ export default {
   max-width: 530px;
   text-align: left;
 }
-
+.tour-top-items {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .tour-price {
   border-radius: 5px;
   border: #8ae6b2 solid 1px;
   background-color: white;
   text-align: center;
-  margin-left: 420px;
-  margin-top: -100px;
   padding: 5px;
 }
 
 .flight-book-btn {
-  margin-top: 200px;
+  margin-top: 140px;
+}
+#bookflight:hover {
+  background-color: #d3d3d3;
 }
 
 #bookflight {
@@ -342,5 +364,41 @@ export default {
   border: none;
   width: 490px;
   height: 50px;
+}
+.tour-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-left: 30px;
+  max-width: 650px;
+}
+.tour-image-container {
+  border-radius: 15px;
+  width: 330px;
+  height: 200px;
+  overflow: hidden;
+}
+.tour-image-size {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: #8ae6b2 solid 2px;
+}
+.no-tour-image-slot {
+  background-color: #d9d9d9;
+  color: #555;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 330px;
+  height: 200px;
+}
+.no-tour-image-slot.main {
+  width: 330px;
+  height: 200px;
 }
 </style>

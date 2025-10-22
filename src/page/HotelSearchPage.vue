@@ -41,7 +41,7 @@ export default {
         this.amenitiesFilterOpen = !this.amenitiesFilterOpen;
       }
     },
-  }
+  },
 }
 </script>
 
@@ -315,7 +315,7 @@ input[type=checkbox] {
   color: #FF8682;
 }
 .accommodation {
-  width: 750px;
+  width: 800px;
 }
 .accommodation-selection {
   border-radius: 15px;
@@ -327,7 +327,7 @@ input[type=checkbox] {
   border: white solid 1px;
   background-color: white;
   padding: 25px;
-  width: 250px;
+  width: 266px;
   text-align: left;
 }
 #hotel-count:hover {
@@ -338,7 +338,7 @@ input[type=checkbox] {
   border-left: #d3d3d3 solid 2px;
   padding: 25px;
   background-color: white;
-  width: 250px;
+  width: 266px;
   text-align: left;
 }
 #motel-count:hover {
@@ -351,7 +351,7 @@ input[type=checkbox] {
   border-left: #d3d3d3 solid 2px;
   padding: 25px;
   background-color: white;
-  width: 250px;
+  width: 266px;
   text-align: left;
 }
 #resort-count:hover {

@@ -270,9 +270,9 @@ export default {
 }
 .search-list {
   position: absolute;
-  top: 135px;
+  top: 250px;
   list-style: none;
-  padding: 0;
+  padding: 10px;
   margin: 0;
   width: 400px;
   border: 1px solid #ddd;
@@ -441,5 +441,8 @@ export default {
   background-color: #8ae6b2;
   width: 55px;
   height: 55px;
+}
+#hotel-search-btn:hover {
+  background-color: #6acd97;
 }
 </style>
