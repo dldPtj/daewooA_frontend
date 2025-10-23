@@ -117,7 +117,7 @@ export default {
       <!--호텔 디테일 오른쪽 (찜, 공유, 가격, 예약)-->
       <div class="hotel-detail-right">
         <div class="hoteldetail-price">
-          ₩<span id="hoteldetail-price">{{ hotelInfo.price }}</span
+          ₩<span id="hoteldetail-price">{{ hotelInfo?.price?.toLocaleString() }}</span
           >/night
         </div>
         <div class="hoteldetail-btns">
