@@ -62,10 +62,12 @@ export default {
 
     handleCheckInSelected(date) {
       this.checkInDate = date;
+      localStorage.setItem("checkin", date);
       this.showCheckInPicker = false;
     },
     handleCheckOutSelected(date) {
       this.checkOutDate = date;
+      localStorage.setItem("checkout", date);
       this.showCheckOutPicker = false;
     },
 
