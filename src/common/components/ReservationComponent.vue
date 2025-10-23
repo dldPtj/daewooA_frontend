@@ -164,7 +164,7 @@ export default {
 
 <style>
 #downloadTicket{
-  position: relative;
+  position: absolute;
   left: -9999px;
   top: 0;
   opacity: 1;

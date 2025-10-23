@@ -362,8 +362,7 @@ export default {
 #AccountPageMain{
   text-align: left;
   width: 1232px;
-  height: 593px;
-  margin: 40px auto 119px;
+  margin: 40px auto 0;
 }
 #AccountPage h1{
   margin-bottom: 48px;

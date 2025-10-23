@@ -1,4 +1,6 @@
 <script>
+import router from "@/router";
+
 export default {
   name: 'LeftRoomLists',
   props: {
@@ -7,6 +9,12 @@ export default {
       default: () => ({}),
     },
   },
+  methods:{
+    goToPaymentPage(){
+      localStorage.setItem("roomId", this.roomInfo.id);
+      router.push("/paymentpage");
+    }
+  }
 };
 </script>
 
@@ -31,7 +39,7 @@ export default {
     <div class="leftroom-sec">
       <div class="room-price">₩<span id="room-price">{{ roomInfo.price }}</span><small>/night</small></div>
       <div class="room-book">
-        <button id="room-book-btn" @click="$router.push('/paymentpage')">Book now</button>
+        <button id="room-book-btn" @click="goToPaymentPage">Book now</button>
       </div>
     </div>
   </div>

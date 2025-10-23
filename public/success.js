@@ -1,4 +1,14 @@
 // success.js
+import dayjs from "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/+esm";
+
+const roomId = localStorage.getItem("roomId");
+const checkInDate = localStorage.getItem("checkin");
+const checkOutDate = localStorage.getItem("checkout");
+
+const formatCheckInDate = dayjs(checkInDate).format('YYYY-MM-DD');
+const formatCheckOutDate = dayjs(checkOutDate).format('YYYY-MM-DD');
+
+
 
 const urlParams = new URLSearchParams(window.location.search);
 const paymentKey = urlParams.get("paymentKey");
@@ -23,19 +33,19 @@ async function confirmPayment() {
         amount: amount,
 
         // 이것또한 하드코딩되어있는 3개의 정보입니다 실제 서비스에서는 이 값들을 이전 페이지에서 넘겨받아야 합니다.
-        roomId: 1,
-        checkInDate: "2025-07-07",
-        checkOutDate: "2025-07-09"
+        roomId: roomId,
+        checkInDate: formatCheckInDate,
+        checkOutDate: formatCheckOutDate
     };
 
     try {
         // ✅ 우리 백엔드 서버의 /api/pay 주소로 요청
-        const response = await fetch("/api/pay", {
+        const response = await fetch("http://localhost:18888/api/pay", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 // JWT 인증이 필요하다면 여기에 Authorization 헤더를 추가해야 합니다. (사실 잘 모릅니당)
-                // "Authorization": "Bearer <YOUR_JWT_TOKEN>"
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify(requestData),
         });
