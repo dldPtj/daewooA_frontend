@@ -26,6 +26,7 @@ export default {
   methods: {
     togglefavorites() {
       this.favorite = !this.favorite;
+      this.$emit('toggle-favorite', this.hotelInfo);
     }
   }
 };
@@ -78,7 +79,7 @@ export default {
             <small>starting from</small>
           </div>
           <div class="price">
-            <b><span id="hotel-price">₩{{ hotelInfo.price }}</span></b><small>/night</small>
+            <b><span id="hotel-price">₩{{ hotelInfo?.price?.toLocaleString() }}</span></b><small>/night</small>
           </div>
           <div class="tax">
             <small>excl. tax</small>

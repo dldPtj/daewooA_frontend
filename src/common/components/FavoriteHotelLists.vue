@@ -1,16 +1,44 @@
 <script>
 export default {
   name: "FavoriteHotelLists",
-
+  props: {
+    favoriteHotelInfo: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  data() {
+    return {
+      favorite: true,
+    }
+  },
+  computed: {
+    fullImageUrl() {
+      const baseUrl = process.env.VUE_APP_API_URL;
+      return this.favoriteHotelInfo.imageUrls && this.favoriteHotelInfo.imageUrls[0]
+        ? `${baseUrl}${this.favoriteHotelInfo.imageUrls[0]}`
+        : "./default-favorite-img.png"; // 이미지가 없을 때 기본 이미지 경로
+    },
+    imageCount() {
+      return this.favoriteHotelInfo.imageUrls?.length || 0;
+    },
+  },
+  methods: {
+    togglefavorites() {
+      this.favorite = !this.favorite;
+      // 찜 해제 이벤트를 부모에게 전달합니다. (hotelInfo.id 등을 보낼 수 있습니다)
+      this.$emit('remove-favorite', this.favoriteHotelInfo.id);
+    }
+  }
 }
 </script>
 
 <template>
   <div class="favorite-hotel">
     <div class="favorite-hotel-img">
-      <img src="./hotel-img-1.png">
+      <img :src="fullImageUrl" alt="favorite hotel image">
       <div class="favorite-hotel-img-count">
-        9 images
+        {{ imageCount }} images
       </div>
     </div>
     <!--호텔 정보-->
@@ -20,15 +48,15 @@ export default {
           <!--호텔 이름-->
           <div class="favorite-hotel-name">
             <h3 id="favorite-hotel-name-1">
-              해튼 호텔
+              {{ favoriteHotelInfo.name }}
             </h3>
           </div>
           <!--호텔 위치-->
           <div class="favorite-hotel-location">
             <i class='bx  bx-location'  ></i>
             <span id="favorite-address">
-                <small>Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 344371111111111111111111111111111111111111111111111</small>
-              </span>
+              <small>{{ favoriteHotelInfo.address }}</small>
+            </span>
           </div>
         </div>
 
@@ -38,7 +66,7 @@ export default {
             <small>starting from</small>
           </div>
           <div class="favorite-price">
-            <b><span id="favorite-hotel-price">₩240,000</span></b><small>/night</small>
+            <b><span id="favorite-hotel-price">₩{{ favoriteHotelInfo?.price?.toLocaleString() }}</span></b><small>/night</small>
           </div>
           <div class="favorite-tax">
             <small>excl. tax</small>
@@ -50,7 +78,7 @@ export default {
       <div class="favorite-hotel-grade-amenities">
         <!--호텔 등급-->
         <div class="favorite-hotel-grade">
-          <span id="favorite-grade-stars">☆☆☆☆☆</span>&nbsp;<span id="grade">5</span> Star Hotel
+          <span id="favorite-grade-stars" v-for="value in hotelInfo.grade" :key="value">★</span>&nbsp;<span id="grade">{{ hotelInfo.grade }}</span> Star Hotel
         </div>
         <!--편의시설-->
         <div class="favorite-hotel-amenities">
@@ -62,7 +90,7 @@ export default {
       <div class="favorite-hotel-rating-count">
         <!--호텔 리뷰 평점-->
         <div class="favorite-hotel-review-avg">
-          <span id="favorite-review-rating">4.2</span>
+          <span id="favorite-review-rating">{{ favoriteHotelInfo.rating }}</span>
         </div>
         <!--호텔 만족도-->
         <div class="favorite-hotel-satisfaction">
@@ -70,7 +98,7 @@ export default {
         </div>
         <!--호텔 평점 개수-->
         <div class="favorite-hotel-review-count">
-          <span id="favorite-review-count">271</span>reviews
+          <span id="favorite-review-count">{{ favoriteHotelInfo.reviewCount }}</span>reviews
         </div>
       </div>
 
@@ -78,13 +106,16 @@ export default {
       <div class="favorite-hotel-liked-view">
         <!--호텔 찜하기 버튼-->
         <div class="favorite-hotel-liked">
-          <button id="favorite-hotel-liked-btn">
-            <i class='bxr bx-heart'></i>
+          <button id="favorite-hotel-liked-btn" @click="togglefavorites()">
+            <i class='bxr' :class="{
+              'bx-heart': !favorite,
+              'bx-heart-square': favorite
+            }" :style="{ 'font-size': favorite ? '65px' : '30px', 'color': '#8ae6b2' }"  ></i>
           </button>
         </div>
         <!--호텔 보기 버튼-->
         <div class="favorite-hotel-view-place">
-          <button @click="$router.push('/hoteldetail')" id="favorite-view-place-btn">
+          <button @click="$router.push(`/hoteldetailpage?id=${favoriteHotelInfo.id}`)" id="favorite-view-place-btn">
             <span>View Place</span>
           </button>
         </div>
@@ -103,7 +134,7 @@ export default {
   border-radius: 10px;
   width: 80px;
   height: 40px;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 #favorite-hotel-price {
   font-size: 25px;
@@ -141,13 +172,18 @@ export default {
   display: flex;
 }
 #favorite-hotel-liked-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
   background-color: white;
   width: 50px;
   height: 50px;
   text-align: center;
-  padding: 7px;
+}
+#favorite-hotel-liked-btn:hover {
+  background-color: #d3d3d3;
 }
 .favorite-hotel-view-place {
   display: flex;
@@ -162,6 +198,9 @@ export default {
   margin: 0 0 0 10px;
   padding: 7px;
 }
+#favorite-view-place-btn:hover {
+  background-color: #6acd97;
+}
 .favorite-hotel-liked-view {
   display: flex;
   justify-content: space-between;
@@ -174,6 +213,10 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.favorite-hotel-amenities {
+  display: flex;
+  align-items: center;
 }
 #favorite-grade-stars {
   color: #FF8682;
