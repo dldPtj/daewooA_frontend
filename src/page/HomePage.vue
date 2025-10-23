@@ -2,14 +2,13 @@
 import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import CityLists from '@/common/components/CityLists.vue';
-import {aTeamApi} from '@/util/axios';
+import { aTeamApi } from '@/util/axios';
 
 export default {
   components: {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     CityLists: CityLists,
-
   },
   name: 'HomePage',
   data() {
@@ -20,8 +19,6 @@ export default {
 
     };
   },
-
-
   async mounted() {
     const result = await aTeamApi.get('/api/travel-packages/popular');
     const resultData = result.data.content;
@@ -56,7 +53,7 @@ export default {
   <HeaderComponent/>
   <!--메인 사진-->
   <div class="main-photo">
-    <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진"/>
+    <img src="../assets/homepage-mainhotel-1.png" alt="메인호텔사진" />
   </div>
 
   <!--메인화면 부분-->
@@ -125,7 +122,7 @@ export default {
   </div>
 
   <div class="city-selection-imgs">
-    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city"/>
+    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city" />
   </div>
 
   <!--투어 선택 부분-->
