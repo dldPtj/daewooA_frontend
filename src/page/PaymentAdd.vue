@@ -54,12 +54,15 @@ export default {
 </template>
 
 <style >
-
+* {
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
 #PaymentPageList{
   display: flex;
   box-shadow: 0px 2px 11px #d3d3d3;
   width: 1232px;
-  height: fit-content;
   margin-top: 16px;
   padding: 24px 24px 24px 24px;
   gap: 22px;
@@ -70,7 +73,6 @@ export default {
   flex-wrap: wrap;
   text-align: left;
   width: 1232px;
-  height: fit-content;
-  margin: 40px auto 119px;
+  margin: 40px auto 0;
 }
 </style>

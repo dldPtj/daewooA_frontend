@@ -24,6 +24,7 @@ import LoginHeaderComponent from "@/common/components/LoginHeaderComponent.vue";
 import LeavePhoneNum from  "@/common/components/LeavePhoneNum.vue";
 import TosspageMoveComponent from "@/common/components/TosspageMoveComponent.vue"
 
+
 const router = createRouter({
     history: createWebHistory(),
 

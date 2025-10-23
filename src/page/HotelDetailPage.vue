@@ -11,6 +11,7 @@ export default {
     return {
       hotelInfo: {},
       favorite: false,
+      roomData: {},
     };
   },
   async mounted() {

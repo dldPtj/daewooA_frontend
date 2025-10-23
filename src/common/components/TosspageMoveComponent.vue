@@ -1,9 +1,15 @@
 <script >
-
+export default {
+  methods:{
+    goToToss(){
+      window.location.href = '/check.html';
+    }
+  }
+}
 </script>
 
 <template>
-  <button type="button" id="MoveTossPage" ><img src="../../assets/tossImg.png"> </button>
+ <button type="button" id="MoveTossPage" @click="goToToss"><img src="../../assets/tossImg.png"> </button>
 </template>
 
 <style >
