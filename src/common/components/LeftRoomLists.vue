@@ -23,7 +23,15 @@ export default {
   computed: {
     isUserLoggedIn() {
       return !!localStorage.getItem('token');
-    }
+    },
+    fullImageUrl() {
+      const baseUrl = process.env.VUE_APP_API_URL;
+      const firstRoomImage = this.roomInfo.roomImages?.[0];
+
+      return firstRoomImage?.roomImgUrl
+        ? `${baseUrl}${firstRoomImage.roomImgUrl}`
+        : ""; // 이미지가 없을 경우 빈 문자열 반환
+    },
   }
 };
 </script>
@@ -34,7 +42,7 @@ export default {
     <div class="leftroom-sec">
       <!--객실 이미지-->
       <div class="leftroom-img">
-        <img :src="roomInfo.roomImages[0]?.roomImgUrl" alt="room image"/>
+        <img :src="fullImageUrl" class="leftroom-img-size" alt="room image"/>
       </div>
       <!--객실 타입-->
       <div class="leftroom-type">
@@ -86,5 +94,15 @@ export default {
 .leftroom-sec {
   display: flex;
   align-items: center;
+}
+.leftroom-img {
+  width: 50px;
+  height: 50px;
+}
+.leftroom-img-size {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 </style>

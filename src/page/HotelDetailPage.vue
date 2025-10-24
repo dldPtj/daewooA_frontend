@@ -68,8 +68,8 @@ export default {
     isUserLoggedIn() {
       // 'token'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
       return !!localStorage.getItem('token');
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -81,8 +81,9 @@ export default {
 
     <!--나라 > 도시 > 호텔 이름-->
     <div class="country-city-hotelname">
-      <span class="hd-country">Turkey</span>&nbsp;>&nbsp;<span class="hd-city">Istanbul</span
-      >&nbsp;>&nbsp;<span class="hd-hotelname">{{ hotelInfo.name }}</span>
+      <span class="hd-country">{{ hotelInfo.country }}</span>&nbsp;<i class='bx  bx-chevron-right'></i> &nbsp;
+      <span class="hd-city">{{ hotelInfo.cityName }}</span>&nbsp;<i class='bx  bx-chevron-right'></i>&nbsp;
+      <span class="hd-hotelname">{{ hotelInfo.name }}</span>
     </div>
 
     <!--호텔 디테일 정보-->
@@ -257,7 +258,7 @@ export default {
         <h3>잔여 객실</h3>
       </div>
       <!--잔여 객실 리스트-->
-      <LeftRoomLists v-for="room in hotelInfo.rooms" :key="room.id" :roomInfo="room"/>
+      <LeftRoomLists v-for="room in hotelInfo.rooms" :key="room.id" :roomInfo="room" />
     </div>
 
     <!--호텔 위치 지도-->
@@ -694,7 +695,9 @@ export default {
   flex-direction: column;
 }
 .country-city-hotelname {
-  width: 1240px;
+  display: flex;
+  align-items: center;
+  width: 1250px;
   margin: 40px auto 0px;
   text-align: left;
 }
