@@ -16,7 +16,6 @@ export default {
       cities: [],
       tours: [],
       token: localStorage.getItem('token'),
-
     };
   },
   async mounted() {

@@ -1,11 +1,7 @@
-// check.js
 import dayjs from "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/+esm";
 import axios from "https://cdn.jsdelivr.net/npm/axios@1.6.8/+esm";
 
-const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm"; // 토스 테스트 키
-const tossPayments = TossPayments(clientKey); // ✅ v2에서는 TossPayments 바로 사용 가능
 
-// ✅ localStorage에서 예약 정보 읽기
 const roomId = localStorage.getItem("roomId");
 const checkInDate = localStorage.getItem("checkin");
 const checkOutDate = localStorage.getItem("checkout");
@@ -14,8 +10,7 @@ const checkOutDate = localStorage.getItem("checkout");
 const formatCheckInDate = dayjs(checkInDate).format("YYYY-MM-DD");
 const formatCheckOutDate = dayjs(checkOutDate).format("YYYY-MM-DD");
 
-// ✅ 결제 금액 조회
-let paymentData = {totalPrice: 0, hotelName: "호텔 예약 테스트"};
+let totalPrice;
 
 try {
     const result = await axios.get(
@@ -27,50 +22,47 @@ try {
         });
 
     // Spring Boot 응답 형식에 맞춰 처리
-    paymentData = result.data.content || result.data;
-    console.log("💰 결제 정보:", paymentData);
+    let data = result.data.content || result.data;
+    totalPrice = data.totalPrice;
+    console.log("💰 결제 정보:", data);
 } catch (error) {
     console.error("❌ 결제 정보 불러오기 실패:", error);
     alert("결제 금액 정보를 불러올 수 없습니다.");
 }
 
-// ✅ 결제 금액 객체
-const amount = {
-    currency: "KRW",
-    value: 100 ?? 100,
-};
+// ✅ 1. 본인 계정의 '결제위젯'용 클라이언트 키로 교체하세요.
+const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+//이부분은 하드코딩되어있는 총 가격입니다 http://localhost:8888/api/reservations/preview 에 있는 총 가격이 들어와야합니다.
+let amount = { currency: "KRW", value: totalPrice };
 
-// ✅ 결제 위젯 생성
+
+
+// ✅ 2. import 대신 TossPayments를 직접 사용합니다.
+const tossPayments = TossPayments(clientKey);
 const widgets = tossPayments.widgets({
-    customerKey: "customer_" + Date.now(),
+    customerKey: "some_random_customer_key" // ANONYMOUS 대신 임의의 키 사용
 });
 
-// ✅ 금액 및 결제수단 렌더링
-await widgets.setAmount(amount);
+// ✅ 3. async/await를 사용하지 않아도 되므로 main 함수를 제거하고 바로 실행합니다.
+widgets.setAmount(amount);
 
-await widgets.renderPaymentMethods({
+widgets.renderPaymentMethods({
     selector: "#payment-method",
     variantKey: "DEFAULT",
 });
 
-await widgets.renderAgreement({
+widgets.renderAgreement({
     selector: "#agreement",
-    variantKey: "AGREEMENT",
+    variantKey: "AGREEMENT"
 });
 
-// ✅ 결제 버튼 클릭 시 결제 요청
-document
-    .getElementById("payment-request-button")
-    .addEventListener("click", async () => {
-        try {
-            await widgets.requestPayment({
-                orderId: "order_" + new Date().getTime(),
-                orderName: paymentData.hotelName || "호텔 예약 테스트",
-                successUrl: window.location.origin + "/success.html",
-                failUrl: window.location.origin + "/fail.html",
-            });
-        } catch (err) {
-            console.error("❌ 결제 요청 실패:", err);
-            alert("결제 요청 중 오류가 발생했습니다.");
-        }
+const paymentRequestButton = document.getElementById('payment-request-button');
+
+paymentRequestButton.addEventListener('click', () => {
+    widgets.requestPayment({
+        orderId: "order_" + new Date().getTime(),
+        orderName: "호텔 예약 테스트",
+        successUrl: window.location.origin + "/success.html",
+        failUrl: window.location.origin + "/fail.html",
     });
+});

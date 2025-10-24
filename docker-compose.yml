@@ -26,30 +26,18 @@ services:
       retries: 5
 
   boot-app:
-    image: asjcell/backend_image:v1.1.7
+    image: gustj5020/backend_image:1.0.7
     container_name: boot_container
     ports:
       - "18888:8888"
+    env_file:
+      - .env  # .env 파일 로드
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SPRING_PROFILES_ACTIVE: local
       TZ: Asia/Seoul
-      # ✅ MariaDB 환경 변수 추가 (필수!)
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      # Mail 설정
-      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
-      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
-      # JWT 설정
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      # OAuth 설정
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      NAVER_CLIENT_ID: ${NAVER_CLIENT_ID}        # ✅ 추가!
-      NAVER_CLIENT_SECRET: ${NAVER_CLIENT_SECRET}  # ✅ 추가!
     depends_on:
       mariadb:
-        condition: service_healthy  # ✅ 조건 추가!
+        condition: service_healthy
     networks:
       - mjc_network
 
