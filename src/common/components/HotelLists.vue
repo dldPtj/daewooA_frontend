@@ -22,11 +22,20 @@ export default {
     imageCount() {
       return this.hotelInfo.imageUrls?.length || 0;
     },
+    isUserLoggedIn() {
+      // 'authToken'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
+      return !!localStorage.getItem('token');
+    }
   },
   methods: {
     togglefavorites() {
-      this.favorite = !this.favorite;
-      this.$emit('toggle-favorite', this.hotelInfo);
+      if (this.isUserLoggedIn) {
+        // 로그인 상태일 때 (토큰이 있을 때): 기존 찜하기 로직 실행
+        this.favorite = !this.favorite;
+      } else {
+        // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
+        alert('로그인이 필요한 기능입니다.');
+      }
     }
   }
 };

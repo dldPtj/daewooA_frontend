@@ -11,8 +11,18 @@ export default {
   },
   methods:{
     goToPaymentPage(){
-      localStorage.setItem("roomId", this.roomInfo.id);
-      router.push("/paymentpage");
+      if (this.isUserLoggedIn) {
+        localStorage.setItem("roomId", this.roomInfo.id);
+        router.push("/paymentpage");
+      }
+      else {
+        alert('로그인이 필요한 기능입니다.');
+      }
+    }
+  },
+  computed: {
+    isUserLoggedIn() {
+      return !!localStorage.getItem('token');
     }
   }
 };
@@ -37,7 +47,7 @@ export default {
 
     <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
     <div class="leftroom-sec">
-      <div class="room-price">₩<span id="room-price">{{ roomInfo.price }}</span><small>/night</small></div>
+      <div class="room-price">₩<span id="room-price">{{ roomInfo?.price?.toLocaleString() }}</span><small>/night</small></div>
       <div class="room-book">
         <button id="room-book-btn" @click="goToPaymentPage">Book now</button>
       </div>
