@@ -17,6 +17,8 @@ export default {
     return {
       hotellists: [],
       totalHotels: 0,
+      totalPages: 0,
+      currentPage: 0,
       FilterOpen: true,
       priceFilterOpen: false,
       ratingFilterOpen: false,
@@ -25,13 +27,30 @@ export default {
     };
   },
   async mounted() {
-    const result = await aTeamApi.get('/api/hotels/filter');
-    const resultData = result.data.hotels;
-    console.log('data >>> ', resultData);
-    this.hotellists = resultData || [];
-    this.totalHotels = result.data.totalHotels || 0;
+    this.fetchHotels(0); // ✅ 첫 페이지 불러오기
   },
+
   methods: {
+    async fetchHotels(page) {
+      try {
+        const result = await aTeamApi.get(`/api/hotels/filter?page=${page}&size=4`);
+        const data = result.data;
+        console.log('data >>> ', data);
+
+        this.hotellists = data.hotels || [];
+        this.totalHotels = data.totalHotels || 0;
+        this.totalPages = data.totalPages || 0;
+        this.currentPage = data.currentPage || page;
+      } catch (error) {
+        console.error('호텔 데이터를 불러오는 중 오류 발생:', error);
+      }
+    },
+    changePage(page) {
+      // ✅ 유효한 범위 내에서만 페이지 이동
+      if (page >= 0 && page <= this.totalPages) {
+        this.fetchHotels(page);
+      }
+    },
     toggleFilter(filterName) {
       if (filterName === 'price') {
         this.priceFilterOpen = !this.priceFilterOpen;
@@ -191,6 +210,11 @@ export default {
       <!--호텔 리스트-->
       <div class="hotel-lists">
         <HotelLists v-for="hotel in hotellists" :key="hotel.id" :hotelInfo="hotel" />
+        <div class="page-btns">
+          <button id="page-btn" :disabled="currentPage === 0" @click="changePage(currentPage - 1)"><i class='bx  bx-chevron-left' style="margin-top: 7px"></i></button>
+          <span id="page-info">{{ currentPage + 1 }} of {{ totalPages }}</span>
+          <button id="page-btn" :disabled="currentPage === totalPages - 1" @click="changePage(currentPage + 1)"><i class='bx  bx-chevron-right' style="margin-top: 7px"></i></button>
+        </div>
       </div>
     </div>
   </div>
@@ -373,5 +397,23 @@ input[type='checkbox'] {
   border: white solid 1px;
   box-shadow: 0px 3px 10px #d3d3d3;
   border-radius: 20px;
+}
+.page-btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+#page-info {
+  font-size: 25px;
+}
+#page-btn {
+  background-color: transparent;
+  width: 100px;
+  border-radius: 20px;
+  border: none;
+  font-size: 40px;
+}
+#page-btn:hover {
+  background-color: #d3d3d3;
 }
 </style>
