@@ -1,9 +1,9 @@
-<script >
-import HeaderComponent from "@/common/components/HeaderComponent.vue";
-import FooterComponent from "@/common/components/FooterComponent.vue";
-import {aTeamApi} from "@/util/axios";
-import HotelLists from "@/common/components/HotelLists.vue";
-import SearchbarComponent from "@/common/components/SearchbarComponent.vue";
+<script>
+import HeaderComponent from '@/common/components/HeaderComponent.vue';
+import FooterComponent from '@/common/components/FooterComponent.vue';
+import { aTeamApi } from '@/util/axios';
+import HotelLists from '@/common/components/HotelLists.vue';
+import SearchbarComponent from '@/common/components/SearchbarComponent.vue';
 
 export default {
   components: {
@@ -16,18 +16,20 @@ export default {
   data() {
     return {
       hotellists: [],
+      totalHotels: 0,
       FilterOpen: true,
       priceFilterOpen: false,
       ratingFilterOpen: false,
       freebiesFilterOpen: false,
-      amenitiesFilterOpen: false
-    }
+      amenitiesFilterOpen: false,
+    };
   },
   async mounted() {
     const result = await aTeamApi.get('/api/hotels/filter');
     const resultData = result.data.hotels;
     console.log('data >>> ', resultData);
     this.hotellists = resultData || [];
+    this.totalHotels = result.data.totalHotels || 0;
   },
   methods: {
     toggleFilter(filterName) {
@@ -42,7 +44,7 @@ export default {
       }
     },
   },
-}
+};
 </script>
 
 <template>
@@ -55,7 +57,6 @@ export default {
 
   <!--호텔 검색 화면 메인 부분-->
   <div class="hotel-search-main">
-
     <!--호텔 필터링-->
     <div class="hotel-filters">
       <!--가격 필터-->
@@ -67,17 +68,18 @@ export default {
           <div class="filter-header">
             <h4>Price</h4>
             <button id="dropdown-btn" @click="toggleFilter('price')">
-              <i class='bxr' :class="{
-              'bx-chevron-up': priceFilterOpen,
-              'bx-chevron-down': !priceFilterOpen
-            }"></i>
+              <i
+                class="bxr"
+                :class="{
+                  'bx-chevron-up': priceFilterOpen,
+                  'bx-chevron-down': !priceFilterOpen,
+                }"
+              ></i>
             </button>
           </div>
           <div v-if="priceFilterOpen">
-            <input type="range" id="priceSlider" min="0" max="100" value="₩5">
-            <div class="price-range">
-              <span>₩0</span><span>{{}}</span><span>₩1,000,000</span>
-            </div>
+            <input type="range" id="priceSlider" min="0" max="100" value="₩5" />
+            <div class="price-range"><span>₩0</span><span>{{}}</span><span>₩1,000,000</span></div>
           </div>
         </div>
 
@@ -86,10 +88,13 @@ export default {
           <div class="filter-header">
             <h4>Rating</h4>
             <button id="dropdown-btn" @click="toggleFilter('rating')">
-              <i class='bxr' :class="{
-              'bx-chevron-up': ratingFilterOpen,
-              'bx-chevron-down': !ratingFilterOpen
-            }"></i>
+              <i
+                class="bxr"
+                :class="{
+                  'bx-chevron-up': ratingFilterOpen,
+                  'bx-chevron-down': !ratingFilterOpen,
+                }"
+              ></i>
             </button>
           </div>
           <div v-if="ratingFilterOpen">
@@ -107,28 +112,21 @@ export default {
           <div class="filter-header">
             <h4>Freebies</h4>
             <button id="dropdown-btn" @click="toggleFilter('freebies')">
-              <i class='bxr' :class="{
-              'bx-chevron-up': freebiesFilterOpen,
-              'bx-chevron-down': !freebiesFilterOpen
-            }"></i>
+              <i
+                class="bxr"
+                :class="{
+                  'bx-chevron-up': freebiesFilterOpen,
+                  'bx-chevron-down': !freebiesFilterOpen,
+                }"
+              ></i>
             </button>
           </div>
           <div v-if="freebiesFilterOpen" class="freebies-checkboxes">
-            <div>
-              <input type="checkbox"><label for="조식포함">조식포함</label>
-            </div>
-            <div>
-              <input type="checkbox"><label for="무료주차">무료주차</label>
-            </div>
-            <div>
-              <input type="checkbox"><label for="WIFI">WIFI</label>
-            </div>
-            <div>
-              <input type="checkbox"><label for="공항셔틀">공항셔틀</label>
-            </div>
-            <div>
-              <input type="checkbox"><label for="무료취소">무료취소</label>
-            </div>
+            <div><input type="checkbox" /><label for="조식포함">조식포함</label></div>
+            <div><input type="checkbox" /><label for="무료주차">무료주차</label></div>
+            <div><input type="checkbox" /><label for="WIFI">WIFI</label></div>
+            <div><input type="checkbox" /><label for="공항셔틀">공항셔틀</label></div>
+            <div><input type="checkbox" /><label for="무료취소">무료취소</label></div>
           </div>
         </div>
         <!--호텔 편의시설 필터-->
@@ -136,25 +134,22 @@ export default {
           <div class="filter-header">
             <h4>Amenities</h4>
             <button id="dropdown-btn" @click="toggleFilter('amenities')">
-              <i class='bxr' :class="{
-              'bx-chevron-up': amenitiesFilterOpen,
-              'bx-chevron-down': !amenitiesFilterOpen
-            }"></i>
+              <i
+                class="bxr"
+                :class="{
+                  'bx-chevron-up': amenitiesFilterOpen,
+                  'bx-chevron-down': !amenitiesFilterOpen,
+                }"
+              ></i>
             </button>
           </div>
           <div v-if="amenitiesFilterOpen" class="amenities-checkboxes">
             <div>
-              <input type="checkbox"><label for="24시 프론트데스크">24시 프론트데스크</label>
+              <input type="checkbox" /><label for="24시 프론트데스크">24시 프론트데스크</label>
             </div>
-            <div>
-              <input type="checkbox"><label for="에어컨">에어컨</label>
-            </div>
-            <div>
-              <input type="checkbox"><label for="피트니스">피트니스</label>
-            </div>
-            <div>
-              <input type="checkbox"><label for="수영장">수영장</label>
-            </div>
+            <div><input type="checkbox" /><label for="에어컨">에어컨</label></div>
+            <div><input type="checkbox" /><label for="피트니스">피트니스</label></div>
+            <div><input type="checkbox" /><label for="수영장">수영장</label></div>
           </div>
         </div>
       </div>
@@ -166,21 +161,21 @@ export default {
         <div class="accommodation-selection">
           <button id="hotel-count">
             <h3>Hotels</h3>
-            <span>257 places</span>
+            <span>{{ totalHotels }} places</span>
           </button>
           <button id="motel-count">
             <h3>Motels</h3>
-            <span>51 places</span>
+            <span>0 places</span>
           </button>
           <button id="resort-count">
             <h3>Resorts</h3>
-            <span>72 places</span>
+            <span>0 places</span>
           </button>
         </div>
       </header>
       <div class="accommodation-sort">
         <div class="accommodation-sort-text">
-          Showing 4 of <span id="accommodation-count">257 places</span>
+          Showing {{ hotellists.length }} of <span id="accommodation-count">{{ totalHotels }} places</span>
         </div>
         <div>
           <label>Sort by&nbsp;</label>
@@ -202,12 +197,12 @@ export default {
   <FooterComponent />
 </template>
 
-<style >
+<style>
 .filter-items {
   margin: 10px 20px 0 0;
 }
 .filter {
-  border-bottom : #D9D9D9 solid 1px;
+  border-bottom: #d9d9d9 solid 1px;
   margin: 10px auto;
   padding-bottom: 10px;
 }
@@ -221,13 +216,13 @@ export default {
   border: none;
   font-size: 40px;
 }
-input[type=range] {
+input[type='range'] {
   -webkit-appearance: none;
   background-color: grey;
   width: 385px;
   height: 2px;
 }
-input[type=range]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   border-radius: 50%;
   width: 30px;
@@ -259,7 +254,7 @@ input[type=range]::-webkit-slider-thumb {
   margin: 20px auto;
   gap: 10px;
 }
-.freebies-checkboxes>div {
+.freebies-checkboxes > div {
   display: flex;
   align-items: center;
 }
@@ -269,11 +264,11 @@ input[type=range]::-webkit-slider-thumb {
   margin: 20px auto;
   gap: 10px;
 }
-.amenities-checkboxes>div {
+.amenities-checkboxes > div {
   display: flex;
   align-items: center;
 }
-input[type=checkbox] {
+input[type='checkbox'] {
   width: 20px;
   height: 20px;
   border: 3px solid #8ae6b2;
@@ -284,7 +279,7 @@ input[type=checkbox] {
   flex-direction: column;
   text-align: left;
   width: 410px;
-  border-right: #D9D9D9 solid 1px;
+  border-right: #d9d9d9 solid 1px;
 }
 
 .hotel-lists {
@@ -312,7 +307,7 @@ input[type=checkbox] {
 }
 #accommodation-count {
   font-weight: bold;
-  color: #FF8682;
+  color: #ff8682;
 }
 .accommodation {
   width: 800px;
