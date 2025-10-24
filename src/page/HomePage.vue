@@ -149,7 +149,7 @@ export default {
         <div class="tour-price">
           From
           <br />
-          <h2>₩{{ tours.price }}</h2>
+          <h2>₩{{ tours?.price?.toLocaleString() }}</h2>
         </div>
       </div>
       <h5>

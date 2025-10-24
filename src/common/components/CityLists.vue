@@ -37,7 +37,7 @@ export default {
       </div>
       <div class="homepage-hotel-price">
         <h3>
-          {{ cityInfo.price }}원
+          {{ cityInfo?.price?.toLocaleString() }}원
         </h3>
       </div>
     </div>
