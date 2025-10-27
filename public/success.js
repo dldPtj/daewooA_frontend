@@ -67,7 +67,7 @@ async function confirmPayment() {
     } catch (error) {
         console.error("결제 승인 요청 중 네트워크 오류 발생:", error);
         if (!roomId2) alert("roomId가 비어 있습니다!");
-        window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
+        // window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
     }
 }
 
