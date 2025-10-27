@@ -63,11 +63,46 @@ export default {
         block: 'center',
       });
     },
+    getAmenityIcon(amenity) {
+      // amenities 이름 일부로 매칭 (포함 여부 기준)
+      const iconMap = [
+        { keyword: '수영장', icon: require('../assets/icon_pool.png') },
+        { keyword: '스파', icon: require('../assets/icon_spa.png') },
+        { keyword: '레스토랑', icon: require('../assets/icon_restaurant.png') },
+        { keyword: '룸서비스', icon: require('../assets/icon_room-service.png') },
+        { keyword: '헬스', icon: require('../assets/icon_fitness.png') },
+        { keyword: '바', icon: require('../assets/icon_wine.png') },
+        { keyword: '커피', icon: require('../assets/icon_breakfast.png') },
+        { keyword: '조식', icon: require('../assets/icon_breakfast.png') },
+        { keyword: '와이파이', icon: require('../assets/icon_wifi.png') },
+        { keyword: '주차', icon: require('../assets/icon_car.png') },
+        { keyword: '공항', icon: require('../assets/icon_airport.png') },
+        { keyword: '프론트', icon: require('../assets/icon_front.png') },
+        { keyword: '에어컨', icon: require('../assets/icon_aircon.png') },
+      ];
+
+      const match = iconMap.find((item) => amenity.includes(item.keyword));
+      // 매칭된 게 없으면 기본 아이콘 반환
+      return match ? match.icon : require('../assets/icon_default.png');
+    },
   },
   computed: {
     isUserLoggedIn() {
       // 'token'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
       return !!localStorage.getItem('token');
+    },
+    // 첫 번째 열에 4개
+    firstColumnAmenities() {
+      return this.hotelInfo.amenities?.slice(0, 4) || [];
+    },
+    // 두 번째 열에 3개
+    secondColumnAmenities() {
+      return this.hotelInfo.amenities?.slice(4, 7) || [];
+    },
+    // 남은 amenities 개수
+    remainingCount() {
+      const total = this.hotelInfo.amenities?.length || 0;
+      return total > 7 ? total - 7 : 0;
     },
   },
 };
@@ -284,25 +319,47 @@ export default {
     <!--호텔 편의시설-->
     <div class="hotel-detail-amenities">
       <div class="amenities-title">
-        <h3>Amenitites</h3>
+        <h3>Amenities</h3>
       </div>
+
       <div class="amenities-lists">
+        <!-- 첫 번째 열 -->
         <ul class="amenities-lists-column" style="list-style: none">
-          <li><img src="../assets/icon_pool.png" />&nbsp;Outdoor pool</li>
-          <li><img src="../assets/icon_pool.png" />&nbsp;Indoor pool</li>
-          <li><img src="../assets/icon_spa.png" />&nbsp;Spa and wellness center</li>
-          <li><img src="../assets/icon_restaurant.png" />&nbsp;Restaurant</li>
-          <li><img src="../assets/icon_room-service.png" />&nbsp;Room service</li>
+          <li
+            v-for="(amenity, index) in firstColumnAmenities"
+            :key="'col1-' + index"
+          >
+            <img
+              :src="getAmenityIcon(amenity)"
+              alt="amenity icon"
+              class="amenity-icon"
+            />
+            &nbsp;{{ amenity }}
+          </li>
         </ul>
+
+        <!-- 두 번째 열 -->
         <ul class="amenities-lists-column" style="list-style: none">
-          <li><img src="../assets/icon_fitness.png" />&nbsp;Fitness center</li>
-          <li><img src="../assets/icon_wine.png" />&nbsp;Bar/Lounge</li>
-          <li><img src="../assets/icon_wifi.png" />&nbsp;Free Wi-Fi</li>
-          <li><img src="../assets/icon_breakfast.png" />&nbsp;Tea/coffee machine</li>
-          <li class="lastlist">+<span id="left-amenities">24</span>&nbsp;more</li>
+          <li
+            v-for="(amenity, index) in secondColumnAmenities"
+            :key="'col2-' + index"
+          >
+            <img
+              :src="getAmenityIcon(amenity)"
+              alt="amenity icon"
+              class="amenity-icon"
+            />
+            &nbsp;{{ amenity }}
+          </li>
+
+          <!-- 남은 개수가 있을 때 +N more 표시 -->
+          <li v-if="remainingCount > 0" class="lastlist">
+            +{{ remainingCount }} more
+          </li>
         </ul>
       </div>
     </div>
+
     <!--호텔 리뷰-->
     <div class="hotel-reviews" ref="reviews">
       <div class="hotel-reviews-top">
