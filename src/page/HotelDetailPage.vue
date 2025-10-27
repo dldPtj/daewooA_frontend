@@ -3,10 +3,11 @@ import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import aTeamApi from '@/util/axios';
 import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
+import MapComponent from '@/common/components/MapComponent.vue';
 
 export default {
   name: 'HotelDetailPage',
-  components: { LeftRoomLists, HeaderComponent, FooterComponent },
+  components: { MapComponent, LeftRoomLists, HeaderComponent, FooterComponent },
   data() {
     return {
       hotelInfo: {},
@@ -85,6 +86,18 @@ export default {
       // 매칭된 게 없으면 기본 아이콘 반환
       return match ? match.icon : require('../assets/icon_default.png');
     },
+    openGoogleMaps() {
+      if (this.hotelInfo.address) {
+        // 주소를 URL 인코딩하여 Google Maps 검색 쿼리 URL을 생성합니다.
+        const encodedAddress = encodeURIComponent(this.hotelInfo.address);
+        const url = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+
+        // 새 탭에서 Google Maps를 엽니다.
+        window.open(url, '_blank');
+      } else {
+        alert('호텔 주소 정보가 없습니다.');
+      }
+    },
   },
   computed: {
     isUserLoggedIn() {
@@ -116,8 +129,10 @@ export default {
 
     <!--나라 > 도시 > 호텔 이름-->
     <div class="country-city-hotelname">
-      <span class="hd-country">{{ hotelInfo.country }}</span>&nbsp;<i class='bx  bx-chevron-right'></i> &nbsp;
-      <span class="hd-city">{{ hotelInfo.cityName }}</span>&nbsp;<i class='bx  bx-chevron-right'></i>&nbsp;
+      <span class="hd-country">{{ hotelInfo.country }}</span
+      >&nbsp;<i class="bx bx-chevron-right"></i> &nbsp;
+      <span class="hd-city">{{ hotelInfo.cityName }}</span
+      >&nbsp;<i class="bx bx-chevron-right"></i>&nbsp;
       <span class="hd-hotelname">{{ hotelInfo.name }}</span>
     </div>
 
@@ -303,16 +318,21 @@ export default {
           <h2>지도보기</h2>
         </div>
         <div class="googlemaps-btn">
-          <button id="googlemaps-btn">View on google maps</button>
+          <button id="googlemaps-btn" @click="openGoogleMaps">View on google maps</button>
         </div>
       </div>
       <!--지도-->
-      <div class="map"></div>
+      <div class="map">
+        <MapComponent
+          :address="hotelInfo.address"
+          :hotelName="hotelInfo.name"
+          v-if="hotelInfo.address"
+        />
+      </div>
       <!--주소-->
       <div class="hoteldetail-address">
-        <img src="../assets/ion-location.png" /><span id="address"
-          >Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</span
-        >
+        <img src="../assets/ion-location.png" />
+        <span id="address">{{ hotelInfo.address }}</span>
       </div>
     </div>
 
@@ -325,37 +345,21 @@ export default {
       <div class="amenities-lists">
         <!-- 첫 번째 열 -->
         <ul class="amenities-lists-column" style="list-style: none">
-          <li
-            v-for="(amenity, index) in firstColumnAmenities"
-            :key="'col1-' + index"
-          >
-            <img
-              :src="getAmenityIcon(amenity)"
-              alt="amenity icon"
-              class="amenity-icon"
-            />
+          <li v-for="(amenity, index) in firstColumnAmenities" :key="'col1-' + index">
+            <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
             &nbsp;{{ amenity }}
           </li>
         </ul>
 
         <!-- 두 번째 열 -->
         <ul class="amenities-lists-column" style="list-style: none">
-          <li
-            v-for="(amenity, index) in secondColumnAmenities"
-            :key="'col2-' + index"
-          >
-            <img
-              :src="getAmenityIcon(amenity)"
-              alt="amenity icon"
-              class="amenity-icon"
-            />
+          <li v-for="(amenity, index) in secondColumnAmenities" :key="'col2-' + index">
+            <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
             &nbsp;{{ amenity }}
           </li>
 
           <!-- 남은 개수가 있을 때 +N more 표시 -->
-          <li v-if="remainingCount > 0" class="lastlist">
-            +{{ remainingCount }} more
-          </li>
+          <li v-if="remainingCount > 0" class="lastlist">+{{ remainingCount }} more</li>
         </ul>
       </div>
     </div>
