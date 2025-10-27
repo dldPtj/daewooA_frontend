@@ -110,6 +110,7 @@ export default {
         <br>
         <a class="PlsL"> 로그인해주세요</a>
       </div>
+
       <fieldset class="fieldLogin">
         <legend class="LegendLogin">이메일</legend>
         <input type="email" placeholder="이메일을 입력하세요." value="" class="LTextBox" id="userEmail" v-model="state.form.userEmail">

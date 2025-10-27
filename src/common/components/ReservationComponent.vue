@@ -14,7 +14,6 @@ export default {
     roomBedInfo: String,
     bookingReference: String,
     userProfileImageUrl:String
-
   },
   methods: {
     async downloadTicketBtn() {

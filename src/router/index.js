@@ -23,7 +23,7 @@ import logoutHeaderComponent from "@/common/components/LogoutHeaderComponent.vue
 import LoginHeaderComponent from "@/common/components/LoginHeaderComponent.vue";
 import LeavePhoneNum from  "@/common/components/LeavePhoneNum.vue";
 import TosspageMoveComponent from "@/common/components/TosspageMoveComponent.vue"
-
+import CouponComponent from "@/common/components/CouponComponent.vue"
 
 const router = createRouter({
     history: createWebHistory(),
@@ -51,6 +51,7 @@ const router = createRouter({
         { path: '/loginHeaderComponent', name: 'loginHeaderComponent', component: LoginHeaderComponent },
         { path: '/leavePhoneNum', name: 'leavePhoneNum', component: LeavePhoneNum },
         { path: '/tosspagemoveComponent', name: 'tosspagemoveComponent', component: TosspageMoveComponent },
+        { path: '/couponComponent', name: 'couponComponent', component: CouponComponent },
 
     ],
 });

@@ -54,20 +54,23 @@ async function confirmPayment() {
             }
         );
 
-        if (response.ok) {
+        if (response.status >= 200 && response.status < 300) {
             // 성공 시 UI 변경
             confirmLoadingSection.style.display = 'none';
             confirmSuccessSection.style.display = 'flex';
-            console.log("최종 승인 성공!");
-        } else {
-            // 실패 시 에러 처리
-            const errorBody = await response.json();
-            window.location.href = `/fail.html?message=${errorBody.message || "알 수 없는 오류"}&code=${response.status}`;
+            console.log("✅ 최종 승인 성공!", response.data);
         }
     } catch (error) {
+        // Axios는 실패 시 error.response가 존재함
+        if (error.response) {
+            const status = error.response.status;
+            const message = error.response.data?.message || "알 수 없는 오류";
+            window.location.href = `/fail.html?message=${message}&code=${status}`;
+        }else{
         console.error("결제 승인 요청 중 네트워크 오류 발생:", error);
         if (!roomId2) alert("roomId가 비어 있습니다!");
         // window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
+        }
     }
 }
 
