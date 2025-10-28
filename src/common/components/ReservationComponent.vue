@@ -13,7 +13,9 @@ export default {
     roomName: String,
     roomBedInfo: String,
     bookingReference: String,
-    userProfileImageUrl:String
+    userProfileImageUrl:String,
+    view: String,
+    hotelImageUrl: String,
   },
   methods: {
     async downloadTicketBtn() {
@@ -50,7 +52,7 @@ export default {
 <template>
   <div class="ReservationList" >
     <div class="ReservationImage" >
-      <img src="" alt="호텔 이미지가 나옵니다." id="ProfileImg">
+      <img :src="getFullUrl(hotelImageUrl[0])" alt="호텔 이미지가 나옵니다." id="ProfileImg">
     </div>
     <div class="Reservation_CheckInOut_Day">
       <a>Check-In</a><br>
@@ -113,7 +115,7 @@ export default {
           </div>
         </div>
         <div class="ticketRoomDetail">
-          {{roomName}}  {{roomBedInfo}}
+          {{roomName}}  {{roomBedInfo}} ({{view}})
         </div>
       </div>
       <div class="ticketDetailMiddle">
@@ -156,7 +158,7 @@ export default {
       </div>
   </div>
     <div class="ticketHotelImg">
-      <img src="../../assets/HotelDefaultImg.png">
+      <img :src="getFullUrl(hotelImageUrl[0])">
     </div>
   </div>
 </template>
@@ -164,16 +166,23 @@ export default {
 <style>
 #downloadTicket{
   position: absolute;
-  left: -9999px;
+  left: -99999px;
   top: 0;
   opacity: 1;
   visibility: visible;
 }
 .ticketHotelImg{
   display: flex;
+  margin: auto 0;
   justify-content: center;
   width: 375px;
+  height: 309px;
   object-fit: cover;
+}
+.ticketHotelImg img{
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 .barcodeImg{
   display: flex;
@@ -185,7 +194,7 @@ export default {
 }
 .ticketCountry{
   display: flex;
-  width: 60px;
+  width: 90px;
   margin: 37px 0 34px 30px;
   flex-direction: column;
 }
@@ -265,7 +274,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 610px;
-  border: #2c3e50 solid 1px;
+
 }
 
 .ticketDateFont {
@@ -301,7 +310,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 246px;
-  border: #42b983 solid 1px;
+
   padding: 34px 24px;
   background: #EBF6F2;
 }
@@ -309,7 +318,7 @@ export default {
 .ticketImg {
   display: flex;
   width: 1231px;
-  border: #FF8682 solid 1px;
+  box-shadow: 5px 5px 18px 5px #d3d3d3;
 }
 
 

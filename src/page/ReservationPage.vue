@@ -66,6 +66,8 @@ export default {
                            :room-name="item.roomName"
                            :user-name="item.userName"
                            :user-profile-image-url="item.userProfileImageUrl"
+                           :view="item.view"
+                           :hotel-image-url="item.hotelImageUrl"
 
     />
   </div>
