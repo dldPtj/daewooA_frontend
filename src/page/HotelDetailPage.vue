@@ -3,10 +3,11 @@ import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
 import aTeamApi from '@/util/axios';
 import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
+import MapComponent from '@/common/components/MapComponent.vue';
 
 export default {
   name: 'HotelDetailPage',
-  components: { LeftRoomLists, HeaderComponent, FooterComponent },
+  components: { MapComponent, LeftRoomLists, HeaderComponent, FooterComponent },
   data() {
     return {
       hotelInfo: {},
@@ -33,7 +34,13 @@ export default {
   },
   methods: {
     togglefavorites() {
-      this.favorite = !this.favorite;
+      if (this.isUserLoggedIn) {
+        // 로그인 상태일 때 (토큰이 있을 때): 기존 찜하기 로직 실행
+        this.favorite = !this.favorite;
+      } else {
+        // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
+        alert('로그인이 필요한 기능입니다.');
+      }
     },
     // 각 이미지 URL에 base URL을 안전하게 붙여서 반환
     getFullImageUrl(url) {
@@ -57,6 +64,59 @@ export default {
         block: 'center',
       });
     },
+    getAmenityIcon(amenity) {
+      // amenities 이름 일부로 매칭 (포함 여부 기준)
+      const iconMap = [
+        { keyword: '수영장', icon: require('../assets/icon_pool.png') },
+        { keyword: '스파', icon: require('../assets/icon_spa.png') },
+        { keyword: '레스토랑', icon: require('../assets/icon_restaurant.png') },
+        { keyword: '룸서비스', icon: require('../assets/icon_room-service.png') },
+        { keyword: '헬스', icon: require('../assets/icon_fitness.png') },
+        { keyword: '바', icon: require('../assets/icon_wine.png') },
+        { keyword: '커피', icon: require('../assets/icon_breakfast.png') },
+        { keyword: '조식', icon: require('../assets/icon_breakfast.png') },
+        { keyword: '와이파이', icon: require('../assets/icon_wifi.png') },
+        { keyword: '주차', icon: require('../assets/icon_car.png') },
+        { keyword: '공항', icon: require('../assets/icon_airport.png') },
+        { keyword: '프론트', icon: require('../assets/icon_front.png') },
+        { keyword: '에어컨', icon: require('../assets/icon_aircon.png') },
+      ];
+
+      const match = iconMap.find((item) => amenity.includes(item.keyword));
+      // 매칭된 게 없으면 기본 아이콘 반환
+      return match ? match.icon : require('../assets/icon_default.png');
+    },
+    openGoogleMaps() {
+      if (this.hotelInfo.address) {
+        // 주소를 URL 인코딩하여 Google Maps 검색 쿼리 URL을 생성합니다.
+        const encodedAddress = encodeURIComponent(this.hotelInfo.address);
+        const url = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+
+        // 새 탭에서 Google Maps를 엽니다.
+        window.open(url, '_blank');
+      } else {
+        alert('호텔 주소 정보가 없습니다.');
+      }
+    },
+  },
+  computed: {
+    isUserLoggedIn() {
+      // 'token'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
+      return !!localStorage.getItem('token');
+    },
+    // 첫 번째 열에 4개
+    firstColumnAmenities() {
+      return this.hotelInfo.amenities?.slice(0, 4) || [];
+    },
+    // 두 번째 열에 3개
+    secondColumnAmenities() {
+      return this.hotelInfo.amenities?.slice(4, 7) || [];
+    },
+    // 남은 amenities 개수
+    remainingCount() {
+      const total = this.hotelInfo.amenities?.length || 0;
+      return total > 7 ? total - 7 : 0;
+    },
   },
 };
 </script>
@@ -69,8 +129,11 @@ export default {
 
     <!--나라 > 도시 > 호텔 이름-->
     <div class="country-city-hotelname">
-      <span class="hd-country">Turkey</span>&nbsp;>&nbsp;<span class="hd-city">Istanbul</span
-      >&nbsp;>&nbsp;<span class="hd-hotelname">{{ hotelInfo.name }}</span>
+      <span class="hd-country">{{ hotelInfo.country }}</span
+      >&nbsp;<i class="bx bx-chevron-right"></i> &nbsp;
+      <span class="hd-city">{{ hotelInfo.cityName }}</span
+      >&nbsp;<i class="bx bx-chevron-right"></i>&nbsp;
+      <span class="hd-hotelname">{{ hotelInfo.name }}</span>
     </div>
 
     <!--호텔 디테일 정보-->
@@ -245,7 +308,7 @@ export default {
         <h3>잔여 객실</h3>
       </div>
       <!--잔여 객실 리스트-->
-      <LeftRoomLists v-for="room in hotelInfo.rooms" :key="room.id" :roomInfo="room"/>
+      <LeftRoomLists v-for="room in hotelInfo.rooms" :key="room.id" :roomInfo="room" />
     </div>
 
     <!--호텔 위치 지도-->
@@ -255,41 +318,52 @@ export default {
           <h2>지도보기</h2>
         </div>
         <div class="googlemaps-btn">
-          <button id="googlemaps-btn">View on google maps</button>
+          <button id="googlemaps-btn" @click="openGoogleMaps">View on google maps</button>
         </div>
       </div>
       <!--지도-->
-      <div class="map"></div>
+      <div class="map">
+        <MapComponent
+          :address="hotelInfo.address"
+          :hotelName="hotelInfo.name"
+          v-if="hotelInfo.address"
+        />
+      </div>
       <!--주소-->
       <div class="hoteldetail-address">
-        <img src="../assets/ion-location.png" /><span id="address"
-          >Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</span
-        >
+        <img src="../assets/ion-location.png" />
+        <span id="address">{{ hotelInfo.address }}</span>
       </div>
     </div>
 
     <!--호텔 편의시설-->
     <div class="hotel-detail-amenities">
       <div class="amenities-title">
-        <h3>Amenitites</h3>
+        <h3>Amenities</h3>
       </div>
+
       <div class="amenities-lists">
+        <!-- 첫 번째 열 -->
         <ul class="amenities-lists-column" style="list-style: none">
-          <li><img src="../assets/icon_pool.png" />&nbsp;Outdoor pool</li>
-          <li><img src="../assets/icon_pool.png" />&nbsp;Indoor pool</li>
-          <li><img src="../assets/icon_spa.png" />&nbsp;Spa and wellness center</li>
-          <li><img src="../assets/icon_restaurant.png" />&nbsp;Restaurant</li>
-          <li><img src="../assets/icon_room-service.png" />&nbsp;Room service</li>
+          <li v-for="(amenity, index) in firstColumnAmenities" :key="'col1-' + index">
+            <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
+            &nbsp;{{ amenity }}
+          </li>
         </ul>
+
+        <!-- 두 번째 열 -->
         <ul class="amenities-lists-column" style="list-style: none">
-          <li><img src="../assets/icon_fitness.png" />&nbsp;Fitness center</li>
-          <li><img src="../assets/icon_wine.png" />&nbsp;Bar/Lounge</li>
-          <li><img src="../assets/icon_wifi.png" />&nbsp;Free Wi-Fi</li>
-          <li><img src="../assets/icon_breakfast.png" />&nbsp;Tea/coffee machine</li>
-          <li class="lastlist">+<span id="left-amenities">24</span>&nbsp;more</li>
+          <li v-for="(amenity, index) in secondColumnAmenities" :key="'col2-' + index">
+            <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
+            &nbsp;{{ amenity }}
+          </li>
+
+          <!-- 남은 개수가 있을 때 +N more 표시 -->
+          <li v-if="remainingCount > 0" class="lastlist">+{{ remainingCount }} more</li>
         </ul>
       </div>
     </div>
+
     <!--호텔 리뷰-->
     <div class="hotel-reviews" ref="reviews">
       <div class="hotel-reviews-top">
@@ -682,7 +756,9 @@ export default {
   flex-direction: column;
 }
 .country-city-hotelname {
-  width: 1240px;
+  display: flex;
+  align-items: center;
+  width: 1250px;
   margin: 40px auto 0px;
   text-align: left;
 }

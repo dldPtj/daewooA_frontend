@@ -11,9 +11,27 @@ export default {
   },
   methods:{
     goToPaymentPage(){
-      localStorage.setItem("roomId", this.roomInfo.id);
-      router.push("/paymentpage");
+      if (this.isUserLoggedIn) {
+        localStorage.setItem("roomId", this.roomInfo.id);
+        router.push("/paymentpage");
+      }
+      else {
+        alert('로그인이 필요한 기능입니다.');
+      }
     }
+  },
+  computed: {
+    isUserLoggedIn() {
+      return !!localStorage.getItem('token');
+    },
+    fullImageUrl() {
+      const baseUrl = process.env.VUE_APP_API_URL;
+      const firstRoomImage = this.roomInfo.roomImages?.[0];
+
+      return firstRoomImage?.roomImgUrl
+        ? `${baseUrl}${firstRoomImage.roomImgUrl}`
+        : ""; // 이미지가 없을 경우 빈 문자열 반환
+    },
   }
 };
 </script>
@@ -24,7 +42,7 @@ export default {
     <div class="leftroom-sec">
       <!--객실 이미지-->
       <div class="leftroom-img">
-        <img :src="roomInfo.roomImages[0]?.roomImgUrl" alt="room image"/>
+        <img :src="fullImageUrl" class="leftroom-img-size" alt="room image"/>
       </div>
       <!--객실 타입-->
       <div class="leftroom-type">
@@ -37,7 +55,7 @@ export default {
 
     <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
     <div class="leftroom-sec">
-      <div class="room-price">₩<span id="room-price">{{ roomInfo.price }}</span><small>/night</small></div>
+      <div class="room-price">₩<span id="room-price">{{ roomInfo?.price?.toLocaleString() }}</span><small>/night</small></div>
       <div class="room-book">
         <button id="room-book-btn" @click="goToPaymentPage">Book now</button>
       </div>
@@ -76,5 +94,15 @@ export default {
 .leftroom-sec {
   display: flex;
   align-items: center;
+}
+.leftroom-img {
+  width: 50px;
+  height: 50px;
+}
+.leftroom-img-size {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 </style>
