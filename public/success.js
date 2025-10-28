@@ -5,6 +5,7 @@ import axios from "https://cdn.jsdelivr.net/npm/axios@1.6.8/+esm";
 const roomId2 = localStorage.getItem("roomId");
 const checkInDate = localStorage.getItem("checkin");
 const checkOutDate = localStorage.getItem("checkout");
+const couponID = localStorage.getItem("couponId")
 
 const formatCheckInDate = dayjs(checkInDate).format("YYYY-MM-DD");
 const formatCheckOutDate = dayjs(checkOutDate).format("YYYY-MM-DD");
@@ -38,7 +39,7 @@ async function confirmPayment() {
         roomId: Number(roomId2),
         checkInDate: formatCheckInDate,
         checkOutDate: formatCheckOutDate,
-        couponId: null,
+        couponId: Number(couponID),
     };
 
     try {
@@ -65,11 +66,12 @@ async function confirmPayment() {
         if (error.response) {
             const status = error.response.status;
             const message = error.response.data?.message || "알 수 없는 오류";
+            console.error(error.response);
             window.location.href = `/fail.html?message=${message}&code=${status}`;
         }else{
         console.error("결제 승인 요청 중 네트워크 오류 발생:", error);
         if (!roomId2) alert("roomId가 비어 있습니다!");
-        // window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
+        window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
         }
     }
 }

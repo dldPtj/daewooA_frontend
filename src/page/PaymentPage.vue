@@ -32,16 +32,26 @@ export default {
       coupone: [],
       discountPrice: {},
       total: {},
+      selectedItemId: 0,
+      selectedDiscount: 0,
+
     };
   },
   methods: {
     handleToggle(value) {
       this.showChild = value;
     },
-    FinalTotal(val) {
-      const target = this.items.find((i) => i.name === val.name);
-      if (target) target.selected = val.selected;
+    applyCoupon(item){
+      this.selectedItemId = item.id;
+      this.selectedDiscount = item.discountAmount;
+      localStorage.setItem("couponId", item.id);
     },
+    resetCoupon(){
+      this.selectedItemId = 0;
+      this.selectedDiscount = 0;
+      localStorage.setItem("couponId", 0);
+    }
+
   },
   async mounted() {
     const roomId = localStorage.getItem("roomId");
@@ -50,6 +60,7 @@ export default {
 
     const formatCheckInDate = dayjs(checkInDate).format('YYYY-MM-DD');
     const formatCheckOutDate = dayjs(checkOutDate).format('YYYY-MM-DD');
+
 
 
     if (!roomId) {
@@ -98,11 +109,10 @@ export default {
 
   },
   computed: {
-    totalDiscount() {
-      // ✅ 선택된 항목만 합산
-      return this.coupone
-          .filter((item) => item.selected)
-          .reduce((sum, item) => sum + item.discount, 0);
+    finalTotal() {
+      const total = this.totalPrice - this.selectedDiscount;
+      localStorage.setItem("totalPrice", total)
+        return total
     },
   },
 
@@ -182,19 +192,19 @@ export default {
         <div id="priceList">
           <p id="priceDetail">Price Details</p>
           <div id="pBaseFare" class="fontMontserrat"><a>Base Fare </a><a>₩{{ subtotal }}</a></div>
-          <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩0</a></div>
+          <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩{{ selectedDiscount }}</a></div>
           <div id="pTaxes" class="fontMontserrat"><a>Taxes</a><a>₩{{ taxes }}</a></div>
           <div id="pServiceFee" class="fontMontserrat"><a>Service Fee</a><a>₩{{ serviceFee }}</a></div>
         </div>
         <hr>
-        <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{ total }}</a></div>
+        <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{finalTotal}}</a></div>
       </div>
       <div class="paymentList">
         <div id="couponTitle">
           <a>할인 쿠폰 선택</a>
         </div>
         <div class="couponList">
-          <input type="radio" name="coupon" style="width: 20px; height: 20px; margin: auto 0">
+          <input type="radio" name="coupon" style="width: 20px; height: 20px; margin: auto 0"  @change="resetCoupon">
           <div class="couponMain">
             선택 안함
           </div>
@@ -206,7 +216,8 @@ export default {
                             :expiry-date="item.expiryDate"
                             :discount-amount="item.discountAmount"
                             :item="item"
-                            @discount-amount="FinalTotal"
+                            :selected-item-id="selectedItemId"
+                            @select-item="applyCoupon"
           />
       </div>
     </div>

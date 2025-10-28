@@ -2,39 +2,30 @@
 
 export default {
   props: {
-    id: Number,
-    name: String,
-    expiryDate: String,
-    discountAmount: Number,
     item: Object,
+    selectedItemId: Number,
   },
-  data(){
-    return{
-      couponeSelected: this.item.selected,
-    };
-  },
+
   mounted() {
-    localStorage.setItem("couponId",this.id);
+
   },
   methods:{
-    toggleSelected(){
-      this.$emit("discount-amount",{
-        ...this.item, selected: this.couponeSelected,
-      });
-    }
-  }
-}
+    selectItem(){
+      this.$emit("select-item",this.item);
+    },
+  },
+};
 </script>
 
 <template>
   <div class="couponList">
     <input type="radio" name="coupon" style="width: 20px; height: 20px; margin: auto 0"
           :value="item.name"
-          :checked="item.name === selectedItemName"
+          :checked="item.id === selectedItemId"
           @change="selectItem">
     <div class="couponMain">
-      <div>{{ name }}</div>
-      <div>만료일: {{ expiryDate }}</div>
+      <div>{{ item.name }}</div>
+      <div>만료일: {{ item.expiryDate }}</div>
     </div>
   </div>
 
