@@ -24,6 +24,7 @@ export default {
       ratingFilterOpen: false,
       freebiesFilterOpen: false,
       amenitiesFilterOpen: false,
+      selectedType: 'hotel',
     };
   },
   async mounted() {
@@ -32,6 +33,13 @@ export default {
 
   methods: {
     async fetchHotels(page) {
+      if (this.selectedType !== 'hotel') {
+        this.hotellists = [];
+        this.totalHotels = 0;
+        this.totalPages = 0;
+        this.currentPage = 0;
+        return;
+      }
       try {
         const result = await aTeamApi.get(`/api/hotels/filter?page=${page}&size=4`);
         const data = result.data;
@@ -50,6 +58,11 @@ export default {
       if (page >= 0 && page <= this.totalPages) {
         this.fetchHotels(page);
       }
+    },
+    selectAccommodation(type) {
+      this.selectedType = type;
+      // 유형 변경 시 첫 페이지부터 다시 로드하거나, 리스트를 비웁니다.
+      this.fetchHotels(0);
     },
     toggleFilter(filterName) {
       if (filterName === 'price') {
@@ -178,15 +191,29 @@ export default {
     <div class="filtered-hotel">
       <header class="accommodation">
         <div class="accommodation-selection">
-          <button id="hotel-count">
+          <button
+            id="hotel-count"
+            @click="selectAccommodation('hotel')"
+            :class="{ 'selected': selectedType === 'hotel' }"
+          >
             <h3>Hotels</h3>
             <span>{{ totalHotels }} places</span>
           </button>
-          <button id="motel-count">
+
+          <button
+            id="motel-count"
+            @click="selectAccommodation('motel')"
+            :class="{ 'selected': selectedType === 'motel' }"
+          >
             <h3>Motels</h3>
             <span>0 places</span>
           </button>
-          <button id="resort-count">
+
+          <button
+            id="resort-count"
+            @click="selectAccommodation('resort')"
+            :class="{ 'selected': selectedType === 'resort' }"
+          >
             <h3>Resorts</h3>
             <span>0 places</span>
           </button>
@@ -209,11 +236,21 @@ export default {
 
       <!--호텔 리스트-->
       <div class="hotel-lists">
-        <HotelLists v-for="hotel in hotellists" :key="hotel.id" :hotelInfo="hotel" />
-        <div class="page-btns">
-          <button id="page-btn" :disabled="currentPage === 0" @click="changePage(currentPage - 1)"><i class='bx  bx-chevron-left' style="margin-top: 7px"></i></button>
-          <span id="page-info">{{ currentPage + 1 }} of {{ totalPages }}</span>
-          <button id="page-btn" :disabled="currentPage === totalPages - 1" @click="changePage(currentPage + 1)"><i class='bx  bx-chevron-right' style="margin-top: 7px"></i></button>
+        <template v-if="hotellists.length > 0">
+          <HotelLists v-for="hotel in hotellists" :key="hotel.id" :hotelInfo="hotel" />
+
+          <div class="page-btns">
+            <button id="page-btn" :disabled="currentPage === 0" @click="changePage(currentPage - 1)"><i class='bx  bx-chevron-left' style="margin-top: 7px"></i></button>
+            <span id="page-info">{{ currentPage + 1 }} of {{ totalPages }}</span>
+            <button id="page-btn" :disabled="currentPage === totalPages - 1" @click="changePage(currentPage + 1)"><i class='bx  bx-chevron-right' style="margin-top: 7px"></i></button>
+          </div>
+        </template>
+
+        <div v-else class="no-results">
+          <div class="no-accommodations">
+            <h3>검색 결과가 없습니다.</h3>
+            <p>선택하신 숙소 유형에 대한 숙소를 찾지 못했습니다.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -350,6 +387,9 @@ input[type='checkbox'] {
   text-align: left;
 }
 #hotel-count:hover {
+  background-color: #e1e1e1;
+}
+#hotel-count.selected {
   box-shadow: 0px 5px #8ae6b2;
 }
 #motel-count {
@@ -361,6 +401,9 @@ input[type='checkbox'] {
   text-align: left;
 }
 #motel-count:hover {
+  background-color: #e1e1e1;
+}
+#motel-count.selected {
   box-shadow: 0px 5px #8ae6b2;
 }
 #resort-count {
@@ -374,6 +417,9 @@ input[type='checkbox'] {
   text-align: left;
 }
 #resort-count:hover {
+  background-color: #e1e1e1;
+}
+#resort-count.selected {
   box-shadow: 0px 5px #8ae6b2;
 }
 .hotel-search-main {
@@ -415,5 +461,13 @@ input[type='checkbox'] {
 }
 #page-btn:hover {
   background-color: #d3d3d3;
+}
+.no-accommodations {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 15px;
+  box-shadow: 0px 3px 10px #d3d3d3;
+  padding: 110px;
 }
 </style>
