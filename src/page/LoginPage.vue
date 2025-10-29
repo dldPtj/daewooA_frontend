@@ -136,9 +136,9 @@ export default {
         Or link with
       </div>
       <div id ="LoginIconBoxes">
-        <button type="button" id ="fBtn" class="LBtnGroup"><img src="../assets/Naver.png"></button>
-        <button type="button" id = "GBtn" class="LBtnGroup"><img src="../assets/googleLogin.png"></button>
-        <button type="button" id = "ABtn" class="LBtnGroup"><img src="../assets/Kakao.png"></button>
+       <a href="http://localhost:18888/oauth2/authorization/naver"><button type="button" id ="fBtn" class="LBtnGroup"><img src="../assets/Naver.png"></button></a>
+        <a href="http://localhost:18888/oauth2/authorization/google"><button type="button" id = "GBtn" class="LBtnGroup"><img src="../assets/googleLogin.png"></button></a>
+        <a href="http://localhost:18888/oauth2/authorization/kakao"><button type="button" id = "ABtn" class="LBtnGroup" ><img src="../assets/Kakao.png"></button></a>
       </div>
     </div>
     <div class="LoginImages">
