@@ -274,7 +274,7 @@ export default {
   box-shadow: 0px 3px 10px #d3d3d3;
 }
 #address {
-  max-width: 310px;
+  max-width: 260px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

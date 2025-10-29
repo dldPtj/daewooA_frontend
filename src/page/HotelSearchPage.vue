@@ -20,18 +20,87 @@ export default {
       totalPages: 0,
       currentPage: 0,
       FilterOpen: true,
-      priceFilterOpen: false,
+      priceFilterOpen: true,
       ratingFilterOpen: false,
       freebiesFilterOpen: false,
       amenitiesFilterOpen: false,
       selectedType: 'hotel',
+      sliderValue: 500000,
+      maxPrice: 1000000,
+      stepValue: 50000,
+
+      // 🌟 서버 필터링을 위해 필요한 다른 상태값 (예시)
+      // 실제 사용하지 않아도 API에 전달하기 위해 초기화
+      currentSortBy: 'rating',
+      filterParams: {
+        breakfastIncluded: false,
+        freeParking: false,
+        freeWifi: false,
+        airportShuttlebus: false,
+        freeCancellation: false,
+        frontDesk24: false,
+        airConditioner: false,
+        fitnessCenter: false,
+        pool: false,
+        checkInDate: '2025-10-01', // 초기값 설정 필요
+        checkOutDate: '2025-10-05', // 초기값 설정 필요
+      }
     };
   },
+
+  watch: {
+    sliderValue(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        // 슬라이더 값이 변경되면 필터링된 새 목록을 첫 페이지(0)부터 로드
+        this.fetchHotels(0);
+      }
+    }
+  },
+
   async mounted() {
-    this.fetchHotels(0); // ✅ 첫 페이지 불러오기
+    await this.fetchMaxPrice();
+    this.fetchHotels(0);
   },
 
   methods: {
+    async fetchMaxPrice() {
+      if (this.selectedType !== 'hotel') return;
+
+      let maxPriceFound = 0;
+      let page = 0;
+      let totalPages = 1;
+
+      try {
+        // 최대 가격을 찾을 때는 가격 외 다른 필터는 사용하지 않고 전체 데이터를 기준으로 찾습니다.
+        let result = await aTeamApi.get(`/api/hotels/filter?page=${page}&size=4`);
+        let data = result.data;
+        totalPages = data.totalPages || 1;
+
+        const initialPrices = (data.hotels || []).map(hotel => hotel.price);
+        if (initialPrices.length > 0) {
+          maxPriceFound = Math.max(...initialPrices);
+        }
+
+        for (page = 1; page < totalPages; page++) {
+          result = await aTeamApi.get(`/api/hotels/filter?page=${page}&size=4`);
+          const nextPageData = result.data;
+          const nextPrices = (nextPageData.hotels || []).map(hotel => hotel.price);
+
+          if (nextPrices.length > 0) {
+            const currentMax = Math.max(...nextPrices);
+            maxPriceFound = Math.max(maxPriceFound, currentMax);
+          }
+        }
+
+        this.maxPrice = maxPriceFound;
+        this.sliderValue = maxPriceFound;
+
+      } catch (error) {
+        console.error('최대 가격을 불러오는 중 오류 발생:', error);
+      }
+    },
+
+    // 🌟🌟🌟 수정된 fetchHotels: sliderValue를 maxPrice 필터로 전달 🌟🌟🌟
     async fetchHotels(page) {
       if (this.selectedType !== 'hotel') {
         this.hotellists = [];
@@ -40,29 +109,51 @@ export default {
         this.currentPage = 0;
         return;
       }
+
       try {
-        const result = await aTeamApi.get(`/api/hotels/filter?page=${page}&size=4`);
+        // 1. 기본 쿼리 파라미터
+        let query = `/api/hotels/filter?page=${page}&size=4&sortBy=${this.currentSortBy}`;
+
+        // 2. 가격 필터 (슬라이더 값) 추가
+        query += `&maxPrice=${this.sliderValue}`; // 👈 이 부분이 핵심
+
+        // 3. 기타 필터 파라미터 추가 (API 구조에 맞춤)
+        // filterParams 객체를 순회하며 쿼리를 동적으로 생성
+        for (const key in this.filterParams) {
+          query += `&${key}=${this.filterParams[key]}`;
+        }
+
+        const result = await aTeamApi.get(query);
         const data = result.data;
-        console.log('data >>> ', data);
 
         this.hotellists = data.hotels || [];
+        // 필터링된 결과에 따라 totalHotels, totalPages가 서버에서 변경되어 옴
         this.totalHotels = data.totalHotels || 0;
         this.totalPages = data.totalPages || 0;
         this.currentPage = data.currentPage || page;
+
       } catch (error) {
         console.error('호텔 데이터를 불러오는 중 오류 발생:', error);
       }
     },
+
     changePage(page) {
-      // ✅ 유효한 범위 내에서만 페이지 이동
-      if (page >= 0 && page <= this.totalPages) {
+      if (page >= 0 && page < this.totalPages) {
         this.fetchHotels(page);
       }
     },
     selectAccommodation(type) {
       this.selectedType = type;
-      // 유형 변경 시 첫 페이지부터 다시 로드하거나, 리스트를 비웁니다.
-      this.fetchHotels(0);
+      if (type === 'hotel') {
+        this.fetchMaxPrice().then(() => {
+          this.fetchHotels(0);
+        });
+      } else {
+        this.hotellists = [];
+        this.totalHotels = 0;
+        this.totalPages = 0;
+        this.currentPage = 0;
+      }
     },
     toggleFilter(filterName) {
       if (filterName === 'price') {
@@ -74,6 +165,10 @@ export default {
       } else if (filterName === 'amenities') {
         this.amenitiesFilterOpen = !this.amenitiesFilterOpen;
       }
+    },
+    formattedPrice(value) {
+      if (value === undefined || value === null) return '₩0';
+      return '₩' + value.toLocaleString('ko-KR');
     },
   },
 };
@@ -110,8 +205,19 @@ export default {
             </button>
           </div>
           <div v-if="priceFilterOpen">
-            <input type="range" id="priceSlider" min="0" max="100" value="₩5" />
-            <div class="price-range"><span>₩0</span><span>{{}}</span><span>₩1,000,000</span></div>
+            <span class="sliderValue">{{ formattedPrice(sliderValue) }}</span>
+            <input
+              type="range"
+              id="priceSlider"
+              min="0"
+              :max="maxPrice"
+              :step="stepValue"
+              v-model.number="sliderValue"
+            />
+            <div class="price-range">
+              <span>₩0</span>
+              <span>{{ formattedPrice(maxPrice) }}</span>
+            </div>
           </div>
         </div>
 
@@ -272,6 +378,16 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
+.sliderValue {
+  display: flex;
+  justify-content: center;
+  margin: 10px auto;
+  width: 150px;
+  border-radius: 10px;
+  font-size: 25px;
+  font-weight: bold;
+  color: #FF8682;
+}
 #dropdown-btn {
   background-color: transparent;
   border: none;
@@ -308,6 +424,12 @@ input[type='range']::-webkit-slider-thumb {
   background-color: white;
   width: 40px;
   height: 30px;
+}
+#rating-btn:hover {
+  background-color: #d3d3d3;
+}
+#rating-btn.selected {
+  background-color: #8ae6b2;
 }
 .freebies-checkboxes {
   display: flex;
