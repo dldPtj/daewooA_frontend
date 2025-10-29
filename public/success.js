@@ -9,7 +9,7 @@ const couponID = localStorage.getItem("couponId")
 
 const formatCheckInDate = dayjs(checkInDate).format("YYYY-MM-DD");
 const formatCheckOutDate = dayjs(checkOutDate).format("YYYY-MM-DD");
-
+let reservationId;
 
 // success.js
 const urlParams = new URLSearchParams(window.location.search);
@@ -59,7 +59,9 @@ async function confirmPayment() {
             // 성공 시 UI 변경
             confirmLoadingSection.style.display = 'none';
             confirmSuccessSection.style.display = 'flex';
+            reservationId = response.data;
             console.log("✅ 최종 승인 성공!", response.data);
+            console.log("✅ 최종 승인 성공!", reservationId);
         }
     } catch (error) {
         // Axios는 실패 시 error.response가 존재함
@@ -67,14 +69,28 @@ async function confirmPayment() {
             const status = error.response.status;
             const message = error.response.data?.message || "알 수 없는 오류";
             console.error(error.response);
+            console.log(reservationId);
             window.location.href = `/fail.html?message=${message}&code=${status}`;
         }else{
         console.error("결제 승인 요청 중 네트워크 오류 발생:", error);
+        console.log(reservationId);
         if (!roomId2) alert("roomId가 비어 있습니다!");
         window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
         }
     }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const myLink = document.getElementById('myLink');
+    // 클릭 이벤트 리스너 추가
+    myLink.addEventListener('click', function (event) {
+        // a 태그의 기본 동작(페이지 이동)을 막음
+        event.preventDefault();
+
+        // 원하는 페이지로 이동
+        window.location.href = `http://localhost:8080/ticketPage?id=${reservationId}`;
+    });
+});
 
 // ✅ success.html의 '결제 승인하기' 버튼에 클릭 이벤트 연결
 const confirmPaymentButton = document.getElementById('confirmPaymentButton');

@@ -49,7 +49,7 @@ export default {
     resetCoupon(){
       this.selectedItemId = 0;
       this.selectedDiscount = 0;
-      localStorage.setItem("couponId", 0);
+      localStorage.setItem("couponId", null);
     }
 
   },
@@ -227,6 +227,11 @@ export default {
 </template>
 
 <style>
+* {
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
 #rightPList {
   display: flex;
   flex-direction: column;
