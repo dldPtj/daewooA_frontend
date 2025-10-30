@@ -12,7 +12,11 @@ export default {
     };
   },
   async mounted() {
-    const res = await aTeamApi.get('/api/users/me/profileAll');
+    const res = await aTeamApi.get('/api/users/me/profileAll',{
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
     const data = res.data;
     console.log('data >>> ', data);
     this.hotels = data || [];

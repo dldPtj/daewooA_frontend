@@ -311,6 +311,7 @@ export default {
 .ACInsertData{
   font-weight: bold;
   font-size: 20px;
+
 }
 .ACInsertData input {
   border: none;
@@ -318,6 +319,7 @@ export default {
   font-weight: 600;
   font-size: 20px;
   line-height: 100%;
+  width: 500px;
 
 }
 .ACInsertData input:focus{
