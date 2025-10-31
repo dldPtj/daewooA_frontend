@@ -69,11 +69,11 @@ export default {
       }
     },
     changeLoginImg(img) {
-      if (img === this.loginImgBtn1) {
+      if (img === 'img1') {
         this.loginImg = LoginImg1;
-      } else if(img === this.loginImgBtn2){
+      } else if(img === 'img2'){
         this.loginImg = LoginImg2;
-      }else if(img === this.loginImgBtn3){
+      }else if(img === 'img3'){
         this.loginImg = LoginImg3;
       }
     },
@@ -105,6 +105,7 @@ export default {
         this.loginImg = LoginImg2;
         this.changeLBtn2 = true;
         this.changeLBtn1 = false;
+        this.changeLBtn3 = false;
       } else if (this.loginImg === LoginImg2) {
         this.loginImg = LoginImg3;
         this.changeLBtn1 = false;
@@ -183,15 +184,15 @@ export default {
       </transition>
       <div class="PicBtnBoxes">
          <span style="margin-right: 8px">
-          <button type="button" @click="changeLoginImg(loginImgBtn1), changLBtn('btn1')" class="NSelectPicBtn"
+          <button type="button" @click="changeLoginImg('img1'), changLBtn('btn1')" class="NSelectPicBtn"
                   :class="{'SelectPicBtn': changeLBtn1}"></button>
          </span>
         <span style="margin-right: 8px">
-          <button type="button" @click="changeLoginImg(loginImgBtn2), changLBtn('btn2')" class="NSelectPicBtn"
+          <button type="button" @click="changeLoginImg('img2'), changLBtn('btn2')" class="NSelectPicBtn"
                   :class="{'SelectPicBtn': changeLBtn2}"></button>
          </span>
         <span style="margin-right: 8px">
-          <button type="button" @click="changeLoginImg(loginImgBtn3), changLBtn('btn3')" class="NSelectPicBtn"
+          <button type="button" @click="changeLoginImg('img3'), changLBtn('btn3')" class="NSelectPicBtn"
                   :class="{'SelectPicBtn': changeLBtn3}"></button>
          </span>
       </div>
