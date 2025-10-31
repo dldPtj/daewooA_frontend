@@ -1,6 +1,7 @@
 <script>
 import LoginImg1 from '../assets/LoginImg1.jpg'
 import LoginImg2 from '../assets/LoginImg2.jpg'
+import LoginImg3 from  '../assets/LoginImg3.jpg'
 import { reactive } from "vue";
 import {aTeamApi} from "@/util/axios";
 import router from "@/router";
@@ -10,6 +11,7 @@ export default {
       loginImg: LoginImg1,
       loginImgBtn1: LoginImg1,
       loginImgBtn2: LoginImg2,
+      loginImgBtn3: LoginImg3,
       changeLBtn1: true,
       changeLBtn2: false,
       timerId : null,
