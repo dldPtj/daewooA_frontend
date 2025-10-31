@@ -2,6 +2,8 @@
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import ProfileComponent from "@/common/components/ProfileComponent.vue";
+import AccountSelectBtnComponent from "@/common/components/AccountSelectBtnComponent.vue"
+
 import {aTeamApi} from "@/util/axios";
 import {reactive} from "vue";
 export default {
@@ -9,6 +11,7 @@ export default {
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     ProfileComponent: ProfileComponent,
+    AccountSelectBtnComponent: AccountSelectBtnComponent,
   },
   data(){
     return{
@@ -127,13 +130,7 @@ export default {
   <HeaderComponent/>
   <ProfileComponent/>
   <!--  프로필 아래 메뉴 선택 버튼 -->
-  <div class="ChangeAccountMenu">
-    <button type="button" class="selectAcPage"  @click="$router.push('/account')">계정</button>
-    <a class="OtherLine"></a>
-    <button type="button" class="NOselectAcPage" @click="$router.push('/reservation')">내역</button>
-    <a class="OtherLine"></a>
-    <button type="button" class="NOselectAcPage" @click="$router.push('/paymentadd')">결제수단</button>
-  </div>
+  <AccountSelectBtnComponent/>
   <!--메뉴 선택시 나오는 화면 -->
   <div id = "AccountPageMain">
     <h1>Account</h1>

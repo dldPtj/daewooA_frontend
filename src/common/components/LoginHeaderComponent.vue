@@ -9,11 +9,12 @@ export default {
       profileName: {},
       profileImg: {},
       menuModal: false,
+
     };
   },
   async mounted() {
-    const res = await aTeamApi.get('/api/users/me/profileAll',{
-      headers:{
+    const res = await aTeamApi.get('/api/users/me/profileAll', {
+      headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     });
@@ -38,7 +39,10 @@ export default {
     logout() {
       localStorage.removeItem("token");
       window.location.reload();
-    }
+    },
+    clicked(path){
+      this.$router.push(path);
+    },
   }
 }
 </script>
@@ -46,35 +50,42 @@ export default {
 <template>
   <div class="container">
     <nav class="nav-container">
-      <!-- 왼쪽 -->
-      <div class="item" @click="$router.push('/')">
+      <div class="headerHover" @click="clicked('/')" :class="{active : $route.path === '/' }" >
+        <!-- 왼쪽 -->
+        <div class="item">
                 <span>
                     <img src="../../assets/ion_bed.png" alt="침대 사진">
                     hotels
                 </span>
+        </div>
       </div>
       <!-- 오른쪽 -->
       <div class="item">
         <div class="flex vertical-center">
           <!-- 오른쪽 첫번째 -->
-          <div  @click="$router.push('/favoritespage')" style="display: flex; margin-right: 16px" >
+
+          <div @click="clicked('/favoritespage')" style="display: flex; margin-right: 16px" class="headerHover" :class="{active : $route.path === '/favoritespage'}">
             <img src="../../assets/heart.png" alt="하트 사진">
             <span style="display: flex; margin: 0 16px 0 4px">
                         찜하기
                     </span>
-            |
           </div>
+          |
+
+
           <!-- 오른쪽 두번째 -->
-          <div class="dropdownMenu" @click="menuModalOpen">
-            <div class="circle ">
-              <img :src="headerImageUrl" alt="프로필사진" id="headerImgSize">
-              <div class="mini-circle">
-                <div class="check"></div>
+          <div class="headerHover">
+            <div class="dropdownMenu" @click="menuModalOpen">
+              <div class="circle ">
+                <img :src="headerImageUrl" alt="프로필사진" id="headerImgSize">
+                <div class="mini-circle">
+                  <div class="check"></div>
+                </div>
               </div>
-            </div>
-            <span>
+              <span>
                         {{ profileName }}
             </span>
+            </div>
           </div>
         </div>
 
@@ -98,7 +109,7 @@ export default {
         <div class="gotoMain"><img src="../../assets/userImg.png" alt="사람이미지"> <a>계정</a></div>
         <div>&gt;</div>
       </div>
-      <div class="goToBtn">
+      <div class="goToBtn" @click="$router.push('/reservation')">
         <div class="gotoMain"><img src="../../assets/card.png" alt="카드이미지"> <a>결제 내역</a></div>
         <div>&gt;</div>
       </div>
@@ -118,6 +129,27 @@ export default {
 </template>
 
 <style>
+.headerHover {
+  align-items: center;
+  display: flex;
+  width: 88px;
+  height: 87px;
+  border: none;
+  justify-content: center;
+  cursor: pointer;
+}
+.headerHover.clicked{
+  border-bottom: #8DD3BB solid 5px;
+}
+
+.headerHover:hover {
+  border-bottom: #8DD3BB solid 5px;
+}
+
+.active{
+  border-bottom: #8DD3BB solid 5px;
+}
+
 .gotoMain {
   display: flex;
   gap: 8px;
@@ -198,6 +230,7 @@ export default {
 
 .dropdownMenu {
   display: flex;
+
 }
 
 #headerImgSize {
@@ -230,6 +263,7 @@ export default {
 
 
 }
+
 
 .item span {
   display: flex;

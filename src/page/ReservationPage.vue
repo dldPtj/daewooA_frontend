@@ -3,6 +3,8 @@ import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import ProfileComponent from "@/common/components/ProfileComponent.vue";
 import ReservationComponent from "@/common/components/ReservationComponent.vue";
+import AccountSelectBtnComponent  from "@/common/components/AccountSelectBtnComponent.vue";
+
 import aTeamApi from "@/util/axios";
 export default {
   components: {
@@ -10,6 +12,7 @@ export default {
     FooterComponent: FooterComponent,
     ProfileComponent: ProfileComponent,
     ReservationComponent: ReservationComponent,
+    AccountSelectBtnComponent: AccountSelectBtnComponent,
   },
   data() {
     return {
@@ -30,13 +33,7 @@ export default {
   <header-component/>
   <profile-component/>
   <!--  프로필 아래 메뉴 선택 버튼 -->
-  <div class="ChangeAccountMenu">
-    <button type="button" class="NOselectAcPage" @click="$router.push('/account')">계정</button>
-    <a class="OtherLine"></a>
-    <button type="button" class="selectAcPage" @click="$router.push('/reservation')">내역</button>
-    <a class="OtherLine"></a>
-    <button type="button" class="NOselectAcPage" @click="$router.push('/paymentadd')">결제수단</button>
-  </div>
+ <AccountSelectBtnComponent/>
 
   <div id="ReservationMain">
     <div id="ReservationSpace-btw">
