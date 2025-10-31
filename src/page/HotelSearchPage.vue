@@ -17,6 +17,9 @@ export default {
     return {
       hotellists: [],
       totalHotels: 0,
+      totalMotels: 0,
+      totalResorts: 0,
+      currentTotal: 0,
       totalPages: 0,
       currentPage: 0,
       FilterOpen: true,
@@ -26,12 +29,9 @@ export default {
       amenitiesFilterOpen: false,
       selectedType: 'hotel',
       sliderValue: 500000,
-      maxPrice: 1000000,
+      maxPrice: 2000000,
       stepValue: 50000,
-
-      // 🌟 서버 필터링을 위해 필요한 다른 상태값 (예시)
-      // 실제 사용하지 않아도 API에 전달하기 위해 초기화
-      currentSortBy: 'rating',
+      currentSortOption: '',
       filterParams: {
         breakfastIncluded: false,
         freeParking: false,
@@ -42,9 +42,7 @@ export default {
         airConditioner: false,
         fitnessCenter: false,
         pool: false,
-        checkInDate: '2025-10-01', // 초기값 설정 필요
-        checkOutDate: '2025-10-05', // 초기값 설정 필요
-      }
+      },
     };
   },
 
@@ -54,15 +52,48 @@ export default {
         // 슬라이더 값이 변경되면 필터링된 새 목록을 첫 페이지(0)부터 로드
         this.fetchHotels(0);
       }
-    }
+    },
+    currentSortOption(newOption) {
+      this.SortBy(newOption);
+      this.fetchHotels(0); // 정렬 기준 변경 시 첫 페이지부터 다시 로드
+    },
+    filterParams: {
+      handler() {
+        // 체크박스 상태 변경 시 필터링을 다시 수행
+        this.fetchHotels(0);
+      },
+      deep: true, // 객체 내부 속성의 변경까지 감지
+    },
   },
 
   async mounted() {
     await this.fetchMaxPrice();
-    this.fetchHotels(0);
+    const initialData = await this.fetchHotels(0);
+    if (initialData) {
+      this.totalHotels = initialData.totalHotels || 0; // 초기 전체 개수 설정
+      this.currentTotal = initialData.totalHotels || 0; // 초기 화면에 hotel탭 선택되어있기에 설정
+    }
   },
 
   methods: {
+    selectAvgRating(rating) {
+      // 선택된 평점 업데이트
+      this.minAvgRating = rating;
+      // 필터 조건이 변경되었으므로 첫 페이지부터 새로 로드
+      this.fetchHotels(0);
+    },
+    SortBy(option) {
+      if (option === 'highest-price') {
+        // 가격 높은 순 (내림차순)
+        this.currentSortBy = 'priceDesc';
+      } else if (option === 'lowest-price') {
+        // 가격 낮은 순 (오름차순)
+        this.currentSortBy = 'priceAsc';
+      } else if (option === 'highest-rated') {
+        // 별점 높은 순 (내림차순)
+        this.currentSortBy = 'rating';
+      }
+    },
     async fetchMaxPrice() {
       if (this.selectedType !== 'hotel') return;
 
@@ -76,7 +107,7 @@ export default {
         let data = result.data;
         totalPages = data.totalPages || 1;
 
-        const initialPrices = (data.hotels || []).map(hotel => hotel.price);
+        const initialPrices = (data.hotels || []).map((hotel) => hotel.price);
         if (initialPrices.length > 0) {
           maxPriceFound = Math.max(...initialPrices);
         }
@@ -84,7 +115,7 @@ export default {
         for (page = 1; page < totalPages; page++) {
           result = await aTeamApi.get(`/api/hotels/filter?page=${page}&size=4`);
           const nextPageData = result.data;
-          const nextPrices = (nextPageData.hotels || []).map(hotel => hotel.price);
+          const nextPrices = (nextPageData.hotels || []).map((hotel) => hotel.price);
 
           if (nextPrices.length > 0) {
             const currentMax = Math.max(...nextPrices);
@@ -94,17 +125,14 @@ export default {
 
         this.maxPrice = maxPriceFound;
         this.sliderValue = maxPriceFound;
-
       } catch (error) {
         console.error('최대 가격을 불러오는 중 오류 발생:', error);
       }
     },
 
-    // 🌟🌟🌟 수정된 fetchHotels: sliderValue를 maxPrice 필터로 전달 🌟🌟🌟
     async fetchHotels(page) {
       if (this.selectedType !== 'hotel') {
         this.hotellists = [];
-        this.totalHotels = 0;
         this.totalPages = 0;
         this.currentPage = 0;
         return;
@@ -115,9 +143,13 @@ export default {
         let query = `/api/hotels/filter?page=${page}&size=4&sortBy=${this.currentSortBy}`;
 
         // 2. 가격 필터 (슬라이더 값) 추가
-        query += `&maxPrice=${this.sliderValue}`; // 👈 이 부분이 핵심
+        query += `&maxPrice=${this.sliderValue}`;
 
-        // 3. 기타 필터 파라미터 추가 (API 구조에 맞춤)
+        // 3. 별점 필터 추가
+        if (this.minAvgRating > 0) {
+          query += `&minAvgRating=${this.minAvgRating}`;
+        }
+        // 4. 기타 필터 파라미터 추가 (API 구조에 맞춤)
         // filterParams 객체를 순회하며 쿼리를 동적으로 생성
         for (const key in this.filterParams) {
           query += `&${key}=${this.filterParams[key]}`;
@@ -131,7 +163,7 @@ export default {
         this.totalHotels = data.totalHotels || 0;
         this.totalPages = data.totalPages || 0;
         this.currentPage = data.currentPage || page;
-
+        this.currentTotal = this.totalHotels;
       } catch (error) {
         console.error('호텔 데이터를 불러오는 중 오류 발생:', error);
       }
@@ -146,13 +178,19 @@ export default {
       this.selectedType = type;
       if (type === 'hotel') {
         this.fetchMaxPrice().then(() => {
+          this.minAvgRating = 0;
           this.fetchHotels(0);
         });
-      } else {
+      } else if (type === 'motel') {
         this.hotellists = [];
-        this.totalHotels = 0;
         this.totalPages = 0;
         this.currentPage = 0;
+        this.currentTotal = this.totalMotels;
+      } else if (type === 'resort') {
+        this.hotellists = [];
+        this.totalPages = 0;
+        this.currentPage = 0;
+        this.currentTotal = this.totalResorts;
       }
     },
     toggleFilter(filterName) {
@@ -237,11 +275,48 @@ export default {
           </div>
           <div v-if="ratingFilterOpen">
             <div class="rating-range">
-              <button id="rating-btn">0+</button>
-              <button id="rating-btn">1+</button>
-              <button id="rating-btn">2+</button>
-              <button id="rating-btn">3+</button>
-              <button id="rating-btn">4+</button>
+              <button
+                id="rating-btn"
+                @click="selectAvgRating(0)"
+                :class="{ selected: minAvgRating >= 0 }"
+              >
+                0+
+              </button>
+              <button
+                id="rating-btn"
+                @click="selectAvgRating(1)"
+                :class="{ selected: minAvgRating >= 1 }"
+              >
+                1+
+              </button>
+              <button
+                id="rating-btn"
+                @click="selectAvgRating(2)"
+                :class="{ selected: minAvgRating >= 2 }"
+              >
+                2+
+              </button>
+              <button
+                id="rating-btn"
+                @click="selectAvgRating(3)"
+                :class="{ selected: minAvgRating >= 3 }"
+              >
+                3+
+              </button>
+              <button
+                id="rating-btn"
+                @click="selectAvgRating(4)"
+                :class="{ selected: minAvgRating >= 4 }"
+              >
+                4+
+              </button>
+              <button
+                id="rating-btn"
+                @click="selectAvgRating(5)"
+                :class="{ selected: minAvgRating === 5 }"
+              >
+                5
+              </button>
             </div>
           </div>
         </div>
@@ -260,11 +335,33 @@ export default {
             </button>
           </div>
           <div v-if="freebiesFilterOpen" class="freebies-checkboxes">
-            <div><input type="checkbox" /><label for="조식포함">조식포함</label></div>
-            <div><input type="checkbox" /><label for="무료주차">무료주차</label></div>
-            <div><input type="checkbox" /><label for="WIFI">WIFI</label></div>
-            <div><input type="checkbox" /><label for="공항셔틀">공항셔틀</label></div>
-            <div><input type="checkbox" /><label for="무료취소">무료취소</label></div>
+            <div>
+              <input type="checkbox" v-model="filterParams.breakfastIncluded" /><label
+                for="조식포함"
+                >조식포함</label
+              >
+            </div>
+            <div>
+              <input type="checkbox" v-model="filterParams.freeParking" /><label for="무료주차"
+                >무료주차</label
+              >
+            </div>
+            <div>
+              <input type="checkbox" v-model="filterParams.freeWifi" /><label for="WIFI"
+                >WIFI</label
+              >
+            </div>
+            <div>
+              <input type="checkbox" v-model="filterParams.airportShuttlebus" /><label
+                for="공항셔틀"
+                >공항셔틀</label
+              >
+            </div>
+            <div>
+              <input type="checkbox" v-model="filterParams.freeCancellation" /><label for="무료취소"
+                >무료취소</label
+              >
+            </div>
           </div>
         </div>
         <!--호텔 편의시설 필터-->
@@ -283,11 +380,26 @@ export default {
           </div>
           <div v-if="amenitiesFilterOpen" class="amenities-checkboxes">
             <div>
-              <input type="checkbox" /><label for="24시 프론트데스크">24시 프론트데스크</label>
+              <input type="checkbox" v-model="filterParams.frontDesk24" /><label
+                for="24시 프론트데스크"
+                >24시 프론트데스크</label
+              >
             </div>
-            <div><input type="checkbox" /><label for="에어컨">에어컨</label></div>
-            <div><input type="checkbox" /><label for="피트니스">피트니스</label></div>
-            <div><input type="checkbox" /><label for="수영장">수영장</label></div>
+            <div>
+              <input type="checkbox" v-model="filterParams.airConditioner" /><label for="에어컨"
+                >에어컨</label
+              >
+            </div>
+            <div>
+              <input type="checkbox" v-model="filterParams.fitnessCenter" /><label for="피트니스"
+                >피트니스</label
+              >
+            </div>
+            <div>
+              <input type="checkbox" v-model="filterParams.pool" /><label for="수영장"
+                >수영장</label
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -300,7 +412,7 @@ export default {
           <button
             id="hotel-count"
             @click="selectAccommodation('hotel')"
-            :class="{ 'selected': selectedType === 'hotel' }"
+            :class="{ selected: selectedType === 'hotel' }"
           >
             <h3>Hotels</h3>
             <span>{{ totalHotels }} places</span>
@@ -309,29 +421,30 @@ export default {
           <button
             id="motel-count"
             @click="selectAccommodation('motel')"
-            :class="{ 'selected': selectedType === 'motel' }"
+            :class="{ selected: selectedType === 'motel' }"
           >
             <h3>Motels</h3>
-            <span>0 places</span>
+            <span>{{ totalMotels }} places</span>
           </button>
 
           <button
             id="resort-count"
             @click="selectAccommodation('resort')"
-            :class="{ 'selected': selectedType === 'resort' }"
+            :class="{ selected: selectedType === 'resort' }"
           >
             <h3>Resorts</h3>
-            <span>0 places</span>
+            <span>{{ totalResorts }} places</span>
           </button>
         </div>
       </header>
       <div class="accommodation-sort">
         <div class="accommodation-sort-text">
-          Showing {{ hotellists.length }} of <span id="accommodation-count">{{ totalHotels }} places</span>
+          Showing {{ hotellists.length }} of
+          <span id="accommodation-count">{{ currentTotal }} places</span>
         </div>
         <div>
           <label>Sort by&nbsp;</label>
-          <select id="accommodation-sort-option">
+          <select id="accommodation-sort-option" v-model="currentSortOption">
             <option value=""><b>Hotel Sorting</b></option>
             <option value="highest-price">Highest Price</option>
             <option value="lowest-price">Lowest Price</option>
@@ -346,9 +459,21 @@ export default {
           <HotelLists v-for="hotel in hotellists" :key="hotel.id" :hotelInfo="hotel" />
 
           <div class="page-btns">
-            <button id="page-btn" :disabled="currentPage === 0" @click="changePage(currentPage - 1)"><i class='bx  bx-chevron-left' style="margin-top: 7px"></i></button>
+            <button
+              id="page-btn"
+              :disabled="currentPage === 0"
+              @click="changePage(currentPage - 1)"
+            >
+              <i class="bx bx-chevron-left" style="margin-top: 7px"></i>
+            </button>
             <span id="page-info">{{ currentPage + 1 }} of {{ totalPages }}</span>
-            <button id="page-btn" :disabled="currentPage === totalPages - 1" @click="changePage(currentPage + 1)"><i class='bx  bx-chevron-right' style="margin-top: 7px"></i></button>
+            <button
+              id="page-btn"
+              :disabled="currentPage === totalPages - 1"
+              @click="changePage(currentPage + 1)"
+            >
+              <i class="bx bx-chevron-right" style="margin-top: 7px"></i>
+            </button>
           </div>
         </template>
 
@@ -386,7 +511,7 @@ export default {
   border-radius: 10px;
   font-size: 25px;
   font-weight: bold;
-  color: #FF8682;
+  color: #ff8682;
 }
 #dropdown-btn {
   background-color: transparent;
