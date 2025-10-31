@@ -602,7 +602,7 @@ input[type='checkbox'] {
   font-size: 15px;
   font-weight: bold;
   height: 20px;
-  width: 130px;
+  width: 170px;
 }
 .accommodation-sort {
   display: flex;

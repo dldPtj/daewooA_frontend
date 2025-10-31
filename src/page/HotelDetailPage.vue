@@ -13,6 +13,7 @@ export default {
       hotelInfo: {},
       favorite: false,
       roomData: {},
+      modalOpen: false,
     };
   },
   async mounted() {
@@ -103,6 +104,10 @@ export default {
     isUserLoggedIn() {
       // 'token'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
       return !!localStorage.getItem('token');
+    },
+    // 전체 amenities
+    totalAmenitiesLists() {
+      return this.hotelInfo.amenities || [];
     },
     // 첫 번째 열에 4개
     firstColumnAmenities() {
@@ -359,7 +364,17 @@ export default {
           </li>
 
           <!-- 남은 개수가 있을 때 +N more 표시 -->
-          <li v-if="remainingCount > 0" class="lastlist">+{{ remainingCount }} more</li>
+          <button v-if="remainingCount > 0" class="lastlist" @click="modalOpen = true">+{{ remainingCount }} more</button>
+          <!-- 모달창 열렸을 때 보여주는 amenities -->
+          <div v-if="modalOpen" class="modal-background" @click="modalOpen = false">
+            <div class="modal-content" @click.stop>
+              <button @click="modalOpen = false" class="close-btn"><i class="bx bx-x"></i></button>
+              <li v-for="(amenity, index) in totalAmenitiesLists" :key="index" class="more-amenities">
+                <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
+                &nbsp;{{ amenity }}
+              </li>
+            </div>
+          </div>
         </ul>
       </div>
     </div>
@@ -523,6 +538,8 @@ export default {
   width: 1250px;
 }
 .lastlist {
+  background-color: transparent;
+  border: none;
   color: #ff8682;
   font-weight: bold;
 }
@@ -548,6 +565,43 @@ export default {
   border-bottom: #d9d9d9 solid 1px;
   margin: 0 auto;
   width: 1250px;
+}
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 1000px;
+}
+.more-amenities {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+  width: 150px;
+  border-radius: 5px;
+  border: #d3d3d3 solid 1px;
+}
+.close-btn {
+  font-size: 30px;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
 }
 .hoteldetail-location {
   display: flex;
