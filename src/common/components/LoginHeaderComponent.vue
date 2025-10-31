@@ -64,7 +64,7 @@ export default {
         <div class="flex vertical-center">
           <!-- 오른쪽 첫번째 -->
 
-          <div @click="clicked('/favoritespage')" style="display: flex; margin-right: 16px" class="headerHover" :class="{active : $route.path === '/favoritespage'}">
+          <div @click="clicked('/favoritespage')" style="display: flex;" class="headerHover" :class="{active : $route.path === '/favoritespage'}">
             <img src="../../assets/heart.png" alt="하트 사진">
             <span style="display: flex; margin: 0 16px 0 4px">
                         찜하기
