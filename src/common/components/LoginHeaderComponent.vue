@@ -38,7 +38,11 @@ export default {
     },
     logout() {
       localStorage.removeItem("token");
-      window.location.reload();
+      if(this.$route.path === '/'){
+        window.location.reload();
+      }else{
+        this.$router.push("/");
+      }
     },
     clicked(path){
       this.$router.push(path);
@@ -132,7 +136,6 @@ export default {
 .headerHover {
   align-items: center;
   display: flex;
-  width: 88px;
   height: 87px;
   border: none;
   justify-content: center;

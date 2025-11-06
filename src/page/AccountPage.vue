@@ -27,6 +27,7 @@ export default {
       phoneNumber: {},
       address: {},
       birth: {},
+      provider: {},
       styleName: {
         border: 'none',
       },
@@ -53,6 +54,10 @@ export default {
         this.aCModal = false;
       }
     },
+    loginTypeCheck(){
+
+    },
+
     async ReadOnlyOnOff(field, updateKey, updateValue, borderChage) {
       try {
         this[field] = !this[field];
@@ -89,6 +94,8 @@ export default {
       this.phoneNumber = data.phoneNumber;
       this.address = data.address;
       this.birth = data.birthDate;
+      this.provider = data.provider;
+
     }catch (err){
       console.error(err);
     }
@@ -146,7 +153,8 @@ export default {
             </div>
           </div>
           <!--클릭시 readonly해제-->
-          <button type="button" @click="ReadOnlyOnOff('readOnlyName','userName','name', 'styleName')" ><img src="../assets/AccountBtnImg.png">change</button>
+          <button type="button" v-if="provider == null" @click="ReadOnlyOnOff('readOnlyName','userName','name', 'styleName')" ><img src="../assets/AccountBtnImg.png">change</button>
+          <button disabled type="button" v-if="provider != null"><img src="../assets/AccountBtnImg.png">change</button>
         </div>
       </div>
       <!--     이메일 리스트 박스-->
@@ -158,7 +166,8 @@ export default {
               <input type="email" v-model="email" :readonly="readOnlyEmail" :style="styleEmail">
             </div>
           </div>
-          <button type="button" @click="ReadOnlyOnOff('readOnlyEmail','email','email', 'styleEmail')"><img src="../assets/AccountBtnImg.png">change</button>
+          <button v-if="provider === null" type="button" @click="ReadOnlyOnOff('readOnlyEmail','email','email', 'styleEmail')"><img src="../assets/AccountBtnImg.png">change</button>
+          <button disabled v-if="provider != null" type="button"><img src="../assets/AccountBtnImg.png">change</button>
         </div>
       </div>
       <!--     비밀번호 리스트 박스-->
@@ -171,7 +180,8 @@ export default {
             </div>
           </div>
           <!--        버튼 클릭시 모달창 이동-->
-          <button type="button" @click="aCModalOpen"><img src="../assets/AccountBtnImg.png">change</button>
+          <button type="button" v-if="provider === null" @click="aCModalOpen"><img src="../assets/AccountBtnImg.png">change</button>
+          <button disabled v-if="provider != null" type="button"><img src="../assets/AccountBtnImg.png">change</button>
         </div>
       </div>
       <!--    전화번호 리스트 박스-->
@@ -340,65 +350,71 @@ export default {
   border: #8DD3BB solid 1px;
   text-align: center;
 }
+.AccountListBox button:disabled{
+  background: #8080804f;
+  color: #00000036;
+  cursor: not-allowed;
+   border: rgba(141, 211, 187, 0.55) solid 1px;
+}
 
 .AccountListBox button:hover{
-  background-color: #b6b2b2;
-  border: #8DD3BB solid 1px;
+background-color: #b6b2b2;
+border: #8DD3BB solid 1px;
 }
 .AccountListBox button:active{
-  background: #9e9a9a;
+background: #9e9a9a;
 }
 .AccountListBox button img{
-  margin-bottom: -2px;
-  margin-right: 4px;
+margin-bottom: -2px;
+margin-right: 4px;
 }
 .AccountList{
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 32px;
+display: flex;
+flex-direction: column;
+width: 100%;
+margin-bottom: 32px;
 }
 #AccountPageMain{
-  text-align: left;
-  width: 1232px;
-  margin: 40px auto 0;
+text-align: left;
+width: 1232px;
+margin: 40px auto 0;
 }
 #AccountPage h1{
-  margin-bottom: 48px;
+margin-bottom: 48px;
 }
 .selectAcPage{
-  text-align: left;
-  font-weight: bold;
-  margin: 0 180px 0 18px;
-  width: 215px;
-  height: 100%;
-  border: none;
-  background-color: white;
-  border-bottom: #8DD3BB solid 4px;
+text-align: left;
+font-weight: bold;
+margin: 0 180px 0 18px;
+width: 215px;
+height: 100%;
+border: none;
+background-color: white;
+border-bottom: #8DD3BB solid 4px;
 }
 .NOselectAcPage{
-  text-align: left;
-  font-weight: bold;
-  margin: 0 180px 0 18px;
-  width: 215px;
-  height: 100%;
-  border: none;
-  background-color: white;
+text-align: left;
+font-weight: bold;
+margin: 0 180px 0 18px;
+width: 215px;
+height: 100%;
+border: none;
+background-color: white;
 }
 .ChangeAccountMenu {
-  box-shadow: 0px 2px 5px #d3d3d3;
-  display: flex;
-  position: relative;
-  margin: 32px auto 0;
-  width: 1232px;
-  height: 80px;
-  justify-content: center;
+box-shadow: 0px 2px 5px #d3d3d3;
+display: flex;
+position: relative;
+margin: 32px auto 0;
+width: 1232px;
+height: 80px;
+justify-content: center;
 }
 .OtherLine{
-  width: 48px;
-  height: 0;
-  transform: rotate(-90deg);
-  border: #D7E2EE solid 1px;
-  margin: 35px -15px;
+width: 48px;
+height: 0;
+transform: rotate(-90deg);
+border: #D7E2EE solid 1px;
+margin: 35px -15px;
 }
 </style>

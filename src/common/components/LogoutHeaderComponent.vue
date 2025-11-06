@@ -181,6 +181,7 @@ export default {
 
 .dropdownMenu {
   display: flex;
+  gap: 10px
 }
 
 .dropdownMenu:hover {
