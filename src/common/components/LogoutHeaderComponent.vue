@@ -7,7 +7,12 @@ export default {
       menuModal: false,
     };
   },
-
+  computed: {
+    isUserLoggedIn() {
+      // 'token'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
+      return !!localStorage.getItem('token');
+    },
+  },
   methods: {
     menuModalOpen() {
       this.menuModal = !this.menuModal
@@ -15,7 +20,15 @@ export default {
     clicked(path) {
       this.$router.push(path);
     },
-
+    favoritePage() {
+      if (this.isUserLoggedIn) {
+        // 로그인 상태일 때 favoritespage로 이동
+        this.$router.push('/favoritespage');
+      } else {
+        // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
+        alert('로그인이 필요한 기능입니다.');
+      }
+    },
   }
 }
 </script>
@@ -36,8 +49,8 @@ export default {
       <div class="item2">
         <div class="flex vertical-center">
           <!-- 오른쪽 첫번째 -->
-          <div @click="clicked('/favoritespage')" style="display: flex;"
-               class="headerHover" :class="{active : $route.path === '/favoritespage'}">
+          <div @click="favoritePage" style="display: flex;"
+               class="headerHover" >
             <img src="../../assets/heart.png" alt="하트 사진">
             <span style="display: flex; margin: 0 16px 0 4px">
                         찜하기

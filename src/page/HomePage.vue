@@ -254,7 +254,7 @@ export default {
   display: flex;
   flex-direction: column;
   position: absolute;
-  z-index: 10;
+  z-index: 2;
   color: white;
   width: 1240px;
   text-align: left;
