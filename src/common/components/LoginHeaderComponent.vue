@@ -132,7 +132,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 .headerHover {
   align-items: center;
   display: flex;

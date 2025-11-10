@@ -116,7 +116,7 @@ export default {
         this.loginImg = LoginImg1;
         this.changeLBtn1 = true;
         this.changeLBtn2 = false;
-        this.loginImgBtn3 = false
+        this.changeLBtn3 = false;
       }
     },
     changeInputType() {
@@ -269,6 +269,7 @@ export default {
 #PwdLine {
   margin-bottom: 40px;
   display: flex;
+  justify-content: space-between;
 }
 
 #LoginBtn {
@@ -318,9 +319,7 @@ input.LTextBox:focus {
   justify-content: center;
 }
 
-#LoginCheckboxLine {
-  margin-right: 224px;
-}
+
 
 .LoginCheckbox {
   width: 18px;
