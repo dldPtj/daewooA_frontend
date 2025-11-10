@@ -16,7 +16,7 @@ export default {
       }).then(async () => {
         alert("쿠폰 추가 성공");
       }).catch(()=> {
-        alert("정보를 가져오는데 실패했습니다.");
+        alert("이미 발급된 쿠폰 입니다.");
       });
     };
     return { submit };

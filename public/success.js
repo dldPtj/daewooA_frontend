@@ -70,12 +70,12 @@ async function confirmPayment() {
             const message = error.response.data?.message || "알 수 없는 오류";
             console.error(error.response);
             console.log(reservationId);
-            window.location.href = `/fail.html?message=${message}&code=${status}`;
+            // window.location.href = `/fail.html?message=${message}&code=${status}`;
         }else{
         console.error("결제 승인 요청 중 네트워크 오류 발생:", error);
         console.log(reservationId);
         if (!roomId2) alert("roomId가 비어 있습니다!");
-        window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
+        // window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
         }
     }
 }

@@ -87,7 +87,7 @@ export default {
       </div>
       <!--      가격 정보와 버튼 컨테이너-->
       <div id="TicketPriceAndBtn">
-        <p id="PPrice">₩1111111/night</p>
+        <p id="PPrice">{{reservationInfo.totalPrice}}/night</p>
         <div id="TicketBtnBox">
           <button id="ShareBtn"><img src="../assets/share.png"></button>
           <button id="DownloadBtn" @click="downloadTicketBtn">Download</button>
