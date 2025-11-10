@@ -100,9 +100,13 @@ export default {
       if (btn === this.changeLBtn2) {
         this.changeLBtn2 = true;
         this.changeLBtn1 = false;
+        clearInterval(this.timerId);
+        this.timerId = setInterval(this.TtoCIMG, 10000);
       } else if (btn === this.changeLBtn1) {
         this.changeLBtn1 = true;
         this.changeLBtn2 = false;
+        clearInterval(this.timerId);
+        this.timerId = setInterval(this.TtoCIMG, 10000);
       }
     },
     TtoCIMG() {
@@ -148,10 +152,10 @@ export default {
       <button @click="submit" id="LoginBtn">제출</button>
     </div>
     <div class="LoginImages">
-      <transition name="fade-in">
-        <img :src="loginImg" style="width: 612px; height: 816px" class="LoginIMG" alt="로그인시 나오는 사진">
+      <transition name="fade">
+        <img :src="loginImg" key="loginImg" style="width: 612px; height: 816px" class="LoginIMG" alt="로그인시 나오는 사진">
       </transition>
-      <div id="PicBtnBoxes">
+      <div class="PicBtnBoxes">
          <span style="margin-right: 8px">
           <button type="button" @click="changeLoginImg(loginImgBtn1), changLBtn(changeLBtn1)" class="NSelectPicBtn"
                   :class="{'SelectPicBtn': changeLBtn1}"></button>
@@ -181,12 +185,6 @@ export default {
   justify-content: center;
 }
 
-.LoginImages {
-  display: flex;
-  justify-content: space-between;
-  margin: auto auto auto 0;
-  width: 616px;
-}
 
 .LoginBox {
   margin: auto 104px auto auto;
@@ -204,10 +202,6 @@ export default {
 }
 
 
-.LoginIMG {
-  width: 618px;
-  height: 816px;
-}
 
 .LegendLogin {
   text-align: left;

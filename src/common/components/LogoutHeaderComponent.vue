@@ -4,13 +4,16 @@ export default {
   name: 'HeaderComponent',
   data() {
     return {
-     menuModal: false,
+      menuModal: false,
     };
   },
 
   methods: {
     menuModalOpen() {
       this.menuModal = !this.menuModal
+    },
+    clicked(path) {
+      this.$router.push(path);
     },
 
   }
@@ -21,23 +24,26 @@ export default {
   <div class="container">
     <nav class="nav-container">
       <!-- 왼쪽 -->
-      <div class="go-to-home" @click="$router.push('/')" id="item">
+      <div class="headerHover" @click="clicked('/')" :class="{active : $route.path === '/' }">
+        <div class="go-to-home" id="item">
                 <span>
                     <img src="../../assets/ion_bed.png" alt="침대 사진">
                     hotels
                 </span>
+        </div>
       </div>
       <!-- 오른쪽 -->
       <div class="item2">
         <div class="flex vertical-center">
           <!-- 오른쪽 첫번째 -->
-          <div  @click="$router.push('/favoritespage')" style="display: flex; margin-right: 16px;" class="go-to-favorite" >
+          <div @click="clicked('/favoritespage')" style="display: flex;"
+               class="headerHover" :class="{active : $route.path === '/favoritespage'}">
             <img src="../../assets/heart.png" alt="하트 사진">
             <span style="display: flex; margin: 0 16px 0 4px">
                         찜하기
                     </span>
-            |
           </div>
+            |
           <!-- 오른쪽 두번째 -->
           <div class="dropdownMenu" @click="menuModalOpen">
             <div class="circle ">
@@ -83,12 +89,14 @@ export default {
 </template>
 
 <style>
-.go-to-home:hover{
+.go-to-home:hover {
   cursor: pointer;
 }
-.go-to-favorite:hover{
+
+.go-to-favorite:hover {
   cursor: pointer;
 }
+
 .gotoMain {
   display: flex;
   gap: 8px;
@@ -105,7 +113,8 @@ export default {
   justify-content: space-between;
   width: 265px;
 }
-.goToBtn:hover{
+
+.goToBtn:hover {
   cursor: pointer;
 }
 
@@ -172,8 +181,10 @@ export default {
 
 .dropdownMenu {
   display: flex;
+  gap: 10px
 }
-.dropdownMenu:hover{
+
+.dropdownMenu:hover {
   cursor: pointer;
 }
 
