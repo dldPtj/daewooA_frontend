@@ -400,6 +400,9 @@ export default {
                 >수영장</label
               >
             </div>
+            <div><input type="checkbox" /><label for="에어컨">에어컨</label></div>
+            <div><input type="checkbox" /><label for="피트니스">피트니스</label></div>
+            <div><input type="checkbox" /><label for="수영장">수영장</label></div>
           </div>
         </div>
       </div>
