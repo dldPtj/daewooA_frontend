@@ -25,7 +25,24 @@ export default {
     isUserLoggedIn() {
       // 'authToken'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
       return !!localStorage.getItem('token');
-    }
+    },
+    filterSatisfication() {
+      const satisgrade = this.hotelInfo.rating;
+
+      if (satisgrade == 5.0) {
+        return 'Amazing';
+      } else if (4.0 <= satisgrade && satisgrade < 5.0) {
+        return 'Very Good';
+      } else if (3.0 <= satisgrade && satisgrade < 4.0) {
+        return 'Good';
+      } else if (2.0 <= satisgrade && satisgrade < 3.0) {
+        return 'Poor';
+      } else if (1.0 <= satisgrade && satisgrade < 2.0) {
+        return 'Very Poor';
+      } else if (0.0 <= satisgrade && satisgrade < 1.0) {
+        return 'Terrible';
+      } else return '';
+    },
   },
   methods: {
     togglefavorites() {
@@ -116,7 +133,7 @@ export default {
         </div>
         <!--호텔 만족도-->
         <div class="hotel-satisfaction">
-          <b><span id="satisfaction">Very Good</span></b>
+          <b><span id="satisfaction">{{ filterSatisfication }}</span></b>
         </div>
         <!--호텔 평점 개수-->
         <div class="hotel-review-count">

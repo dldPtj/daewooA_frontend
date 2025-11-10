@@ -105,6 +105,23 @@ export default {
       // 'token'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
       return !!localStorage.getItem('token');
     },
+    filterSatisfication() {
+      const satisgrade = this.hotelInfo.rating;
+
+      if (satisgrade == 5.0) {
+        return 'Amazing';
+      } else if (4.0 <= satisgrade && satisgrade < 5.0) {
+        return 'Very Good';
+      } else if (3.0 <= satisgrade && satisgrade < 4.0) {
+        return 'Good';
+      } else if (2.0 <= satisgrade && satisgrade < 3.0) {
+        return 'Poor';
+      } else if (1.0 <= satisgrade && satisgrade < 2.0) {
+        return 'Very Poor';
+      } else if (0.0 <= satisgrade && satisgrade < 1.0) {
+        return 'Terrible';
+      } else return '';
+    },
     // 전체 amenities
     totalAmenitiesLists() {
       return this.hotelInfo.amenities || [];
@@ -173,7 +190,9 @@ export default {
           </div>
           <!--호텔 만족도-->
           <div class="hoteldetail-satisfaction">
-            <b><span id="satisfaction">Very Good</span></b>
+            <b
+              ><span id="satisfaction">{{ filterSatisfication }}</span></b
+            >
           </div>
           <!--호텔 평점 개수-->
           <div class="hoteldetail-review-count">
@@ -218,9 +237,9 @@ export default {
     <div class="hotel-detail-img">
       <!-- 메인(첫 번째) 이미지 -->
       <div class="hoteldetail-img-main">
-        <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[0]">
+        <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[1]">
           <img
-            :src="getFullImageUrl(hotelInfo.imageUrls[0])"
+            :src="getFullImageUrl(hotelInfo.imageUrls[1])"
             :alt="hotelInfo.name + ' main image'"
           />
         </template>
@@ -234,9 +253,9 @@ export default {
       <!-- 나머지 4개 썸네일 -->
       <div class="hoteldetail-imgs">
         <div v-for="index in 4" :key="index" class="hoteldetail-img-thumb">
-          <template v-if="hotelInfo.imageUrls && hotelInfo.imageUrls[index]">
+          <template v-if="hotelInfo.roomImageUrls && hotelInfo.roomImageUrls[index-1]">
             <img
-              :src="getFullImageUrl(hotelInfo.imageUrls[index])"
+              :src="getFullImageUrl(hotelInfo.roomImageUrls[index-1])"
               :alt="hotelInfo.name + ' image ' + (index + 1)"
             />
           </template>
@@ -264,7 +283,7 @@ export default {
           </div>
           <!--호텔 만족도-->
           <div class="hoteldetail-overview-satisfaction">
-            <h2 id="satisfaction">Very Good</h2>
+            <h2 id="satisfaction">{{ filterSatisfication }}</h2>
           </div>
           <!--호텔 리뷰 개수-->
           <div class="hoteldetail-review-count">
@@ -364,12 +383,18 @@ export default {
           </li>
 
           <!-- 남은 개수가 있을 때 +N more 표시 -->
-          <button v-if="remainingCount > 0" class="lastlist" @click="modalOpen = true">+{{ remainingCount }} more</button>
+          <button v-if="remainingCount > 0" class="lastlist" @click="modalOpen = true">
+            +{{ remainingCount }} more
+          </button>
           <!-- 모달창 열렸을 때 보여주는 amenities -->
           <div v-if="modalOpen" class="modal-background" @click="modalOpen = false">
             <div class="modal-content" @click.stop>
               <button @click="modalOpen = false" class="close-btn"><i class="bx bx-x"></i></button>
-              <li v-for="(amenity, index) in totalAmenitiesLists" :key="index" class="more-amenities">
+              <li
+                v-for="(amenity, index) in totalAmenitiesLists"
+                :key="index"
+                class="more-amenities"
+              >
                 <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
                 &nbsp;{{ amenity }}
               </li>
