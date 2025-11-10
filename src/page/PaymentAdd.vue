@@ -4,6 +4,9 @@ import FooterComponent from "@/common/components/FooterComponent.vue";
 import ProfileComponent from "@/common/components/ProfileComponent.vue";
 import AddCardComponent from "@/common/components/AddCardComponent.vue";
 import CardComponent from "@/common/components/CardComponent.vue";
+import AccountSelectBtnComponent from "@/common/components/AccountSelectBtnComponent.vue";
+
+
 import aTeamApi from "@/util/axios";
 export default {
   components: {
@@ -12,6 +15,7 @@ export default {
     ProfileComponent: ProfileComponent,
     AddCardComponent: AddCardComponent,
     CardComponent: CardComponent,
+    AccountSelectBtnComponent: AccountSelectBtnComponent,
   },
   data(){
     return{
@@ -30,13 +34,7 @@ export default {
 <template>
   <header-component/>
   <ProfileComponent/>
-  <div class="ChangeAccountMenu">
-    <button type="button" class="NOselectAcPage"  @click="$router.push('/account')">계정</button>
-    <a class="OtherLine"></a>
-    <button type="button" class="NOselectAcPage" @click="$router.push('/reservation')">내역</button>
-    <a class="OtherLine"></a>
-    <button type="button" class="selectAcPage" @click="$router.push('/paymentadd')">결제수단</button>
-  </div>
+  <AccountSelectBtnComponent/>
   <div id = "PaymentPageMain">
     <h1>결제 수단</h1>
     <div id = "PaymentPageList">

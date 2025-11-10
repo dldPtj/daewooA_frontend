@@ -1,16 +1,31 @@
-<script >
+<script>
+import aTeamApi from "@/util/axios";
 
+export default {
+  data() {
+    return {
+    }
+  },
+  setup(){
+    const submit = async () => {
+
+      await aTeamApi.post('/api/my/coupons/welcome',{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }).then(async () => {
+        alert("쿠폰 추가 성공");
+      }).catch(()=> {
+        alert("이미 발급된 쿠폰 입니다.");
+      });
+    };
+    return { submit };
+  },
+}
 </script>
 
 <template>
   <div>
-<!--    화면-->
-<!--    <hr>-->
-<!--    <hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>-->
-<!--    <hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>-->
-<!--    <hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>-->
-<!--    <hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>-->
-<!--    <hr><hr><hr><hr><hr><hr><hr><hr><hr><hr><hr>-->
 
   </div>
     <footer class="footerContainer">
@@ -28,7 +43,7 @@
           </div>
           <div>
             <input type="text" class="textBox" placeholder="Your email address" style="border: none">
-            <button type="button" id = "GsubBtn" style="border: none">Subscribe</button>
+            <button type="button" id = "GsubBtn" style="border: none" @click="submit">Subscribe</button>
           </div>
         </div>
 <!--        오른쪽 위 메일박스 사진-->

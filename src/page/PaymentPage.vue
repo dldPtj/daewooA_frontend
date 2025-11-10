@@ -5,13 +5,17 @@ import LeavePhoneNum from "@/common/components/LeavePhoneNum.vue"
 import TosspageMoveComponent from "@/common/components/TosspageMoveComponent.vue"
 import aTeamApi from "@/util/axios";
 import dayjs from 'dayjs';
+import CouponComponent from "@/common/components/CouponComponent.vue";
+
 
 export default {
   components: {
+
     HeaderComponent: HeaderComponent,
     FooterComponent: FooterComponent,
     LeavePhoneNum: LeavePhoneNum,
     TosspageMoveComponent: TosspageMoveComponent,
+    CouponComponent: CouponComponent,
   },
   data() {
     return {
@@ -26,12 +30,29 @@ export default {
       totalPrice: {},
       reviewCount: {},
       avgRating: {},
+      coupone: [],
+      discountPrice: {},
+      total: {},
+      selectedItemId: 0,
+      selectedDiscount: 0,
+
     };
   },
   methods: {
     handleToggle(value) {
       this.showChild = value;
+    },
+    applyCoupon(item){
+      this.selectedItemId = item.id;
+      this.selectedDiscount = item.discountAmount;
+      localStorage.setItem("couponId", item.id);
+    },
+    resetCoupon(){
+      this.selectedItemId = 0;
+      this.selectedDiscount = 0;
+      localStorage.setItem("couponId", null);
     }
+
   },
   async mounted() {
     const roomId = localStorage.getItem("roomId");
@@ -40,6 +61,7 @@ export default {
 
     const formatCheckInDate = dayjs(checkInDate).format('YYYY-MM-DD');
     const formatCheckOutDate = dayjs(checkOutDate).format('YYYY-MM-DD');
+
 
 
     if (!roomId) {
@@ -56,7 +78,7 @@ export default {
     }
 
     try {
-      const result = await aTeamApi.get(`/api/reservations/preview?roomId=${roomId}&checkInDate=${formatCheckInDate}&checkOutDate=${formatCheckOutDate}`,{
+      const result = await aTeamApi.get(`/api/reservations/preview?roomId=${roomId}&checkInDate=${formatCheckInDate}&checkOutDate=${formatCheckOutDate}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
@@ -77,6 +99,22 @@ export default {
     } catch (error) {
       console.error('호텔 정보 로드 실패:', error);
     }
+
+    const couponList = await aTeamApi.get(`/api/my/coupons`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+    this.coupone = couponList.data || couponList.data.content;
+
+
+  },
+  computed: {
+    finalTotal() {
+      const total = this.totalPrice - this.selectedDiscount;
+      localStorage.setItem("totalPrice", total)
+        return total
+    },
   },
 
 }
@@ -86,25 +124,25 @@ export default {
   <HeaderComponent/>
   <div class="country-city-hotelname">
     <span class="hd-country">Turkey</span>&nbsp;>&nbsp;<span class="hd-city">Istanbul</span>&nbsp;>&nbsp;<span
-      class="hd-hotelname">{{hotelName}}</span>
+      class="hd-hotelname">{{ hotelName }}</span>
   </div>
   <div id="paymentContainer">
     <div id="paymentMain">
       <div id="paymentHotelInfo">
         <div id="pTitle">
-          <p id="pRoomName">{{roomName}} - 1 더블베드 or 2 트윈 베드</p>
-          <p id="PPrice">₩{{totalPrice}}/night</p>
+          <p id="pRoomName">{{ roomName }} - 1 더블베드 or 2 트윈 베드</p>
+          <p id="PPrice">₩{{ totalPrice }}/night</p>
         </div>
         <div id="pHotelDetail">
           <img alt="호텔 이미지" class="paymentHotelImg">
           <div id="paymentHotelName">
-            <a>{{hotelName}}</a>
+            <a>{{ hotelName }}</a>
             <p><img alt="위치 아이콘" src="../assets/ion-location.png">Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</p>
           </div>
         </div>
         <div id="pDateTime">
           <div id="pCheckIn">
-            <a>{{checkInDate}}</a>
+            <a>{{ checkInDate }}</a>
             <p>Check-In</p>
           </div>
           <div class="miniCircle"></div>
@@ -113,7 +151,7 @@ export default {
           <div class="pBorderline"></div>
           <div class="miniCircle"></div>
           <div id="pCheckOut">
-            <a>{{checkoutDate}}</a>
+            <a>{{ checkoutDate }}</a>
             <p>Check-Out</p>
           </div>
         </div>
@@ -135,37 +173,71 @@ export default {
         <TosspageMoveComponent v-if="showChild === false"/>
       </div>
     </div>
-    <div id="paymentList">
-      <div id="pListTop">
-        <img src="../assets/hotel-img-1.png" id="pHotelListImage">
-        <div id="pListTopTextBox">
-          <p id="pListTopText1">CVK Park Bosphorus...</p>
-          <p id="pListTopText2">{{roomName}} - 1 더블베드 or 2 트윈 베드</p>
-          <div id="pRatingReviewContainer">
-            <div id="pRatingContainer"><a>{{avgRating}}</a></div>
-            <a id="pListTopText3">Very Good <span>{{reviewCount}} reviews</span></a>
-<!--            리뷰 평점에 따른 택스트 변화시키기-->
+    <div id="rightPList">
+      <div class="paymentList">
+        <div id="pListTop">
+          <img src="../assets/hotel-img-1.png" id="pHotelListImage">
+          <div id="pListTopTextBox">
+            <p id="pListTopText1">CVK Park Bosphorus...</p>
+            <p id="pListTopText2">{{ roomName }} - 1 더블베드 or 2 트윈 베드</p>
+            <div id="pRatingReviewContainer">
+              <div id="pRatingContainer"><a>{{ avgRating }}</a></div>
+              <a id="pListTopText3">Very Good <span>{{ reviewCount }} reviews</span></a>
+              <!--            리뷰 평점에 따른 택스트 변화시키기-->
+            </div>
           </div>
         </div>
+        <hr>
+        <p class="marginTopBottom16" id="protectText">Your booking is protected by<span>&nbsp;golobe</span></p>
+        <hr>
+        <div id="priceList">
+          <p id="priceDetail">Price Details</p>
+          <div id="pBaseFare" class="fontMontserrat"><a>Base Fare </a><a>₩{{ subtotal }}</a></div>
+          <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩{{ selectedDiscount }}</a></div>
+          <div id="pTaxes" class="fontMontserrat"><a>Taxes</a><a>₩{{ taxes }}</a></div>
+          <div id="pServiceFee" class="fontMontserrat"><a>Service Fee</a><a>₩{{ serviceFee }}</a></div>
+        </div>
+        <hr>
+        <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{finalTotal}}</a></div>
       </div>
-      <hr>
-      <p class="marginTopBottom16" id="protectText">Your booking is protected by<span>&nbsp;golobe</span></p>
-      <hr>
-      <div id="priceList">
-        <p id="priceDetail">Price Details</p>
-        <div id="pBaseFare" class="fontMontserrat"><a>Base Fare </a><a>₩{{subtotal}}</a></div>
-        <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩0</a></div>
-        <div id="pTaxes" class="fontMontserrat"><a>Taxes</a><a>₩{{taxes}}</a></div>
-        <div id="pServiceFee" class="fontMontserrat"><a>Service Fee</a><a>₩{{serviceFee}}</a></div>
+      <div class="paymentList">
+        <div id="couponTitle">
+          <a>할인 쿠폰 선택</a>
+        </div>
+        <div class="couponList">
+          <input type="radio" name="coupon" style="width: 20px; height: 20px; margin: auto 0"  @change="resetCoupon">
+          <div class="couponMain">
+            선택 안함
+          </div>
+        </div>
+          <coupon-component v-for="(item, index) in coupone"
+                            :key="index"
+                            :id="item.id"
+                            :name="item.name"
+                            :expiry-date="item.expiryDate"
+                            :discount-amount="item.discountAmount"
+                            :item="item"
+                            :selected-item-id="selectedItemId"
+                            @select-item="applyCoupon"
+          />
       </div>
-      <hr>
-      <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{totalPrice}}</a></div>
     </div>
   </div>
+
   <FooterComponent/>
 </template>
 
 <style>
+* {
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
+#rightPList {
+  display: flex;
+  flex-direction: column;
+}
+
 .fontMontserrat {
   font-family: Montserrat;
   font-weight: bold;
@@ -637,12 +709,12 @@ export default {
   box-shadow: 0px 2px 5px #d3d3d3;
 }
 
-#paymentList {
+.paymentList {
   display: flex;
   flex-direction: column;
   width: 450px;
-  height: 470px;
   box-shadow: 0px 2px 5px #d3d3d3;
   padding: 24px;
+  margin-bottom: 15px;
 }
 </style>
