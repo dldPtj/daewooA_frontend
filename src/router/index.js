@@ -25,6 +25,8 @@ import LeavePhoneNum from  "@/common/components/LeavePhoneNum.vue";
 import TosspageMoveComponent from "@/common/components/TosspageMoveComponent.vue"
 import CouponComponent from "@/common/components/CouponComponent.vue"
 import TicketPage from  "@/page/TicketPage.vue"
+import SlideTest from '@/page/SlideTest.vue';
+
 
 const router = createRouter({
     history: createWebHistory(),
@@ -54,7 +56,7 @@ const router = createRouter({
         { path: '/tosspagemoveComponent', name: 'tosspagemoveComponent', component: TosspageMoveComponent },
         { path: '/couponComponent', name: 'couponComponent', component: CouponComponent },
         { path: '/ticketPage', name: 'ticketPage', component: TicketPage },
-
+        { path: '/slide', name: 'SlideTest', component: SlideTest }
     ],
 });
 

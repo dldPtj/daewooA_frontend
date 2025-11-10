@@ -22,11 +22,37 @@ export default {
     imageCount() {
       return this.hotelInfo.imageUrls?.length || 0;
     },
+    isUserLoggedIn() {
+      // 'authToken'은 사용자가 로그인 시 저장하는 토큰의 키 이름으로 가정합니다.
+      return !!localStorage.getItem('token');
+    },
+    filterSatisfication() {
+      const satisgrade = this.hotelInfo.rating;
+
+      if (satisgrade == 5.0) {
+        return 'Amazing';
+      } else if (4.0 <= satisgrade && satisgrade < 5.0) {
+        return 'Very Good';
+      } else if (3.0 <= satisgrade && satisgrade < 4.0) {
+        return 'Good';
+      } else if (2.0 <= satisgrade && satisgrade < 3.0) {
+        return 'Poor';
+      } else if (1.0 <= satisgrade && satisgrade < 2.0) {
+        return 'Very Poor';
+      } else if (0.0 <= satisgrade && satisgrade < 1.0) {
+        return 'Terrible';
+      } else return '';
+    },
   },
   methods: {
     togglefavorites() {
-      this.favorite = !this.favorite;
-      this.$emit('toggle-favorite', this.hotelInfo);
+      if (this.isUserLoggedIn) {
+        // 로그인 상태일 때 (토큰이 있을 때): 기존 찜하기 로직 실행
+        this.favorite = !this.favorite;
+      } else {
+        // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
+        alert('로그인이 필요한 기능입니다.');
+      }
     }
   }
 };
@@ -107,7 +133,7 @@ export default {
         </div>
         <!--호텔 만족도-->
         <div class="hotel-satisfaction">
-          <b><span id="satisfaction">Very Good</span></b>
+          <b><span id="satisfaction">{{ filterSatisfication }}</span></b>
         </div>
         <!--호텔 평점 개수-->
         <div class="hotel-review-count">
@@ -265,7 +291,7 @@ export default {
   box-shadow: 0px 3px 10px #d3d3d3;
 }
 #address {
-  max-width: 310px;
+  max-width: 260px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
