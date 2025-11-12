@@ -15,6 +15,7 @@ export default {
         }
       }).then(async () => {
         alert("쿠폰 추가 성공");
+        window.location.reload();
       }).catch(()=> {
         alert("이미 발급된 쿠폰 입니다.");
       });

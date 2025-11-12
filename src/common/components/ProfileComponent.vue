@@ -124,7 +124,7 @@ export default{
       const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
       return this.backgroundImg
           ? `${baseUrl}${this.backgroundImg}`
-          : "../../assets/asseAcoountCoverDefaultts/.jpg";
+          : "";
     },
   },
 
@@ -135,14 +135,17 @@ export default{
 <template>
   <HeaderComponent/>
   <div id ="accountImgMain">
-    <img :src="accountBackImgUrl" id="CoverImg">
+    <img :src="accountBackImgUrl" class="CoverImg" v-if="backgroundImg !== null">
+    <img src="../../assets/AccountCoverDefault.jpg" class="CoverImg" v-else-if="backgroundImg === null">
     <button type="button" id = "accountImgUpload" @click="fileModalOpen()"><img src="../../assets/AcoountUploadImgIcon.png"><a>upload new cover</a></button>
 
   </div>
   <div id = "accountProfile">
     <div id = "accountProfileMain">
       <div id="AccountProfileImg">
-        <img :src="accountImageUrl" class="accountImgSize">
+        <img :src="accountImageUrl" class="accountImgSize" v-if="profileImg !== null">
+        <img src="@/assets/userImg.png" class="accountImgSize" v-else-if="profileImg === null">
+
         <button id="ProfileImgModify" @click="profileModalOpen()"><img src="../../assets/Pencil.png"></button>
       </div>
       <div id ="AccountProfileMainT">
@@ -206,12 +209,13 @@ export default{
   display: flex;
   position: relative;
   justify-content: space-between;
+  background: #9e9a9a;
   margin: 105px auto 0px;
   width: 1232px;
   overflow: hidden;
 }
 
-#CoverImg{
+.CoverImg{
   display: flex;
   object-fit: fill;
   width: 100%;

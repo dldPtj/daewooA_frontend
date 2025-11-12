@@ -81,7 +81,8 @@ export default {
           <div class="headerHover">
             <div class="dropdownMenu" @click="menuModalOpen">
               <div class="circle ">
-                <img :src="headerImageUrl" alt="프로필사진" id="headerImgSize">
+                <img :src="headerImageUrl" alt="프로필사진" class="headerImgSize" v-if="profileImg !== null">
+                <img src="@/assets/userImg.png" v-if="profileImg === null" class="headerImgSize">
                 <div class="mini-circle">
                   <div class="check"></div>
                 </div>
@@ -236,7 +237,7 @@ export default {
 
 }
 
-#headerImgSize {
+.headerImgSize {
   display: flex;
   object-fit: cover;
   border-radius: 100%;

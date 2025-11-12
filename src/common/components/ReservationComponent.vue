@@ -108,7 +108,8 @@ export default {
       <div class="ticketDetailTop">
         <div class="ticketProfile">
           <div class="ticketProfileImg" >
-            <img :src="getFullUrl(userProfileImageUrl)" alt="사용자 프로필">
+            <img :src="getFullUrl(userProfileImageUrl)" alt="사용자 프로필" v-if="userProfileImageUrl !== null">
+            <img src="@/assets/userImg.png" v-else>
           </div>
           <div class="ticketProfileName">
             {{ userName }}
