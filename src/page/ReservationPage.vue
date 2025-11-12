@@ -65,6 +65,8 @@ export default {
                            :user-profile-image-url="item.userProfileImageUrl"
                            :view="item.view"
                            :hotel-image-url="item.hotelImageUrl"
+                           :reservation-id="item.reservationId"
+
 
     />
   </div>

@@ -8,17 +8,22 @@ export default {
   },
   setup(){
     const submit = async () => {
+      try {
+        await aTeamApi.post('/api/my/coupons/welcome', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }).then(async () => {
+          alert("쿠폰 추가 성공");
+          window.location.reload();
+        }).catch(() => {
+          alert("이미 발급된 쿠폰 입니다.");
 
-      await aTeamApi.post('/api/my/coupons/welcome',{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      }).then(async () => {
-        alert("쿠폰 추가 성공");
-        window.location.reload();
-      }).catch(()=> {
-        alert("이미 발급된 쿠폰 입니다.");
-      });
+        });
+      }catch (err){
+        console.error(err);
+        console.log(err);
+      }
     };
     return { submit };
   },
