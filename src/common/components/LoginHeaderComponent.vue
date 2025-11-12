@@ -26,10 +26,15 @@ export default {
   },
   computed: {
     headerImageUrl() {
-      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      const baseUrl = process.env.VUE_APP_API_URL;// 환경변수 사용
+      const path = String(this.profileImg);
+      if(path.startsWith("https") || path.startsWith("http")){
+        return path
+      }else {
       return this.profileImg
           ? `${baseUrl}${this.profileImg}`
           : "";
+      }
     },
   },
   methods: {
@@ -37,7 +42,10 @@ export default {
       this.menuModal = !this.menuModal
     },
     logout() {
-      localStorage.removeItem("token");
+      localStorage.removeItem('token');
+
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
       if(this.$route.path === '/'){
         window.location.reload();
       }else{
@@ -101,7 +109,8 @@ export default {
   <div class="menuModal" v-show="menuModal">
     <div class="menuTop">
       <div class="menuProfileImg">
-        <img :src="headerImageUrl" alt="프로필 이미지">
+        <img :src="headerImageUrl" alt="프로필 이미지" v-if="profileImg !== null">
+        <img src="@/assets/userImg.png" v-if="profileImg === null" class="headerImgSize">
       </div>
       <div class="menuProfileName">
         <a>{{ profileName }}</a>
