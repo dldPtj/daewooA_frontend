@@ -14,6 +14,7 @@ export default {
       favorite: false,
       roomData: {},
       modalOpen: false,
+      writeModalOpen: false
     };
   },
   async mounted() {
@@ -388,16 +389,14 @@ export default {
           </button>
           <!-- 모달창 열렸을 때 보여주는 amenities -->
           <div v-if="modalOpen" class="modal-background" @click="modalOpen = false">
-            <div class="modal-content" @click.stop>
-              <button @click="modalOpen = false" class="close-btn"><i class="bx bx-x"></i></button>
-              <li
-                v-for="(amenity, index) in totalAmenitiesLists"
-                :key="index"
-                class="more-amenities"
-              >
-                <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
-                &nbsp;{{ amenity }}
-              </li>
+            <div class="amenities-modal-content" @click.stop>
+              <div class="all-amenities-grid">
+                <div v-for="(amenity, index) in totalAmenitiesLists" :key="index" class="more-amenities">
+                  <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
+                  &nbsp;{{ amenity }}
+                </div>
+              </div>
+              <button @click="modalOpen = false" class="amenities-modal-close-btn"><i class="bx bx-x"></i></button>
             </div>
           </div>
         </ul>
@@ -411,7 +410,33 @@ export default {
           <h3>Reviews</h3>
         </div>
         <div class="write-review">
-          <button id="write-review-btn">Give your review</button>
+          <button id="write-review-btn" @click="writeModalOpen = true">Give your review</button>
+        </div>
+        <div v-if="writeModalOpen" class="modal-background" @click="writeModalOpen = false">
+          <div class="review-modal-content" @click.stop>
+            <div class="review-title">
+              리뷰 남기기
+            </div>
+            <div class="review-rating-title">
+              {{ hotelInfo.name }} 은/는 어떠셨나요?
+            </div>
+            <div class="review-rating">
+              <button id="review-rating-btn">0+</button>
+              <button id="review-rating-btn">1+</button>
+              <button id="review-rating-btn">2+</button>
+              <button id="review-rating-btn">3+</button>
+              <button id="review-rating-btn">4+</button>
+              <button id="review-rating-btn">5</button>
+            </div>
+            <div class="writing-review">
+              <span class="writing-review-title">다음 여행자를 위해 솔직한 리뷰를 남겨주세요.</span>
+              <textarea placeholder="리뷰 내용을 입력해주세요." class="write-review-textarea"></textarea>
+            </div>
+            <div class="review-close-register">
+              <button @click="modalOpen = false" class="review-close-btn">닫기</button>
+              <button class="review-register-btn">리뷰 등록</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -603,7 +628,7 @@ export default {
   align-items: center;
 }
 
-.modal-content {
+.amenities-modal-content {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -612,17 +637,95 @@ export default {
   border-radius: 5px;
   width: 1000px;
 }
+.review-modal-content {
+  display: flex;
+  text-align: left;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 1000px;
+  height: 500px;
+}
+.review-title {
+  margin-left: 10px;
+  font-size: 25px;
+  font-weight: bold;
+}
+.review-rating-title {
+  font-size: 20px;
+  margin-left: 20px;
+}
+.review-rating {
+  display: flex;
+  margin: 0 auto;
+  gap: 20px;
+}
+#review-rating-btn {
+  font-size: 20px;
+  border: #8ae6b2 solid 2px;
+  border-radius: 15px;
+  background-color: white;
+  width: 80px;
+  height: 50px;
+}
+.writing-review {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+.writing-review-title {
+  font-size: 20px;
+}
+.write-review-textarea {
+  text-align: left;
+  margin: 10px auto;
+  width: 925px;
+  height: 150px;
+  padding: 10px;
+  resize: none;
+}
+input[type="text"] {
+  margin: 10px auto ;
+}
+.review-close-register {
+  display: flex;
+  margin: 0 auto;
+  gap: 20px;
+}
+.review-close-btn {
+  background-color: #9e9a9a;
+  border: #9e9a9a solid 1px;
+  border-radius: 15px;
+  width: 220px;
+  height: 50px;
+}
+.review-register-btn {
+  background-color: #8ae6b2;
+  border: #8ae6b2 solid 1px;
+  border-radius: 15px;
+  width: 220px;
+  height: 50px;
+}
+.all-amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 30px;
+  width: 100%;
+}
 .more-amenities {
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  padding: 10px;
-  width: 150px;
+  justify-content: center;
+  padding: 5px;
+  width: auto;
   border-radius: 5px;
   border: #d3d3d3 solid 1px;
 }
-.close-btn {
+.amenities-modal-close-btn {
+  margin-top: -300px;
+  text-align: right;
   font-size: 30px;
   font-weight: bold;
   background-color: transparent;
