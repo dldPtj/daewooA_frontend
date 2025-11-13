@@ -4,16 +4,27 @@ import FooterComponent from '@/common/components/FooterComponent.vue';
 import aTeamApi from '@/util/axios';
 import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
 import MapComponent from '@/common/components/MapComponent.vue';
+import ReviewLists from '@/common/components/ReviewLists.vue';
 
 export default {
   name: 'HotelDetailPage',
-  components: { MapComponent, LeftRoomLists, HeaderComponent, FooterComponent },
+  components: {
+    ReviewLists,
+    MapComponent,
+    LeftRoomLists,
+    HeaderComponent,
+    FooterComponent,
+  },
   data() {
     return {
+      reviews: [],
       hotelInfo: {},
+      reviewInfo: {},
+      reviewCount: 0,
       favorite: false,
       roomData: {},
       modalOpen: false,
+      writeModalOpen: false,
     };
   },
   async mounted() {
@@ -25,12 +36,31 @@ export default {
       return;
     }
 
+    // 호텔 정보 api 로드
     try {
       const result = await aTeamApi.get(`/api/hotels/detail/${hotelId}`);
       this.hotelInfo = result.data;
       console.log('hotelInfo', this.hotelInfo);
     } catch (error) {
       console.error('호텔 정보 로드 실패:', error);
+    }
+
+    // 호텔 리뷰 정보 api 로드
+    try {
+      const resultReviewInfo = await aTeamApi.get(`/api/hotels/${hotelId}/reviews`);
+      this.reviewInfo = resultReviewInfo.data.content.content;
+      console.log('reviewInfo >>> ', this.reviewInfo)
+    } catch (error) {
+      console.error('호텔 리뷰 정보 로드 실패: ', error);
+    }
+
+    // 호텔 리뷰 개수 api 로드
+    try {
+      const resultReviewCount = await aTeamApi.get(`/api/hotels/${hotelId}/reviews/total-info`);
+      this.reviewCount = resultReviewCount.data.content;
+      console.log('reviewCountData >>> ', this.reviewCount);
+    } catch (error) {
+      console.error('호텔 리뷰 개수 정보 로드 실패: ', error);
     }
   },
   methods: {
@@ -153,7 +183,7 @@ export default {
     <div class="country-city-hotelname">
       <span class="hd-country">{{ hotelInfo.country }}</span
       >&nbsp;<i class="bx bx-chevron-right"></i> &nbsp;
-      <span class="hd-city">{{ hotelInfo.cityName }}</span
+      <span class="hd-city">{{ hotelInfo.city }}</span
       >&nbsp;<i class="bx bx-chevron-right"></i>&nbsp;
       <span class="hd-hotelname">{{ hotelInfo.name }}</span>
     </div>
@@ -253,9 +283,9 @@ export default {
       <!-- 나머지 4개 썸네일 -->
       <div class="hoteldetail-imgs">
         <div v-for="index in 4" :key="index" class="hoteldetail-img-thumb">
-          <template v-if="hotelInfo.roomImageUrls && hotelInfo.roomImageUrls[index-1]">
+          <template v-if="hotelInfo.roomImageUrls && hotelInfo.roomImageUrls[index - 1]">
             <img
-              :src="getFullImageUrl(hotelInfo.roomImageUrls[index-1])"
+              :src="getFullImageUrl(hotelInfo.roomImageUrls[index - 1])"
               :alt="hotelInfo.name + ' image ' + (index + 1)"
             />
           </template>
@@ -388,16 +418,20 @@ export default {
           </button>
           <!-- 모달창 열렸을 때 보여주는 amenities -->
           <div v-if="modalOpen" class="modal-background" @click="modalOpen = false">
-            <div class="modal-content" @click.stop>
-              <button @click="modalOpen = false" class="close-btn"><i class="bx bx-x"></i></button>
-              <li
-                v-for="(amenity, index) in totalAmenitiesLists"
-                :key="index"
-                class="more-amenities"
-              >
-                <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
-                &nbsp;{{ amenity }}
-              </li>
+            <div class="amenities-modal-content" @click.stop>
+              <div class="all-amenities-grid">
+                <div
+                  v-for="(amenity, index) in totalAmenitiesLists"
+                  :key="index"
+                  class="more-amenities"
+                >
+                  <img :src="getAmenityIcon(amenity)" alt="amenity icon" class="amenity-icon" />
+                  &nbsp;{{ amenity }}
+                </div>
+              </div>
+              <button @click="modalOpen = false" class="amenities-modal-close-btn">
+                <i class="bx bx-x"></i>
+              </button>
             </div>
           </div>
         </ul>
@@ -411,14 +445,40 @@ export default {
           <h3>Reviews</h3>
         </div>
         <div class="write-review">
-          <button id="write-review-btn">Give your review</button>
+          <button id="write-review-btn" @click="writeModalOpen = true">Give your review</button>
+        </div>
+        <!-- 모달창이 open 되었을 때 -->
+        <div v-if="writeModalOpen" class="modal-background" @click="writeModalOpen = false">
+          <div class="review-modal-content" @click.stop>
+            <div class="review-title">리뷰 남기기</div>
+            <div class="review-rating-title">{{ hotelInfo.name }} 은/는 어떠셨나요?</div>
+            <div class="review-rating">
+              <button id="review-rating-btn">0+</button>
+              <button id="review-rating-btn">1+</button>
+              <button id="review-rating-btn">2+</button>
+              <button id="review-rating-btn">3+</button>
+              <button id="review-rating-btn">4+</button>
+              <button id="review-rating-btn">5</button>
+            </div>
+            <div class="writing-review">
+              <span class="writing-review-title">다음 여행자를 위해 솔직한 리뷰를 남겨주세요.</span>
+              <textarea
+                placeholder="리뷰 내용을 입력해주세요."
+                class="write-review-textarea"
+              ></textarea>
+            </div>
+            <div class="review-close-register">
+              <button @click="modalOpen = false" class="review-close-btn">닫기</button>
+              <button class="review-register-btn">리뷰 등록</button>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="reviews-rating-avg">
         <!--리뷰 평점-->
         <div class="reviews-rating">
-          <span id="reviews-rating">{{ hotelInfo.rating }}</span>
+          <span id="reviews-rating">{{ reviewCount.averageRating }}</span>
         </div>
         <!--리뷰 만족도와 개수-->
         <div class="satis-count">
@@ -426,32 +486,13 @@ export default {
             <span id="satisfaction">Very Good</span>
           </div>
           <div class="reviews-count">
-            <span id="review-count">{{ hotelInfo.reviewCount }}&nbsp;</span>verified reviews
+            <span id="review-count">{{ reviewCount.totalReviews }}&nbsp;</span>verified reviews
           </div>
         </div>
       </div>
 
       <!--리뷰 리스트-->
-      <div class="review-lists">
-        <!--리뷰 내용(프로필, 리뷰평점, 이름, 리뷰내용)-->
-        <div class="review-info">
-          <div class="review-profile"></div>
-          <div class="review-info-in">
-            <div class="reviewer-rating-name">
-              <span id="review-rating">5.0 Amazing</span> | 이예서
-            </div>
-            <div class="review-content">
-              "말라카 구시가지의 한복판에 자리한 고요하고 휴식이 가득한 공간. 강변의 깨끗한 루프탑
-              수영장이 특히 인상 깊었고, 객실마다 밤마다 향 오일 램프가 켜져 있어 정말 좋았다"고
-              감탄했습니다.
-            </div>
-          </div>
-        </div>
-        <!--리뷰 신고버튼-->
-        <button class="review-report-btn">
-          <i class="bxr bx-flag-alt-2"></i>
-        </button>
-      </div>
+      <ReviewLists v-for="(review, index) in reviewInfo" :key="index" :reviewInfo="review" />
       <!--리뷰 페이지 처리부분-->
       <div class="review-page">
         <button id="review-back-btn">
@@ -487,40 +528,8 @@ export default {
   background-color: white;
   border: white;
 }
-.review-lists {
-  border-bottom: #d9d9d9 solid 1px;
-}
 #review-rating {
   font-weight: bold;
-}
-.review-report-btn {
-  font-size: 24px;
-  background-color: white;
-  border: white;
-}
-.review-profile {
-  background-color: #8ae6b2;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-}
-.review-info-in {
-  display: flex;
-  flex-direction: column;
-  max-width: 1130px;
-  text-align: left;
-  margin: auto 20px;
-}
-.review-info {
-  display: flex;
-  align-items: center;
-}
-.review-lists {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px auto;
-  padding-bottom: 20px;
 }
 .satis-count {
   display: flex;
@@ -603,7 +612,7 @@ export default {
   align-items: center;
 }
 
-.modal-content {
+.amenities-modal-content {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -612,17 +621,95 @@ export default {
   border-radius: 5px;
   width: 1000px;
 }
+.review-modal-content {
+  display: flex;
+  text-align: left;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 1000px;
+  height: 500px;
+}
+.review-title {
+  margin-left: 10px;
+  font-size: 25px;
+  font-weight: bold;
+}
+.review-rating-title {
+  font-size: 20px;
+  margin-left: 20px;
+}
+.review-rating {
+  display: flex;
+  margin: 0 auto;
+  gap: 20px;
+}
+#review-rating-btn {
+  font-size: 20px;
+  border: #8ae6b2 solid 2px;
+  border-radius: 15px;
+  background-color: white;
+  width: 80px;
+  height: 50px;
+}
+.writing-review {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+.writing-review-title {
+  font-size: 20px;
+}
+.write-review-textarea {
+  text-align: left;
+  margin: 10px auto;
+  width: 925px;
+  height: 150px;
+  padding: 10px;
+  resize: none;
+}
+input[type='text'] {
+  margin: 10px auto;
+}
+.review-close-register {
+  display: flex;
+  margin: 0 auto;
+  gap: 20px;
+}
+.review-close-btn {
+  background-color: #9e9a9a;
+  border: #9e9a9a solid 1px;
+  border-radius: 15px;
+  width: 220px;
+  height: 50px;
+}
+.review-register-btn {
+  background-color: #8ae6b2;
+  border: #8ae6b2 solid 1px;
+  border-radius: 15px;
+  width: 220px;
+  height: 50px;
+}
+.all-amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 30px;
+  width: 100%;
+}
 .more-amenities {
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  padding: 10px;
-  width: 150px;
+  justify-content: center;
+  padding: 5px;
+  width: auto;
   border-radius: 5px;
   border: #d3d3d3 solid 1px;
 }
-.close-btn {
+.amenities-modal-close-btn {
+  margin-top: -300px;
+  text-align: right;
   font-size: 30px;
   font-weight: bold;
   background-color: transparent;
