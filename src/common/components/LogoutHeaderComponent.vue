@@ -60,6 +60,7 @@ export default {
           <!-- 오른쪽 두번째 -->
           <div class="dropdownMenu" @click="menuModalOpen">
             <div class="circle ">
+              <img src="@/assets/userImg.png"  class="headerImgSize" alt="프로필 사진이 없을때">
               <div class="mini-circle">
                 <div class="check"></div>
               </div>
@@ -77,7 +78,7 @@ export default {
   <div class="menuModal" v-show="menuModal">
     <div class="menuTop">
       <div class="menuProfileImg">
-
+        <img src="@/assets/userImg.png"  class="headerImgSize" alt="프로필 사진이 없을때">
       </div>
       <div class="menuProfileName">
         <a>로그인을 하세요.</a>
@@ -101,7 +102,14 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
+.headerImgSize {
+  display: flex;
+  object-fit: cover;
+  border-radius: 100%;
+  width: 100%;
+  height: 100%;
+}
 .go-to-home:hover {
   cursor: pointer;
 }

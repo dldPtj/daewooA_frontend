@@ -33,6 +33,10 @@ export default {
       coupone: [],
       discountPrice: {},
       total: {},
+      cityName: {},
+      country: {},
+      view: {},
+      bed: {},
       selectedItemId: 0,
       selectedDiscount: 0,
 
@@ -94,6 +98,10 @@ export default {
       this.totalPrice = data.totalPrice;
       this.reviewCount = data.reviewCount;
       this.avgRating = data.avgRating;
+      this.cityName = data.cityName;
+      this.country = data.country;
+      this.view = data.view;
+      this.bed = data.bed;
 
       console.log('roomInfo', data);
     } catch (error) {
@@ -123,14 +131,14 @@ export default {
 <template>
   <HeaderComponent/>
   <div class="country-city-hotelname">
-    <span class="hd-country">Turkey</span>&nbsp;>&nbsp;<span class="hd-city">Istanbul</span>&nbsp;>&nbsp;<span
+    <span class="hd-country">{{cityName}}</span>&nbsp;>&nbsp;<span class="hd-city">{{country}}</span>&nbsp;>&nbsp;<span
       class="hd-hotelname">{{ hotelName }}</span>
   </div>
   <div id="paymentContainer">
     <div id="paymentMain">
       <div id="paymentHotelInfo">
         <div id="pTitle">
-          <p id="pRoomName">{{ roomName }} - 1 더블베드 or 2 트윈 베드</p>
+          <p id="pRoomName">{{ roomName }} - {{view}} - {{bed}}</p>
           <p id="PPrice">₩{{ totalPrice }}/night</p>
         </div>
         <div id="pHotelDetail">
@@ -162,10 +170,7 @@ export default {
           <div><a>전체결제</a>
             <p>전체 결제 후 예약 확정</p></div>
           <img src="../assets/icon_radioSelect.png"></button>
-        <button id="partialPaymentBtn">
-          <div><a>부분 결제, 나머지 계산</a>
-            <p>부분결제 후 자동적으로 나머지 결제가 이루어집니다</p></div>
-          <img src="../assets/icon_radioNoSelect.png"></button>
+
       </div>
       <!--      전화번호 입력후 버튼을 누르면 결제수단 선택가능한 부분의 뒷배경-->
       <div id="pUnderContainer">
@@ -179,7 +184,7 @@ export default {
           <img src="../assets/hotel-img-1.png" id="pHotelListImage">
           <div id="pListTopTextBox">
             <p id="pListTopText1">CVK Park Bosphorus...</p>
-            <p id="pListTopText2">{{ roomName }} - 1 더블베드 or 2 트윈 베드</p>
+            <p id="pListTopText2">{{ roomName }} - {{view}} - {{bed}}</p>
             <div id="pRatingReviewContainer">
               <div id="pRatingContainer"><a>{{ avgRating }}</a></div>
               <a id="pListTopText3">Very Good <span>{{ reviewCount }} reviews</span></a>
@@ -210,7 +215,7 @@ export default {
             선택 안함
           </div>
         </div>
-          <coupon-component v-for="(item, index) in coupone"
+          <coupon-component  mponent v-for="(item, index) in coupone"
                             :key="index"
                             :id="item.id"
                             :name="item.name"
@@ -505,7 +510,7 @@ export default {
   text-align: left;
   padding: 16px;
   border-radius: 12px;
-  margin: 16px auto 0;
+  margin: 16px auto 16px;
   width: 758px;
   height: 80px;
 }
@@ -637,7 +642,6 @@ export default {
   display: flex;
   flex-direction: column;
   width: 790px;
-  height: 1040px;
 }
 
 #pSelectPayment {
@@ -645,7 +649,6 @@ export default {
   flex-direction: column;
   gap: 16px;
   width: 790px;
-  height: 217px;
   margin-top: 40px;
   box-shadow: 0px 2px 5px #d3d3d3;
 }
