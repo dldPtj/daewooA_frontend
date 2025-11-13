@@ -273,7 +273,7 @@ export default {
   top: 20px;
   display: flex;
   gap: 10px;
-  z-index: 10;
+  z-index: 5;
 }
 
 .dot {

@@ -95,9 +95,7 @@ export default {
                   <div class="check"></div>
                 </div>
               </div>
-              <span>
-                        {{ profileName }}
-            </span>
+              <span>&nbsp;{{ profileName }}</span>
             </div>
           </div>
         </div>
@@ -167,7 +165,9 @@ export default {
   display: flex;
   gap: 8px;
 }
-
+.gotoMain:hover {
+  cursor: pointer;
+}
 .menuMiddle {
   display: flex;
   flex-direction: column;
@@ -182,20 +182,19 @@ export default {
 
 .menuProfileName {
   display: flex;
+  margin: auto;
+  justify-content: center;
   flex-direction: column;
-  margin-top: 8px;
-  gap: 4px;
+  gap: 10px;
 }
 
 .menuProfileName a {
-  font-family: Montserrat;
   font-weight: 600;
   font-size: 16px;
   line-height: 100%;
 }
 
 .menuProfileName p {
-  font-family: Montserrat;
   font-weight: 400;
   font-size: 14px;
   line-height: 100%;
@@ -220,10 +219,10 @@ export default {
 
 .menuTop {
   display: flex;
+  align-items: center;
   margin: 0 auto;
   width: 265px;
   height: 64px;
-  gap: 16px;
 }
 
 .menuModal {
@@ -243,7 +242,6 @@ export default {
 
 .dropdownMenu {
   display: flex;
-
 }
 
 .headerImgSize {
@@ -310,8 +308,8 @@ export default {
   border-bottom: 2px solid black;
   transform: rotate(-45deg);
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: 3px;
+  left: 3px;
 }
 
 .flex {
