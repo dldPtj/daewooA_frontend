@@ -222,6 +222,7 @@ export default {
 .search-bar:hover {
   border: #8ae6b2 solid 1px;
   box-shadow: 0px 0px 20px #8ae6b2;
+  cursor: pointer;
 }
 
 .main-photo {
@@ -273,7 +274,7 @@ export default {
   top: 20px;
   display: flex;
   gap: 10px;
-  z-index: 5;
+  z-index: 3;
 }
 
 .dot {
@@ -369,6 +370,7 @@ export default {
 
 .city-see-all-btn:hover {
   background-color: #8ae6b2;
+  cursor: pointer;
 }
 
 .city-selection-imgs {
@@ -402,6 +404,7 @@ export default {
 
 .tour-see-all-btn:hover {
   background-color: #8ae6b2;
+  cursor: pointer;
 }
 
 .tour {
@@ -440,6 +443,7 @@ export default {
 }
 #bookflight:hover {
   background-color: #d3d3d3;
+  cursor: pointer;
 }
 
 #bookflight {
