@@ -9,14 +9,14 @@ export default {
 </script>
 
 <template>
- <button type="button" id="MoveTossPage" @click="goToToss"><img src="../../assets/tossImg.png"> </button>
+ <button type="button" id="MoveTossPage" @click="goToToss"><div><img src="../../assets/tossImg.png"> <a>결제페이지로 이동하기</a></div></button>
 </template>
 
 <style >
 #MoveTossPage{
   display: flex;
   background: white;
-  border: #8DD3BB solid 1px;
+  border: #8DD3BB solid 3px;
   justify-content: center;
   text-align: left;
   padding: 16px;
@@ -25,17 +25,25 @@ export default {
   width: 758px;
   height: 80px;
 }
+#MoveTossPage div {
+  display: flex;
+  justify-content: center;
+}
+
+#MoveTossPage div a{
+  margin: auto 0;
+  font-family: Montserrat;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 100%;
+}
 #MoveTossPage:hover{
-  background: #b6b2b2;
-  border: black solid 1px;
-  box-shadow: 0px 0px 8px #000000;
+  background-color: #8DD3BB;
 }
 #MoveTossPage:active{
-  background: #9e9a9a;
+  background-color: #6acd97;
 }
 #MoveTossPage img {
   display: flex;
-  width: 100%;
-  height: 100%;
 }
 </style>

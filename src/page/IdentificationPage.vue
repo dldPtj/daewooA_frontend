@@ -14,13 +14,15 @@ export default {
       loginImgBtn3: LoginImg3,
       changeLBtn1: true,
       changeLBtn2: false,
+      changeLBtn3: false,
       timerId : null,
     };
   },
   async mounted() {
     this.timerId = setInterval(this.TtoCIMG, 10000);
-
-
+  },
+  beforeUnmount() {
+    clearInterval(this.timerId);
   },
   setup(){
     const state = reactive({
@@ -45,35 +47,55 @@ export default {
   },
 
   methods: {
-    changeLoginImg(img){
-      if(img === this.loginImgBtn1){
+    changeLoginImg(img) {
+      if (img === 'img1') {
         this.loginImg = LoginImg1;
-      }else {
+      } else if(img === 'img2'){
         this.loginImg = LoginImg2;
+      }else if(img === 'img3'){
+        this.loginImg = LoginImg3;
       }
     },
-    changLBtn(btn){
-      if(btn === this.changeLBtn2){
+    changLBtn(btn) {
+      if (btn === 'btn2') {
         this.changeLBtn2 = true;
         this.changeLBtn1 = false;
+        this.changeLBtn3 = false;
         clearInterval(this.timerId);
         this.timerId = setInterval(this.TtoCIMG, 10000);
-      }else if(btn === this.changeLBtn1){
+
+      } else if (btn === 'btn1') {
         this.changeLBtn1 = true;
+        this.changeLBtn2 = false;
+        this.changeLBtn3 = false;
+        clearInterval(this.timerId);
+        this.timerId = setInterval(this.TtoCIMG, 10000);
+      }
+      else if (btn === 'btn3') {
+        this.changeLBtn3 = true;
+        this.changeLBtn1 = false;
         this.changeLBtn2 = false;
         clearInterval(this.timerId);
         this.timerId = setInterval(this.TtoCIMG, 10000);
       }
     },
-    TtoCIMG(){
-      if(this.loginImg === LoginImg1){
+    TtoCIMG() {
+      if (this.loginImg === LoginImg1) {
         this.loginImg = LoginImg2;
         this.changeLBtn2 = true;
         this.changeLBtn1 = false;
-      }else if(this.loginImg === LoginImg2){
+        this.changeLBtn3 = false;
+      } else if (this.loginImg === LoginImg2) {
+        this.loginImg = LoginImg3;
+        this.changeLBtn1 = false;
+        this.changeLBtn2 = false;
+        this.changeLBtn3 = true;
+      }
+      else if (this.loginImg === LoginImg3) {
         this.loginImg = LoginImg1;
         this.changeLBtn1 = true;
         this.changeLBtn2 = false;
+        this.changeLBtn3 = false;
       }
     },
   }
@@ -102,13 +124,16 @@ export default {
       </transition>
       <div class= "PicBtnBoxes">
          <span style="margin-right: 8px">
-          <button type="button" @click ="changeLoginImg(loginImgBtn1), changLBtn(changeLBtn1)" class="NSelectPicBtn" :class="{'SelectPicBtn': changeLBtn1}"  ></button>
+          <button type="button" @click="changeLoginImg('img1'), changLBtn('btn1')" class="NSelectPicBtn"
+                  :class="{'SelectPicBtn': changeLBtn1}"></button>
          </span>
         <span style="margin-right: 8px">
-          <button type="button" @click="changeLoginImg(loginImgBtn2), changLBtn(changeLBtn2)" class="NSelectPicBtn" :class="{'SelectPicBtn': changeLBtn2}" ></button>
+          <button type="button" @click="changeLoginImg('img2'), changLBtn('btn2')" class="NSelectPicBtn"
+                  :class="{'SelectPicBtn': changeLBtn2}"></button>
          </span>
         <span style="margin-right: 8px">
-          <button type="button" class="NSelectPicBtn"></button>
+          <button type="button" @click="changeLoginImg('img3'), changLBtn('btn3')" class="NSelectPicBtn"
+                  :class="{'SelectPicBtn': changeLBtn3}"></button>
          </span>
       </div>
     </div>

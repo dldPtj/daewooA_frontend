@@ -1,4 +1,6 @@
 <script>
+// import aTeamApi from "@/util/axios";
+
 export default {
   name: "HotelLists",
   data() {
@@ -12,6 +14,7 @@ export default {
       default: () => ({}),
     },
   },
+
   computed: {
     fullImageUrl() {
       const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
@@ -49,6 +52,8 @@ export default {
       if (this.isUserLoggedIn) {
         // 로그인 상태일 때 (토큰이 있을 때): 기존 찜하기 로직 실행
         this.favorite = !this.favorite;
+        // const res = await
+
       } else {
         // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
         alert('로그인이 필요한 기능입니다.');

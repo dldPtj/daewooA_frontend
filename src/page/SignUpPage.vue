@@ -6,6 +6,8 @@ import eyeon from "@/assets/Eye.png";
 import {reactive} from "vue";
 import {aTeamApi} from "@/util/axios";
 import router from "@/router";
+import LoginImg3 from "@/assets/LoginImg3.jpg";
+import { ref } from 'vue';
 export default {
   data(){
     return{
@@ -14,9 +16,11 @@ export default {
       loginImg: LoginImg1,
       loginImgBtn1: LoginImg1,
       loginImgBtn2: LoginImg2,
+      loginImgBtn3: LoginImg3,
       timerId : null,
       changeLBtn1: true,
       changeLBtn2: false,
+      changeLBtn3: false,
       viewPassword: 'password',
       viewConPassword : 'password',
     };
@@ -31,6 +35,7 @@ export default {
         confirmPw: "",
       },
     });
+    const checkTrue = ref(false);
     const submit = async () => {
       const signObj = {
         email: state.form.signEmail,
@@ -38,7 +43,7 @@ export default {
         userName: state.form.signName,
         phoneNumber: state.form.signPhNum,
       };
-      if(state.form.signPw === state.form.confirmPw){
+      if(state.form.signPw === state.form.confirmPw && checkTrue.value){
         await aTeamApi.post('/api/auth/signup', signObj).then(async () => {
           alert("회원 가입 성공");
           await router.push("/loginpage");
@@ -50,17 +55,21 @@ export default {
           }
         });
       }
-      else if(state.form.signEmail == null || state.form.signPw == null || state.form.signName == null || state.form.signPhNum == null){
-       alert("입력되지 않은 정보가 있습니다. 모든 정보를 입력해주세요.");
-      }
-      else{
+      else if(state.form.signPw !== state.form.confirmPw){
         alert("입력 하신 비밀번호가 정보가 일치 하지 않습니다. 비밀번호를 다시 입력하세요.");
+      }else if (checkTrue.value === false ) {
+        alert("회원가입 동의 버튼을 클릭하세요.");
+      }else {
+        alert("입력되지 않은 정보가 있습니다. 모든 정보를 입력해주세요.");
       }
     };
-    return { state, submit };
+    return { state, submit, checkTrue };
   },
   async mounted() {
     this.timerId = setInterval(this.TtoCIMG, 10000);
+  },
+  beforeUnmount() {
+    clearInterval(this.timerId);
   },
   methods: {
     changeEyeImg(){
@@ -97,35 +106,55 @@ export default {
       }
     },
 
-    changeLoginImg(img){
-      if(img === this.loginImgBtn1){
+    changeLoginImg(img) {
+      if (img === 'img1') {
         this.loginImg = LoginImg1;
-      }else if (img === this.loginImgBtn2){
+      } else if(img === 'img2'){
         this.loginImg = LoginImg2;
+      }else if(img === 'img3'){
+        this.loginImg = LoginImg3;
       }
     },
-    changLBtn(btn){
-      if(btn === this.changeLBtn2){
+    changLBtn(btn) {
+      if (btn === 'btn2') {
         this.changeLBtn2 = true;
         this.changeLBtn1 = false;
+        this.changeLBtn3 = false;
         clearInterval(this.timerId);
         this.timerId = setInterval(this.TtoCIMG, 10000);
-      }else if(btn === this.changeLBtn1){
+
+      } else if (btn === 'btn1') {
         this.changeLBtn1 = true;
+        this.changeLBtn2 = false;
+        this.changeLBtn3 = false;
+        clearInterval(this.timerId);
+        this.timerId = setInterval(this.TtoCIMG, 10000);
+      }
+      else if (btn === 'btn3') {
+        this.changeLBtn3 = true;
+        this.changeLBtn1 = false;
         this.changeLBtn2 = false;
         clearInterval(this.timerId);
         this.timerId = setInterval(this.TtoCIMG, 10000);
       }
     },
-    TtoCIMG(){
-      if(this.loginImg === LoginImg1){
+    TtoCIMG() {
+      if (this.loginImg === LoginImg1) {
         this.loginImg = LoginImg2;
         this.changeLBtn2 = true;
         this.changeLBtn1 = false;
-      }else if(this.loginImg === LoginImg2){
+        this.changeLBtn3 = false;
+      } else if (this.loginImg === LoginImg2) {
+        this.loginImg = LoginImg3;
+        this.changeLBtn1 = false;
+        this.changeLBtn2 = false;
+        this.changeLBtn3 = true;
+      }
+      else if (this.loginImg === LoginImg3) {
         this.loginImg = LoginImg1;
         this.changeLBtn1 = true;
         this.changeLBtn2 = false;
+        this.changeLBtn3 = false;
       }
     },
   }
@@ -140,13 +169,16 @@ export default {
       </transition>
       <div class= "PicBtnBoxes">
          <span style="margin-right: 8px">
-          <button type="button" @click ="changeLoginImg(loginImgBtn1), changLBtn(changeLBtn1)" class="NSelectPicBtn" :class="{'SelectPicBtn': changeLBtn1}"  ></button>
+          <button type="button" @click="changeLoginImg('img1'), changLBtn('btn1')" class="NSelectPicBtn"
+                  :class="{'SelectPicBtn': changeLBtn1}"></button>
          </span>
         <span style="margin-right: 8px">
-          <button type="button" @click="changeLoginImg(loginImgBtn2), changLBtn(changeLBtn2)" class="NSelectPicBtn" :class="{'SelectPicBtn': changeLBtn2}" ></button>
+          <button type="button" @click="changeLoginImg('img2'), changLBtn('btn2')" class="NSelectPicBtn"
+                  :class="{'SelectPicBtn': changeLBtn2}"></button>
          </span>
         <span style="margin-right: 8px">
-          <button type="button" class="NSelectPicBtn"></button>
+          <button type="button" @click="changeLoginImg('img3'), changLBtn('btn3')" class="NSelectPicBtn"
+                  :class="{'SelectPicBtn': changeLBtn3}"></button>
          </span>
       </div>
     </div>
@@ -186,7 +218,7 @@ export default {
       </fieldset>
       <div id = "AgreeLine">
         <span id="AgreeCheckboxLine">
-        <input type="checkbox" class ="AgreeCheckbox">  동의 하기
+        <input type="checkbox" class ="AgreeCheckbox" v-model="checkTrue">  동의 하기
         </span>
       </div>
       <button @click="submit" id="LoginBtn">계정 생성</button>
@@ -207,6 +239,17 @@ export default {
 </template>
 
 <style>
+.fade-enter-active,
+.fade-leave-active {
+  position: absolute;
+  transition: opacity 1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+
+  opacity: 0;
+}
 * {
   margin:0;
   padding: 0;

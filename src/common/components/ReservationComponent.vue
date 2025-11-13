@@ -13,15 +13,16 @@ export default {
     roomName: String,
     roomBedInfo: String,
     bookingReference: String,
-    userProfileImageUrl:String,
+    userProfileImageUrl: String,
     view: String,
     hotelImageUrl: String,
+    reservationId: Number,
   },
   methods: {
     async downloadTicketBtn() {
       const element = document.getElementById("downloadTicket");
 
-      html2canvas(element,{
+      html2canvas(element, {
         useCORS: true,
         allowTaint: false,
         scale: 2
@@ -43,6 +44,9 @@ export default {
       return path.startsWith('http')
           ? path
           : `${baseUrl}${path}`;
+    },
+    goToTicketPage(){
+      this.$router.push(`/ticketPage?id=${this.reservationId}`);
     }
   },
 
@@ -50,8 +54,8 @@ export default {
 </script>
 
 <template>
-  <div class="ReservationList" >
-    <div class="ReservationImage" >
+  <div class="ReservationList">
+    <div class="ReservationImage">
       <img :src="getFullUrl(hotelImageUrl[0])" alt="호텔 이미지가 나옵니다." id="ProfileImg">
     </div>
     <div class="Reservation_CheckInOut_Day">
@@ -89,9 +93,10 @@ export default {
     <button type="button" id="TicketBtn" @click="downloadTicketBtn">
       Download Ticket
     </button>
-    <button type="button" id="MoreBtn">
+    <button type="button" id="MoreBtn" @click="goToTicketPage">
       >
     </button>
+
   </div>
 
   <div class="ticketImg" id="downloadTicket">
@@ -107,15 +112,16 @@ export default {
     <div class="ticketDetail">
       <div class="ticketDetailTop">
         <div class="ticketProfile">
-          <div class="ticketProfileImg" >
-            <img :src="getFullUrl(userProfileImageUrl)" alt="사용자 프로필">
+          <div class="ticketProfileImg">
+            <img :src="getFullUrl(userProfileImageUrl)" alt="사용자 프로필" v-if="userProfileImageUrl !== null">
+            <img src="@/assets/userImg.png" v-else>
           </div>
           <div class="ticketProfileName">
             {{ userName }}
           </div>
         </div>
         <div class="ticketRoomDetail">
-          {{roomName}}  {{roomBedInfo}} ({{view}})
+          {{ roomName }} {{ roomBedInfo }} ({{ view }})
         </div>
       </div>
       <div class="ticketDetailMiddle">
@@ -149,14 +155,14 @@ export default {
       </div>
       <div class="ticketDetailBottom">
         <div class="ticketCountry">
-          <a class="ticketDateFont">{{bookingReference}}</a>
+          <a class="ticketDateFont">{{ bookingReference }}</a>
           <p class="ticketCheckFont">ABC12345</p>
         </div>
         <div class="barcodeImg">
           <img src="../../assets/barcode.png" alt="바코드 입니다.">
         </div>
       </div>
-  </div>
+    </div>
     <div class="ticketHotelImg">
       <img :src="getFullUrl(hotelImageUrl[0])">
     </div>
@@ -164,14 +170,15 @@ export default {
 </template>
 
 <style>
-#downloadTicket{
+#downloadTicket {
   position: absolute;
   left: -99999px;
   top: 0;
   opacity: 1;
   visibility: visible;
 }
-.ticketHotelImg{
+
+.ticketHotelImg {
   display: flex;
   margin: auto 0;
   justify-content: center;
@@ -179,31 +186,37 @@ export default {
   height: 309px;
   object-fit: cover;
 }
-.ticketHotelImg img{
+
+.ticketHotelImg img {
   display: flex;
   width: 100%;
   height: 100%;
 }
-.barcodeImg{
+
+.barcodeImg {
   display: flex;
 }
-.barcodeImg img{
+
+.barcodeImg img {
   width: 240px;
   height: 75px;
   margin-top: 44px;
 }
-.ticketCountry{
+
+.ticketCountry {
   display: flex;
   width: 90px;
   margin: 37px 0 34px 30px;
   flex-direction: column;
 }
-.ticketDetailBottom{
+
+.ticketDetailBottom {
   display: flex;
   width: 375px;
   justify-content: space-between;
 
 }
+
 .ticketDetailBox {
   display: flex;
 
@@ -253,6 +266,7 @@ export default {
   background: #9e9a9a;
 
 }
+
 .ticketProfileImg img {
   display: flex;
   object-fit: fill;
@@ -349,7 +363,8 @@ export default {
   background-color: #b6b2b2;
   cursor: pointer;
 }
-#TicketBtn:active{
+
+#TicketBtn:active {
   background: #9e9a9a;
 }
 
