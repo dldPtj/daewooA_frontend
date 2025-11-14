@@ -1,7 +1,7 @@
 <script>
 import HeaderComponent from '@/common/components/HeaderComponent.vue';
 import FooterComponent from '@/common/components/FooterComponent.vue';
-import { aTeamApi } from '@/util/axios';
+import {aTeamApi} from '@/util/axios';
 import HotelLists from '@/common/components/HotelLists.vue';
 import SearchbarComponent from '@/common/components/SearchbarComponent.vue';
 
@@ -67,6 +67,7 @@ export default {
   },
 
   async mounted() {
+    this.checkLogined(); //로그인 여부 확인
     await this.fetchMaxPrice();
     const initialData = await this.fetchHotels(0);
     if (initialData) {
@@ -76,6 +77,10 @@ export default {
   },
 
   methods: {
+    checkLogined() {
+      const token = localStorage.getItem("token");
+      this.isLogined = !!token;
+    },
     selectAvgRating(rating) {
       // 선택된 평점 업데이트
       this.minAvgRating = rating;
@@ -164,9 +169,12 @@ export default {
         this.totalPages = data.totalPages || 0;
         this.currentPage = data.currentPage || page;
         this.currentTotal = this.totalHotels;
+        console.log(data);
       } catch (error) {
         console.error('호텔 데이터를 불러오는 중 오류 발생:', error);
       }
+
+
     },
 
     changePage(page) {
@@ -213,11 +221,11 @@ export default {
 </script>
 
 <template>
-  <HeaderComponent />
+  <HeaderComponent/>
 
   <!--호텔 검색 바-->
   <div class="hotel-search-bar">
-    <SearchbarComponent />
+    <SearchbarComponent/>
   </div>
 
   <!--호텔 검색 화면 메인 부분-->
@@ -234,8 +242,8 @@ export default {
             <h4>Price</h4>
             <button id="dropdown-btn" @click="toggleFilter('price')">
               <i
-                class="bxr"
-                :class="{
+                  class="bxr"
+                  :class="{
                   'bx-chevron-up': priceFilterOpen,
                   'bx-chevron-down': !priceFilterOpen,
                 }"
@@ -245,12 +253,12 @@ export default {
           <div v-if="priceFilterOpen">
             <span class="sliderValue">{{ formattedPrice(sliderValue) }}</span>
             <input
-              type="range"
-              id="priceSlider"
-              min="0"
-              :max="maxPrice"
-              :step="stepValue"
-              v-model.number="sliderValue"
+                type="range"
+                id="priceSlider"
+                min="0"
+                :max="maxPrice"
+                :step="stepValue"
+                v-model.number="sliderValue"
             />
             <div class="price-range">
               <span>₩0</span>
@@ -265,8 +273,8 @@ export default {
             <h4>Rating</h4>
             <button id="dropdown-btn" @click="toggleFilter('rating')">
               <i
-                class="bxr"
-                :class="{
+                  class="bxr"
+                  :class="{
                   'bx-chevron-up': ratingFilterOpen,
                   'bx-chevron-down': !ratingFilterOpen,
                 }"
@@ -276,44 +284,44 @@ export default {
           <div v-if="ratingFilterOpen">
             <div class="rating-range">
               <button
-                id="rating-btn"
-                @click="selectAvgRating(0)"
-                :class="{ selected: minAvgRating >= 0 }"
+                  id="rating-btn"
+                  @click="selectAvgRating(0)"
+                  :class="{ selected: minAvgRating >= 0 }"
               >
                 0+
               </button>
               <button
-                id="rating-btn"
-                @click="selectAvgRating(1)"
-                :class="{ selected: minAvgRating >= 1 }"
+                  id="rating-btn"
+                  @click="selectAvgRating(1)"
+                  :class="{ selected: minAvgRating >= 1 }"
               >
                 1+
               </button>
               <button
-                id="rating-btn"
-                @click="selectAvgRating(2)"
-                :class="{ selected: minAvgRating >= 2 }"
+                  id="rating-btn"
+                  @click="selectAvgRating(2)"
+                  :class="{ selected: minAvgRating >= 2 }"
               >
                 2+
               </button>
               <button
-                id="rating-btn"
-                @click="selectAvgRating(3)"
-                :class="{ selected: minAvgRating >= 3 }"
+                  id="rating-btn"
+                  @click="selectAvgRating(3)"
+                  :class="{ selected: minAvgRating >= 3 }"
               >
                 3+
               </button>
               <button
-                id="rating-btn"
-                @click="selectAvgRating(4)"
-                :class="{ selected: minAvgRating >= 4 }"
+                  id="rating-btn"
+                  @click="selectAvgRating(4)"
+                  :class="{ selected: minAvgRating >= 4 }"
               >
                 4+
               </button>
               <button
-                id="rating-btn"
-                @click="selectAvgRating(5)"
-                :class="{ selected: minAvgRating === 5 }"
+                  id="rating-btn"
+                  @click="selectAvgRating(5)"
+                  :class="{ selected: minAvgRating === 5 }"
               >
                 5
               </button>
@@ -326,8 +334,8 @@ export default {
             <h4>Freebies</h4>
             <button id="dropdown-btn" @click="toggleFilter('freebies')">
               <i
-                class="bxr"
-                :class="{
+                  class="bxr"
+                  :class="{
                   'bx-chevron-up': freebiesFilterOpen,
                   'bx-chevron-down': !freebiesFilterOpen,
                 }"
@@ -336,31 +344,31 @@ export default {
           </div>
           <div v-if="freebiesFilterOpen" class="freebies-checkboxes">
             <div>
-              <input type="checkbox" v-model="filterParams.breakfastIncluded" /><label
+              <input type="checkbox" v-model="filterParams.breakfastIncluded"/><label
                 for="조식포함"
-                >조식포함</label
-              >
+            >조식포함</label
+            >
             </div>
             <div>
-              <input type="checkbox" v-model="filterParams.freeParking" /><label for="무료주차"
-                >무료주차</label
-              >
+              <input type="checkbox" v-model="filterParams.freeParking"/><label for="무료주차"
+            >무료주차</label
+            >
             </div>
             <div>
-              <input type="checkbox" v-model="filterParams.freeWifi" /><label for="WIFI"
-                >WIFI</label
-              >
+              <input type="checkbox" v-model="filterParams.freeWifi"/><label for="WIFI"
+            >WIFI</label
+            >
             </div>
             <div>
-              <input type="checkbox" v-model="filterParams.airportShuttlebus" /><label
+              <input type="checkbox" v-model="filterParams.airportShuttlebus"/><label
                 for="공항셔틀"
-                >공항셔틀</label
-              >
+            >공항셔틀</label
+            >
             </div>
             <div>
-              <input type="checkbox" v-model="filterParams.freeCancellation" /><label for="무료취소"
-                >무료취소</label
-              >
+              <input type="checkbox" v-model="filterParams.freeCancellation"/><label for="무료취소"
+            >무료취소</label
+            >
             </div>
           </div>
         </div>
@@ -370,8 +378,8 @@ export default {
             <h4>Amenities</h4>
             <button id="dropdown-btn" @click="toggleFilter('amenities')">
               <i
-                class="bxr"
-                :class="{
+                  class="bxr"
+                  :class="{
                   'bx-chevron-up': amenitiesFilterOpen,
                   'bx-chevron-down': !amenitiesFilterOpen,
                 }"
@@ -380,29 +388,29 @@ export default {
           </div>
           <div v-if="amenitiesFilterOpen" class="amenities-checkboxes">
             <div>
-              <input type="checkbox" v-model="filterParams.frontDesk24" /><label
+              <input type="checkbox" v-model="filterParams.frontDesk24"/><label
                 for="24시 프론트데스크"
-                >24시 프론트데스크</label
-              >
+            >24시 프론트데스크</label
+            >
             </div>
             <div>
-              <input type="checkbox" v-model="filterParams.airConditioner" /><label for="에어컨"
-                >에어컨</label
-              >
+              <input type="checkbox" v-model="filterParams.airConditioner"/><label for="에어컨"
+            >에어컨</label
+            >
             </div>
             <div>
-              <input type="checkbox" v-model="filterParams.fitnessCenter" /><label for="피트니스"
-                >피트니스</label
-              >
+              <input type="checkbox" v-model="filterParams.fitnessCenter"/><label for="피트니스"
+            >피트니스</label
+            >
             </div>
             <div>
-              <input type="checkbox" v-model="filterParams.pool" /><label for="수영장"
-                >수영장</label
-              >
+              <input type="checkbox" v-model="filterParams.pool"/><label for="수영장"
+            >수영장</label
+            >
             </div>
-            <div><input type="checkbox" /><label for="에어컨">에어컨</label></div>
-            <div><input type="checkbox" /><label for="피트니스">피트니스</label></div>
-            <div><input type="checkbox" /><label for="수영장">수영장</label></div>
+            <div><input type="checkbox"/><label for="에어컨">에어컨</label></div>
+            <div><input type="checkbox"/><label for="피트니스">피트니스</label></div>
+            <div><input type="checkbox"/><label for="수영장">수영장</label></div>
           </div>
         </div>
       </div>
@@ -413,27 +421,27 @@ export default {
       <header class="accommodation">
         <div class="accommodation-selection">
           <button
-            id="hotel-count"
-            @click="selectAccommodation('hotel')"
-            :class="{ selected: selectedType === 'hotel' }"
+              id="hotel-count"
+              @click="selectAccommodation('hotel')"
+              :class="{ selected: selectedType === 'hotel' }"
           >
             <h3>Hotels</h3>
             <span>{{ totalHotels }} places</span>
           </button>
 
           <button
-            id="motel-count"
-            @click="selectAccommodation('motel')"
-            :class="{ selected: selectedType === 'motel' }"
+              id="motel-count"
+              @click="selectAccommodation('motel')"
+              :class="{ selected: selectedType === 'motel' }"
           >
             <h3>Motels</h3>
             <span>{{ totalMotels }} places</span>
           </button>
 
           <button
-            id="resort-count"
-            @click="selectAccommodation('resort')"
-            :class="{ selected: selectedType === 'resort' }"
+              id="resort-count"
+              @click="selectAccommodation('resort')"
+              :class="{ selected: selectedType === 'resort' }"
           >
             <h3>Resorts</h3>
             <span>{{ totalResorts }} places</span>
@@ -459,21 +467,21 @@ export default {
       <!--호텔 리스트-->
       <div class="hotel-lists">
         <template v-if="hotellists.length > 0">
-          <HotelLists v-for="hotel in hotellists" :key="hotel.id" :hotelInfo="hotel" />
+          <HotelLists v-for="hotel in hotellists" :key="hotel.id" :hotelInfo="hotel"/>
 
           <div class="page-btns">
             <button
-              id="page-btn"
-              :disabled="currentPage === 0"
-              @click="changePage(currentPage - 1)"
+                id="page-btn"
+                :disabled="currentPage === 0"
+                @click="changePage(currentPage - 1)"
             >
               <i class="bx bx-chevron-left" style="margin-top: 7px"></i>
             </button>
             <span id="page-info">{{ currentPage + 1 }} of {{ totalPages }}</span>
             <button
-              id="page-btn"
-              :disabled="currentPage === totalPages - 1"
-              @click="changePage(currentPage + 1)"
+                id="page-btn"
+                :disabled="currentPage === totalPages - 1"
+                @click="changePage(currentPage + 1)"
             >
               <i class="bx bx-chevron-right" style="margin-top: 7px"></i>
             </button>
@@ -489,23 +497,26 @@ export default {
       </div>
     </div>
   </div>
-  <FooterComponent />
+  <FooterComponent/>
 </template>
 
 <style>
 .filter-items {
   margin: 10px 20px 0 0;
 }
+
 .filter {
   border-bottom: #d9d9d9 solid 1px;
   margin: 10px auto;
   padding-bottom: 10px;
 }
+
 .filter-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .sliderValue {
   display: flex;
   justify-content: center;
@@ -516,17 +527,20 @@ export default {
   font-weight: bold;
   color: #ff8682;
 }
+
 #dropdown-btn {
   background-color: transparent;
   border: none;
   font-size: 40px;
 }
+
 input[type='range'] {
   -webkit-appearance: none;
   background-color: grey;
   width: 385px;
   height: 2px;
 }
+
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   border-radius: 50%;
@@ -535,17 +549,20 @@ input[type='range']::-webkit-slider-thumb {
   background-color: #8ae6b2;
   cursor: pointer;
 }
+
 .price-range {
   display: flex;
   justify-content: space-between;
   margin: 20px auto;
 }
+
 .rating-range {
   display: flex;
   align-items: center;
   gap: 15px;
   margin: 20px auto;
 }
+
 #rating-btn {
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -553,38 +570,46 @@ input[type='range']::-webkit-slider-thumb {
   width: 40px;
   height: 30px;
 }
+
 #rating-btn:hover {
   background-color: #d3d3d3;
 }
+
 #rating-btn.selected {
   background-color: #8ae6b2;
 }
+
 .freebies-checkboxes {
   display: flex;
   flex-direction: column;
   margin: 20px auto;
   gap: 10px;
 }
+
 .freebies-checkboxes > div {
   display: flex;
   align-items: center;
 }
+
 .amenities-checkboxes {
   display: flex;
   flex-direction: column;
   margin: 20px auto;
   gap: 10px;
 }
+
 .amenities-checkboxes > div {
   display: flex;
   align-items: center;
 }
+
 input[type='checkbox'] {
   width: 20px;
   height: 20px;
   border: 3px solid #8ae6b2;
   margin-right: 10px;
 }
+
 .hotel-filters {
   display: flex;
   flex-direction: column;
@@ -600,6 +625,7 @@ input[type='checkbox'] {
   margin: 40px auto;
   gap: 20px;
 }
+
 #accommodation-sort-option {
   border: white solid 1px;
   font-size: 15px;
@@ -607,26 +633,32 @@ input[type='checkbox'] {
   height: 20px;
   width: 170px;
 }
+
 .accommodation-sort {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 30px auto;
 }
+
 .accommodation-sort-text {
   font-weight: bold;
 }
+
 #accommodation-count {
   font-weight: bold;
   color: #ff8682;
 }
+
 .accommodation {
   width: 800px;
 }
+
 .accommodation-selection {
   border-radius: 15px;
   box-shadow: 0px 3px 10px #d3d3d3;
 }
+
 #hotel-count {
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
@@ -636,12 +668,15 @@ input[type='checkbox'] {
   width: 266px;
   text-align: left;
 }
+
 #hotel-count:hover {
   background-color: #e1e1e1;
 }
+
 #hotel-count.selected {
   box-shadow: 0px 5px #8ae6b2;
 }
+
 #motel-count {
   border: white solid 1px;
   border-left: #d3d3d3 solid 2px;
@@ -650,12 +685,15 @@ input[type='checkbox'] {
   width: 266px;
   text-align: left;
 }
+
 #motel-count:hover {
   background-color: #e1e1e1;
 }
+
 #motel-count.selected {
   box-shadow: 0px 5px #8ae6b2;
 }
+
 #resort-count {
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -666,12 +704,15 @@ input[type='checkbox'] {
   width: 266px;
   text-align: left;
 }
+
 #resort-count:hover {
   background-color: #e1e1e1;
 }
+
 #resort-count.selected {
   box-shadow: 0px 5px #8ae6b2;
 }
+
 .hotel-search-main {
   display: flex;
   justify-content: space-between;
@@ -694,14 +735,17 @@ input[type='checkbox'] {
   box-shadow: 0px 3px 10px #d3d3d3;
   border-radius: 20px;
 }
+
 .page-btns {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
 }
+
 #page-info {
   font-size: 25px;
 }
+
 #page-btn {
   background-color: transparent;
   width: 100px;
@@ -709,9 +753,11 @@ input[type='checkbox'] {
   border: none;
   font-size: 40px;
 }
+
 #page-btn:hover {
   background-color: #d3d3d3;
 }
+
 .no-accommodations {
   display: flex;
   justify-content: center;

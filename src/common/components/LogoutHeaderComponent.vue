@@ -103,6 +103,7 @@ export default {
 </template>
 
 <style scoped>
+
 .headerImgSize {
   display: flex;
   object-fit: cover;
