@@ -70,12 +70,12 @@ async function confirmPayment() {
             const message = error.response.data?.message || "알 수 없는 오류";
             console.error(error.response);
             console.log(reservationId);
-            // window.location.href = `/fail.html?message=${message}&code=${status}`;
+            window.location.href = `/fail.html?message=${message}&code=${status}`;
         }else{
         console.error("결제 승인 요청 중 네트워크 오류 발생:", error);
         console.log(reservationId);
         if (!roomId2) alert("roomId가 비어 있습니다!");
-        // window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
+        window.location.href = `/fail.html?message=서버 연결에 실패했습니다.&code=NETWORK_ERROR`;
         }
     }
 }
@@ -89,6 +89,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 원하는 페이지로 이동
         window.location.href = `http://localhost:8080/ticketPage?id=${reservationId}`;
+        localStorage.clear("@tosspayments/merchant-browser-id");
+        localStorage.clear("@tosspayments/payment-widget-previous-payment-method-id");
+        localStorage.clear("checkin");
+        localStorage.clear("checkout");
+        localStorage.clear("couponId");
+        localStorage.clear("roomId");
+        localStorage.clear("totalPrice"); //결제 완료후 결제 데이터 초기화
     });
 });
 

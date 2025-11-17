@@ -201,6 +201,7 @@ export default {
   background: black;
   color: white;
   border-radius: 4px;
+  top: 81px;
 }
 #GsubBtn:hover{
   background: gray;

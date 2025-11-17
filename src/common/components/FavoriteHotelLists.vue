@@ -16,18 +16,24 @@ export default {
     fullImageUrl() {
       const baseUrl = process.env.VUE_APP_API_URL;
       return this.favoriteHotelInfo.imageUrls && this.favoriteHotelInfo.imageUrls[0]
-        ? `${baseUrl}${this.favoriteHotelInfo.imageUrls[0]}`
-        : "./default-favorite-img.png"; // 이미지가 없을 때 기본 이미지 경로
+          ? `${baseUrl}${this.favoriteHotelInfo.imageUrls[0]}`
+          : "./default-favorite-img.png"; // 이미지가 없을 때 기본 이미지 경로
     },
     imageCount() {
       return this.favoriteHotelInfo.imageUrls?.length || 0;
     },
+    favoriteState() {
+      return this.favoriteHotelInfo.favoriteId === true;
+    },
   },
   methods: {
-    togglefavorites() {
-      this.favorite = !this.favorite;
-      // 찜 해제 이벤트를 부모에게 전달합니다. (hotelInfo.id 등을 보낼 수 있습니다)
-      this.$emit('remove-favorite', this.favoriteHotelInfo.id);
+    async togglefavorites() {
+      this.$emit('toggle-favorite', this.favoriteHotelInfo.id);
+    }
+  },
+  watch: {
+    favoriteState() {
+
     }
   }
 }
@@ -53,7 +59,7 @@ export default {
           </div>
           <!--호텔 위치-->
           <div class="favorite-hotel-location">
-            <i class='bx  bx-location'  ></i>
+            <i class='bx  bx-location'></i>
             <span id="favorite-address">
               <small>{{ favoriteHotelInfo.address }}</small>
             </span>
@@ -66,7 +72,9 @@ export default {
             <small>starting from</small>
           </div>
           <div class="favorite-price">
-            <b><span id="favorite-hotel-price">₩{{ favoriteHotelInfo?.price?.toLocaleString() }}</span></b><small>/night</small>
+            <b><span id="favorite-hotel-price">₩{{
+                favoriteHotelInfo?.price?.toLocaleString()
+              }}</span></b><small>/night</small>
           </div>
           <div class="favorite-tax">
             <small>excl. tax</small>
@@ -78,11 +86,14 @@ export default {
       <div class="favorite-hotel-grade-amenities">
         <!--호텔 등급-->
         <div class="favorite-hotel-grade">
-          <span id="favorite-grade-stars" v-for="value in hotelInfo.grade" :key="value">★</span>&nbsp;<span id="grade">{{ hotelInfo.grade }}</span> Star Hotel
+          <span id="favorite-grade-stars" v-for="value in favoriteHotelInfo.grade" :key="value">★</span>&nbsp;<span
+            id="grade">{{
+            favoriteHotelInfo.grade
+          }}</span> Star Hotel
         </div>
         <!--편의시설-->
         <div class="favorite-hotel-amenities">
-          <i class='bxr  bx-cup-saucer'  ></i><strong>+<span id="amenities">20</span></strong>&nbsp;Amenities
+          <i class='bxr  bx-cup-saucer'></i><strong>+<span id="amenities">20</span></strong>&nbsp;Amenities
         </div>
       </div>
 
@@ -108,9 +119,9 @@ export default {
         <div class="favorite-hotel-liked">
           <button id="favorite-hotel-liked-btn" @click="togglefavorites()">
             <i class='bxr' :class="{
-              'bx-heart': !favorite,
-              'bx-heart-square': favorite
-            }" :style="{ 'font-size': favorite ? '65px' : '30px', 'color': '#8ae6b2' }"  ></i>
+              'bx-heart': favoriteState === false,
+              'bx-heart-square': favoriteState === true
+            }" :style="{ 'font-size': favoriteState ? '65px' : '30px', 'color': '#8ae6b2' }"></i>
           </button>
         </div>
         <!--호텔 보기 버튼-->
@@ -136,24 +147,30 @@ export default {
   height: 40px;
   background-color: rgba(255, 255, 255, 0.5);
 }
+
 #favorite-hotel-price {
   font-size: 25px;
 }
+
 .favorite-price {
   color: #FF8682;
 }
+
 .favorite-tax {
   text-align: right;
 }
+
 .favorite-hotel-price {
   flex-direction: column;
   color: grey;
 }
+
 .favorite-hotel-info-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .favorite-hotel-review-avg {
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -162,15 +179,18 @@ export default {
   text-align: center;
   padding: 7px;
 }
+
 .favorite-hotel-rating-count {
   display: flex;
   align-items: center;
   margin-top: 10px;
   gap: 10px;
 }
+
 .favorite-hotel-liked {
   display: flex;
 }
+
 #favorite-hotel-liked-btn {
   display: flex;
   justify-content: center;
@@ -182,12 +202,15 @@ export default {
   height: 50px;
   text-align: center;
 }
+
 #favorite-hotel-liked-btn:hover {
   background-color: #d3d3d3;
 }
+
 .favorite-hotel-view-place {
   display: flex;
 }
+
 #favorite-view-place-btn {
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -198,9 +221,11 @@ export default {
   margin: 0 0 0 10px;
   padding: 7px;
 }
+
 #favorite-view-place-btn:hover {
   background-color: #6acd97;
 }
+
 .favorite-hotel-liked-view {
   display: flex;
   justify-content: space-between;
@@ -209,39 +234,48 @@ export default {
   margin: 20px 0 0 0;
   padding: 20px 0 0 0;
 }
+
 .favorite-hotel-grade-amenities {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .favorite-hotel-amenities {
   display: flex;
   align-items: center;
 }
+
 #favorite-grade-stars {
   color: #FF8682;
 }
+
 .favorite-hotel {
   display: flex;
   border-radius: 15px;
   box-shadow: 0px 3px 10px #d3d3d3;
+  height: 400px;
 }
+
 #favorite-address {
   max-width: 600px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .favorite-hotel-location {
   display: flex;
   align-items: center;
   text-align: left;
   margin: 20px 0 10px 0;
 }
+
 .favorite-hotel-img {
   display: flex;
   border-radius: 20px 0 0 20px;
   overflow: hidden;
 }
+
 .favorite-hotel-info {
   display: flex;
   text-align: left;
