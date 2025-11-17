@@ -77,7 +77,7 @@ export default {
             Authorization: `Bearer ${localStorage.getItem("token")}`
           }
         }).then(() => {
-          alert("즐겨찾기 등록 성공");
+          console.log("정보 수정 완료");
         }).catch(() => {
           alert("등록 실패");
         });
@@ -87,11 +87,13 @@ export default {
         if (exists) {
           // 기존 데이터 업데이트
           exists.favoriteId = !exists.favoriteId;
+          alert("즐겨찾기 해제");
         } else {
           this.favoritedata = [
             ...this.favoritedata,
             { id: hotelId, favoriteId: true }
           ];
+          alert("즐겨찾기 추가");
         }
 
       } else {

@@ -4,6 +4,7 @@ import {defineComponent} from "vue";
 import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import FavoriteHotelLists from '@/common/components/FavoriteHotelLists.vue';
+import aTeamApi from "@/util/axios";
 
 export default defineComponent({
   components: {
@@ -17,35 +18,65 @@ export default defineComponent({
     }
   },
   methods: {
-    // HotelLists에서 발생하는 이벤트를 처리하는 메서드
-    handleToggleFavorite(hotelData) {
-      const index = this.favoriteHotels.findIndex(h => h.id === hotelData.id);
+    async toggleFavorite(hotelId) {
+      try {
+        // 서버에 찜 토글 요청
+        await aTeamApi.post(`/api/favorites/${hotelId}`, {}, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
 
-      if (index === -1) {
-        // 배열에 없으면 (찜하기) -> 추가
-        this.favoriteHotels.push(hotelData);
-        console.log(`호텔 ${hotelData.name}이(가) 찜 목록에 추가되었습니다.`);
-      } else {
-        // 배열에 있으면 (찜 해제) -> 삭제
-        this.favoriteHotels.splice(index, 1);
-        console.log(`호텔 ${hotelData.name}이(가) 찜 목록에서 제거되었습니다.`);
+        // 현재 찜 목록에서 hotelId가 있는지 찾기
+        const idx = this.favoriteHotels.findIndex(f => f.id === hotelId);
+
+        if (idx !== -1) {
+          // 찜 해제 → 배열에서 제거
+          this.favoriteHotels.splice(idx, 1);
+
+          alert("즐겨찾기를 해제.");
+        } else {
+          // 찜 추가 → 배열에 추가
+          this.favoriteHotels.push({
+            id: hotelId,
+            favoriteId: true
+          });
+
+          alert("즐겨찾기를 추가.");
+        }
+
+      } catch (err) {
+        console.error("즐겨찾기 토글 오류:", err);
       }
-    },
-    // FavoriteHotelLists에서 찜 해제 이벤트를 처리하는 메서드
-    handleRemoveFavorite(hotelId) {
-      const index = this.favoriteHotels.findIndex(h => h.id === hotelId);
-      if (index !== -1) {
-        this.favoriteHotels.splice(index, 1);
-        console.log(`ID ${hotelId} 호텔이 찜 목록에서 제거되었습니다.`);
-      }
+
+    }
+
+  },
+  async mounted() {
+    try {
+      const res = await aTeamApi.get("/api/favorites", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      this.favoriteHotels = res.data;
+
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  watch: {
+    toggleFavorite() {
+
     }
   }
+
 })
 </script>
 
 <template>
   <!--HeaderComponent 부분-->
-  <HeaderComponent />
+  <HeaderComponent/>
 
   <header>
     <h1 class="favoritespage-title">Favorites</h1>
@@ -72,11 +103,10 @@ export default defineComponent({
     </div>
 
     <FavoriteHotelLists
-      v-for="hotel in favoriteHotels"
-      :key="hotel.id"
-      :favorite-hotel-info="hotel"
-      @toggle-favorite="handleToggleFavorite"
-      @remove-favorite="handleRemoveFavorite"
+        v-for="hotel in favoriteHotels"
+        :key="hotel.id"
+        :favorite-hotel-info="hotel"
+        @toggle-favorite="toggleFavorite"
     />
   </div>
   <FooterComponent/>
@@ -91,6 +121,7 @@ export default defineComponent({
   width: 1240px;
   gap: 20px;
 }
+
 .favorites-selection {
   display: flex;
   align-items: center;
@@ -101,6 +132,7 @@ export default defineComponent({
   border-radius: 10px;
   box-shadow: 0px 3px 10px #d3d3d3;
 }
+
 #favorite-flights-count {
   border: white solid 1px;
   border-top-left-radius: 15px;
@@ -110,9 +142,11 @@ export default defineComponent({
   width: 620px;
   text-align: left;
 }
+
 #favorite-flights-count:hover {
   box-shadow: 0px 6px #8ae6b2;
 }
+
 #favorite-places-count {
   border: white solid 1px;
   border-left: #d3d3d3 solid 2px;
@@ -123,9 +157,11 @@ export default defineComponent({
   width: 620px;
   text-align: left;
 }
+
 #favorite-places-count:hover {
   box-shadow: 0px 6px #8ae6b2;
 }
+
 .favoritespage-title {
   display: flex;
   margin: 100px auto 40px;
