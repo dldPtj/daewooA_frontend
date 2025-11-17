@@ -1,21 +1,40 @@
 <script>
 // import aTeamApi from "@/util/axios";
 
+import aTeamApi from "@/util/axios";
+
 export default {
   name: "HotelLists",
   data() {
     return {
       favorite: false,
+      favoritedata: [],
     }
   },
   props: {
-    hotelInfo: {
+      hotelInfo: {
       type: Object,
       default: () => ({}),
     },
   },
-
   computed: {
+    favoriteState() {
+      // 1. favoritedata가 없거나 배열이 아니면 false
+      if (!Array.isArray(this.favoritedata)) return false;
+
+      // 2. hotelInfo가 없으면 false
+      if (!this.hotelInfo || !this.hotelInfo.id) return false;
+
+      // 3. favoritedata 안에서 hotelInfo.id와 같은 항목 찾기
+      const match = this.favoritedata.find(f => f.id === this.hotelInfo.id);
+
+      // 4. 같은 id가 없으면 false
+      if (!match) return false;
+
+      // 5. favoriteId가 true인지 반환
+      return match.favoriteId === true;
+
+    },
     fullImageUrl() {
       const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
       return this.hotelInfo.imageUrls[0]
@@ -52,18 +71,62 @@ export default {
     }
   },
   methods: {
-    togglefavorites() {
+    async togglefavorites() {
       if (this.isUserLoggedIn) {
+
+        const hotelId = this.hotelInfo.id;
         // 로그인 상태일 때 (토큰이 있을 때): 기존 찜하기 로직 실행
-        this.favorite = !this.favorite;
-        // const res = await
+        await aTeamApi.post(`/api/favorites/${this.hotelInfo.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }).then(() => {
+          console.log("정보 수정 완료");
+        }).catch(() => {
+          alert("등록 실패");
+        });
+
+        const exists = this.favoritedata.find(f => f.id === hotelId);
+
+        if (exists) {
+          // 기존 데이터 업데이트
+          exists.favoriteId = !exists.favoriteId;
+          alert("즐겨찾기 해제");
+        } else {
+          this.favoritedata = [
+            ...this.favoritedata,
+            { id: hotelId, favoriteId: true }
+          ];
+          alert("즐겨찾기 추가");
+        }
 
       } else {
         // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
         alert('로그인이 필요한 기능입니다.');
       }
     }
-  }
+  },
+  async mounted() {
+    try {
+      const res = await aTeamApi.get(`/api/favorites`, {
+        headers: {
+          Authorization: 'Bearer ${localStorage.getItem("token")}'
+        }
+      });
+      const data = res.data;
+      this.favoritedata = data;
+      console.log(`여기가 즐겨찾기 데이터 있는곳~ ${this.favoritedata}`);
+    } catch (err) {
+      console.error(`여기가 즐기찾기 에러` + err);
+    }
+
+
+  },
+  watch: {
+    favoriteState() {
+
+    }
+  },
 };
 </script>
 
@@ -76,15 +139,15 @@ export default {
           {{ imageCount }} images
         </div>
         <img
-          :src="fullImageUrl"
-          alt="hotel image"
-          class="hotel-img-size"
+            :src="fullImageUrl"
+            alt="hotel image"
+            class="hotel-img-size"
         >
       </div>
       <!-- 이미지가 없을 때 (회색 배경 div) -->
       <div
-        v-else
-        class="hotel-img-placeholder"
+          v-else
+          class="hotel-img-placeholder"
       >
         No Image
       </div>
@@ -102,7 +165,7 @@ export default {
           </div>
           <!--호텔 위치-->
           <div class="hotel-location">
-            <i class='bx  bx-location'  ></i>
+            <i class='bx  bx-location'></i>
             <span id="address">
               <small>{{ hotelInfo.address }}</small>
             </span>
@@ -126,11 +189,14 @@ export default {
       <div class="hotel-grade-amenities">
         <!--호텔 등급-->
         <div class="hotel-grade">
-          <span id="grade-stars" v-for="value in hotelInfo.grade" :key="value">★</span>&nbsp;<span id="grade">{{ hotelInfo.grade }}</span> Star Hotel
+          <span id="grade-stars" v-for="value in hotelInfo.grade" :key="value">★</span>&nbsp;<span
+            id="grade">{{ hotelInfo.grade }}</span> Star Hotel
         </div>
         <!--편의시설-->
         <div class="hotel-amenities">
-          <i class='bxr  bx-cup-saucer'  ></i> <strong>+<span id="amenities">{{ hotelInfo.amenitiesCount }}</span></strong>&nbsp;Amenities
+          <i class='bxr  bx-cup-saucer'></i> <strong>+<span id="amenities">{{
+            hotelInfo.amenitiesCount
+          }}</span></strong>&nbsp;Amenities
         </div>
       </div>
 
@@ -156,9 +222,9 @@ export default {
         <div class="hotel-liked">
           <button id="hotel-liked-btn" @click="togglefavorites()">
             <i class='bxr' :class="{
-              'bx-heart': !favorite,
-              'bx-heart-square': favorite
-            }" :style="{ 'font-size': favorite ? '65px' : '30px', 'color': '#8ae6b2' }"  ></i>
+              'bx-heart': favoriteState === false,
+              'bx-heart-square': favoriteState === true
+            }" :style="{ 'font-size': favoriteState ? '65px' : '30px', 'color': '#8ae6b2' }"></i>
           </button>
         </div>
         <!--호텔 보기 버튼-->
@@ -179,6 +245,7 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
+
 .hotel-img-size {
   display: flex;
   object-fit: cover;
@@ -187,6 +254,7 @@ export default {
   width: 300px;
   height: 273px;
 }
+
 .hotel-img-placeholder {
   display: flex;
   justify-content: center;
@@ -200,6 +268,7 @@ export default {
   font-size: 18px;
   font-weight: bold;
 }
+
 .hotel-img-count {
   display: flex;
   justify-content: center;
@@ -209,21 +278,26 @@ export default {
   border-radius: 10px;
   width: 80px;
   height: 40px;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
 }
+
 #hotel-price {
   font-size: 25px;
 }
+
 .price {
   color: #FF8682;
 }
+
 .tax {
   text-align: right;
 }
+
 .hotel-price {
   flex-direction: column;
   color: grey;
 }
+
 .hotel-review-avg {
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -232,19 +306,23 @@ export default {
   text-align: center;
   padding: 7px;
 }
+
 .hotel-rating-count {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 10px 240px 0 0;
 }
+
 .hotel-amenities {
   display: flex;
   align-items: center;
 }
+
 .hotel-liked {
   display: flex;
 }
+
 #hotel-liked-btn {
   display: flex;
   justify-content: center;
@@ -258,12 +336,15 @@ export default {
   padding: 7px;
   font-size: 20px;
 }
+
 #hotel-liked-btn:hover {
   background-color: #d3d3d3;
 }
+
 .hotel-view-place {
   display: flex;
 }
+
 #view-place-btn {
   border: #8ae6b2 solid 1px;
   border-radius: 5px;
@@ -274,9 +355,11 @@ export default {
   margin: 0 0 0 10px;
   padding: 7px;
 }
+
 #view-place-btn:hover {
   background-color: #6acd97;
 }
+
 .hotel-liked-view {
   display: flex;
   justify-content: space-between;
@@ -285,35 +368,42 @@ export default {
   margin: 20px 0 0 0;
   padding: 20px 0 0 0;
 }
+
 .hotel-grade-amenities {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0 150px 0 0;
 }
+
 #grade-stars {
   color: #FF8682;
 }
+
 .hotel-1 {
   display: flex;
   border-radius: 15px;
   box-shadow: 0px 3px 10px #d3d3d3;
 }
+
 #address {
   max-width: 260px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .hotel-location {
   display: flex;
   align-items: center;
   text-align: left;
   margin: 20px 0 10px 0;
 }
+
 .hotel-img {
   display: flex;
   border-radius: 20px 0 0 20px;
 }
+
 .hotel-info {
   display: flex;
   text-align: left;

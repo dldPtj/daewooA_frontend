@@ -116,18 +116,27 @@ export default{
   computed: {
     accountImageUrl() {
       const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
-      return this.profileImg
-          ? `${baseUrl}${this.profileImg}`
-          : "";
+      const path = String(this.profileImg);
+      if (path.startsWith("https") || path.startsWith("http")) {
+        return path
+      } else {
+        return this.profileImg
+            ? `${baseUrl}${this.profileImg}`
+            : "";
+      }
     },
-    accountBackImgUrl(){
+    accountBackImgUrl() {
       const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
-      return this.backgroundImg
-          ? `${baseUrl}${this.backgroundImg}`
-          : "";
+      const path = String(this.backgroundImg);
+      if (path.startsWith("https") || path.startsWith("http")) {
+        return path
+      } else {
+        return this.backgroundImg
+            ? `${baseUrl}${this.backgroundImg}`
+            : "";
+      }
     },
-  },
-
+  }
 }
 
 </script>
