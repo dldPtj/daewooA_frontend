@@ -35,6 +35,7 @@ export default {
 
 <template>
   <div class="container">
+<!--    nav-container가 원래 216px인데 테스트 계정 보여주기 위해 임의로 줄였습니다.-->
     <nav class="nav-container">
       <!-- 왼쪽 -->
       <div class="headerHover" @click="clicked('/')" :class="{active : $route.path === '/' }">
@@ -44,6 +45,12 @@ export default {
                     hotels
                 </span>
         </div>
+      </div>
+
+      <div id="test-id">
+        <p>테스트 서버에 등록된 아이디 입니다~</p>
+        <p>id: test@example.com</p>
+        <p>pw: 1234</p>
       </div>
       <!-- 오른쪽 -->
       <div class="item2">
@@ -103,7 +110,15 @@ export default {
 </template>
 
 <style scoped>
+#test-id{
+  border: solid #8DD3BB 3px;
+  border-radius: 8px;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 
+}
 .headerImgSize {
   display: flex;
   object-fit: cover;
@@ -224,14 +239,11 @@ export default {
   margin: -61px auto;
 
   background-color: white;
-  padding: 0 216px;
+  padding: 0 180px;
   height: 87px;
-
   box-shadow: 0px 2px 5px #d3d3d3;
   position: fixed;
   z-index: 5;
-
-
 }
 
 .item span {
@@ -239,6 +251,8 @@ export default {
   gap: 4px;
   margin: auto 0;
 }
+
+
 
 .circle {
   width: 45px;
