@@ -20,7 +20,7 @@ export default {
     return {
       reviews: [],
       hotelInfo: {},
-      reviewInfo: {},
+      reviewInfo: [],
       reviewCount: 0,
       favorite: false,
       roomData: {},
@@ -28,6 +28,8 @@ export default {
       writeModalOpen: false,
       sliderValue: 0,
       editingReviewId: null,
+      reviewsPerPage: 4,
+      currentPage: 1,
     };
   },
   async mounted() {
@@ -187,6 +189,16 @@ export default {
       this.state.form.content = "";
       this.writeModalOpen = false;
     },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
   },
   computed: {
     isUserLoggedIn() {
@@ -230,7 +242,19 @@ export default {
     roundedRating() {
       // toFixed(1)로 소수 첫째 자리까지 반올림하고 문자열로 반환
       return Number(this.hotelInfo.rating).toFixed(1);
-    }
+    },
+    // 현재 페이지에 표시할 리뷰
+    paginatedReviews() {
+      if (!this.reviewInfo) return [];
+      const startIndex = (this.currentPage - 1) * this.reviewsPerPage;
+      const endIndex = startIndex + this.reviewsPerPage;
+      return this.reviewInfo.slice(startIndex, endIndex);
+    },
+    // 전체 페이지 수 계산
+    totalPages() {
+      if (!this.reviewInfo) return 1;
+      return Math.ceil(this.reviewInfo.length / this.reviewsPerPage);
+    },
   },
   setup() {
     // 호텔 리뷰 적기 api 로드
@@ -579,14 +603,14 @@ export default {
       </div>
 
       <!--리뷰 리스트-->
-      <ReviewLists v-for="(review, index) in reviewInfo" :key="index" :reviewInfo="review" @open-revision-modal="openReviewRevisionModal"/>
+      <ReviewLists v-for="(review, index) in paginatedReviews" :key="index" :reviewInfo="review" @open-revision-modal="openReviewRevisionModal"/>
       <!--리뷰 페이지 처리부분-->
       <div class="review-page">
-        <button id="review-back-btn">
+        <button id="review-back-btn" @click="prevPage" :disabled="currentPage === 1">
           <i class="bxr bx-chevron-left"></i>
         </button>
-        1 of 40
-        <button id="review-next-btn">
+        {{ currentPage }} of {{ totalPages }}
+        <button id="review-next-btn" @click="nextPage" :disabled="currentPage === totalPages">
           <i class="bxr bx-chevron-right"></i>
         </button>
       </div>
