@@ -27,6 +27,7 @@ export default {
       modalOpen: false,
       writeModalOpen: false,
       sliderValue: 0,
+      editingReviewId: null,
     };
   },
   async mounted() {
@@ -142,21 +143,50 @@ export default {
     },
     async submit() {
       const hotelId = this.$route.query.id;
-      const addReview = {
+      const reviewPayload = {
         userRatingScore: this.sliderValue,
         content: this.state.form.content,
       };
-      await aTeamApi.post(`/api/hotels/${hotelId}/reviews`, addReview,{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      }).then(async () => {
-        alert("리뷰가 정상적으로 등록되었습니다.");
-        window.location.reload();
-      }).catch(()=> {
-        alert("리뷰 등록을 실패했습니다. 다시 시도해주세요.");
-      });
-    }
+
+      // 수정/등록 분기 로직
+      const isEditing = !!this.editingReviewId;
+
+      // URL 및 HTTP 메서드 결정
+      const url = isEditing
+        ? `/api/hotels/${hotelId}/reviews/${this.editingReviewId}` // PUT 엔드포인트 사용
+        : `/api/hotels/${hotelId}/reviews`;
+      const method = isEditing ? 'put' : 'post'; // 'put' 또는 'post'
+
+      try {
+        await aTeamApi[method](url, reviewPayload, { // 동적으로 API 메서드 호출
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+
+        alert(`리뷰가 정상적으로 ${isEditing ? '수정' : '등록'}되었습니다.`);
+        this.resetReviewForm(); // 폼 초기화 및 모달 닫기
+        window.location.reload(); // API 성공 후 페이지를 새로고침하여 목록 업데이트
+
+      } catch (error) {
+        console.error('리뷰 처리 실패:', error);
+        alert(`리뷰 ${isEditing ? '수정' : '등록'}을 실패했습니다. 다시 시도해주세요.`);
+      }
+    },
+    openReviewRevisionModal(reviewData) {
+      this.editingReviewId = reviewData.reviewId;
+      this.sliderValue = reviewData.userRatingScore;
+      this.state.form.content = reviewData.content;
+
+      this.writeModalOpen = true;
+    },
+    // 수정 모달 창을 닫으면 수정했던 내용 날아감
+    resetReviewForm() {
+      this.editingReviewId = null;
+      this.sliderValue = 0;
+      this.state.form.content = "";
+      this.writeModalOpen = false;
+    },
   },
   computed: {
     isUserLoggedIn() {
@@ -526,7 +556,7 @@ export default {
             </div>
             <div class="review-close-register">
               <button @click="writeModalOpen = false" class="review-close-btn">닫기</button>
-              <button @click="submit" class="review-register-btn">리뷰 등록</button>
+              <button @click="submit" class="review-register-btn">{{ editingReviewId ? '리뷰 수정' : '리뷰 등록' }}</button>
             </div>
           </div>
         </div>
@@ -549,7 +579,7 @@ export default {
       </div>
 
       <!--리뷰 리스트-->
-      <ReviewLists v-for="(review, index) in reviewInfo" :key="index" :reviewInfo="review" />
+      <ReviewLists v-for="(review, index) in reviewInfo" :key="index" :reviewInfo="review" @open-revision-modal="openReviewRevisionModal"/>
       <!--리뷰 페이지 처리부분-->
       <div class="review-page">
         <button id="review-back-btn">
@@ -557,7 +587,7 @@ export default {
         </button>
         1 of 40
         <button id="review-next-btn">
-          <i class="bxr bx-chevron-right" style="color: #000000"></i>
+          <i class="bxr bx-chevron-right"></i>
         </button>
       </div>
     </div>
