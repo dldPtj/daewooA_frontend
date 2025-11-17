@@ -59,7 +59,7 @@ export default defineComponent({
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       });
-      this.favoriteHotels = res.data;
+      this.favoriteHotels = res.data.content;
 
     } catch (err) {
       console.error(err);
