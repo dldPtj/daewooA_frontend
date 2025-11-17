@@ -5,6 +5,7 @@ import aTeamApi from '@/util/axios';
 import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
 import MapComponent from '@/common/components/MapComponent.vue';
 import ReviewLists from '@/common/components/ReviewLists.vue';
+import { reactive } from 'vue';
 
 export default {
   name: 'HotelDetailPage',
@@ -19,12 +20,16 @@ export default {
     return {
       reviews: [],
       hotelInfo: {},
-      reviewInfo: {},
+      reviewInfo: [],
       reviewCount: 0,
       favorite: false,
       roomData: {},
       modalOpen: false,
       writeModalOpen: false,
+      sliderValue: 0,
+      editingReviewId: null,
+      reviewsPerPage: 4,
+      currentPage: 1,
     };
   },
   async mounted() {
@@ -129,6 +134,71 @@ export default {
         alert('호텔 주소 정보가 없습니다.');
       }
     },
+    reviewAuth() {
+      if (this.isUserLoggedIn) {
+        // 로그인 상태일 때 (토큰이 있을 때): 리뷰쓰기 모달 오픈
+        this.writeModalOpen = !this.writeModalOpen;
+      } else {
+        // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
+        alert('로그인이 필요한 기능입니다.');
+      }
+    },
+    async submit() {
+      const hotelId = this.$route.query.id;
+      const reviewPayload = {
+        userRatingScore: this.sliderValue,
+        content: this.state.form.content,
+      };
+
+      // 수정/등록 분기 로직
+      const isEditing = !!this.editingReviewId;
+
+      // URL 및 HTTP 메서드 결정
+      const url = isEditing
+        ? `/api/hotels/${hotelId}/reviews/${this.editingReviewId}` // PUT 엔드포인트 사용
+        : `/api/hotels/${hotelId}/reviews`;
+      const method = isEditing ? 'put' : 'post'; // 'put' 또는 'post'
+
+      try {
+        await aTeamApi[method](url, reviewPayload, { // 동적으로 API 메서드 호출
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+
+        alert(`리뷰가 정상적으로 ${isEditing ? '수정' : '등록'}되었습니다.`);
+        this.resetReviewForm(); // 폼 초기화 및 모달 닫기
+        window.location.reload(); // API 성공 후 페이지를 새로고침하여 목록 업데이트
+
+      } catch (error) {
+        console.error('리뷰 처리 실패:', error);
+        alert(`리뷰 ${isEditing ? '수정' : '등록'}을 실패했습니다. 다시 시도해주세요.`);
+      }
+    },
+    openReviewRevisionModal(reviewData) {
+      this.editingReviewId = reviewData.reviewId;
+      this.sliderValue = reviewData.userRatingScore;
+      this.state.form.content = reviewData.content;
+
+      this.writeModalOpen = true;
+    },
+    // 수정 모달 창을 닫으면 수정했던 내용 날아감
+    resetReviewForm() {
+      this.editingReviewId = null;
+      this.sliderValue = 0;
+      this.state.form.content = "";
+      this.writeModalOpen = false;
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
   },
   computed: {
     isUserLoggedIn() {
@@ -169,7 +239,40 @@ export default {
       const total = this.hotelInfo.amenities?.length || 0;
       return total > 7 ? total - 7 : 0;
     },
+    roundedRating() {
+      // toFixed(1)로 소수 첫째 자리까지 반올림하고 문자열로 반환
+      return Number(this.hotelInfo.rating).toFixed(1);
+    },
+    // 현재 페이지에 표시할 리뷰
+    paginatedReviews() {
+      if (!this.reviewInfo) return [];
+      const startIndex = (this.currentPage - 1) * this.reviewsPerPage;
+      const endIndex = startIndex + this.reviewsPerPage;
+      return this.reviewInfo.slice(startIndex, endIndex);
+    },
+    // 전체 페이지 수 계산
+    totalPages() {
+      if (!this.reviewInfo) return 1;
+      return Math.ceil(this.reviewInfo.length / this.reviewsPerPage);
+    },
   },
+  setup() {
+    // 호텔 리뷰 적기 api 로드
+    try {
+      const state = reactive({
+        form: {
+          // 1. 사용자 이름은 로그인 된 이름 가져오기
+          // 2. 리뷰 평점
+          userRatingScore: 0,
+          // 3. 리뷰 내용
+          content: "",
+        },
+      });
+      return { state };
+    } catch (error) {
+      console.error('적은 리뷰 정보 로드 실패: ', error);
+    }
+  }
 };
 </script>
 
@@ -216,7 +319,7 @@ export default {
         <div class="hoteldetail-rating-count" @click="scrollToReviews">
           <!--호텔 리뷰 평점-->
           <div class="hotel-review-avg">
-            <span id="review-rating">{{ hotelInfo.rating }}</span>
+            <span id="review-rating">{{ roundedRating }}</span>
           </div>
           <!--호텔 만족도-->
           <div class="hoteldetail-satisfaction">
@@ -309,7 +412,7 @@ export default {
       <div class="hotel-overview-boxes">
         <div class="hotelrating-avg-now">
           <div class="rating">
-            <h1>{{ hotelInfo.rating }}</h1>
+            <h1>{{ roundedRating }}</h1>
           </div>
           <!--호텔 만족도-->
           <div class="hoteldetail-overview-satisfaction">
@@ -445,7 +548,7 @@ export default {
           <h3>Reviews</h3>
         </div>
         <div class="write-review">
-          <button id="write-review-btn" @click="writeModalOpen = true">Give your review</button>
+          <button id="write-review-btn" @click="reviewAuth" >Give your review</button>
         </div>
         <!-- 모달창이 open 되었을 때 -->
         <div v-if="writeModalOpen" class="modal-background" @click="writeModalOpen = false">
@@ -453,23 +556,31 @@ export default {
             <div class="review-title">리뷰 남기기</div>
             <div class="review-rating-title">{{ hotelInfo.name }} 은/는 어떠셨나요?</div>
             <div class="review-rating">
-              <button id="review-rating-btn">0+</button>
-              <button id="review-rating-btn">1+</button>
-              <button id="review-rating-btn">2+</button>
-              <button id="review-rating-btn">3+</button>
-              <button id="review-rating-btn">4+</button>
-              <button id="review-rating-btn">5</button>
+              <span class="review-rating-sliderValue">{{ sliderValue }}점</span>
+              <input
+                type="range"
+                id="priceSlider"
+                min="0"
+                max="5"
+                step="0.5"
+                v-model="sliderValue"
+              />
+              <div class="review-rating-range">
+                <span>0점</span>
+                <span>5점</span>
+              </div>
             </div>
             <div class="writing-review">
               <span class="writing-review-title">다음 여행자를 위해 솔직한 리뷰를 남겨주세요.</span>
               <textarea
                 placeholder="리뷰 내용을 입력해주세요."
                 class="write-review-textarea"
+                v-model="state.form.content"
               ></textarea>
             </div>
             <div class="review-close-register">
-              <button @click="modalOpen = false" class="review-close-btn">닫기</button>
-              <button class="review-register-btn">리뷰 등록</button>
+              <button @click="writeModalOpen = false" class="review-close-btn">닫기</button>
+              <button @click="submit" class="review-register-btn">{{ editingReviewId ? '리뷰 수정' : '리뷰 등록' }}</button>
             </div>
           </div>
         </div>
@@ -492,15 +603,15 @@ export default {
       </div>
 
       <!--리뷰 리스트-->
-      <ReviewLists v-for="(review, index) in reviewInfo" :key="index" :reviewInfo="review" />
+      <ReviewLists v-for="(review, index) in paginatedReviews" :key="index" :reviewInfo="review" @open-revision-modal="openReviewRevisionModal"/>
       <!--리뷰 페이지 처리부분-->
       <div class="review-page">
-        <button id="review-back-btn">
+        <button id="review-back-btn" @click="prevPage" :disabled="currentPage === 1">
           <i class="bxr bx-chevron-left"></i>
         </button>
-        1 of 40
-        <button id="review-next-btn">
-          <i class="bxr bx-chevron-right" style="color: #000000"></i>
+        {{ currentPage }} of {{ totalPages }}
+        <button id="review-next-btn" @click="nextPage" :disabled="currentPage === totalPages">
+          <i class="bxr bx-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -530,6 +641,20 @@ export default {
 }
 #review-rating {
   font-weight: bold;
+}
+.review-rating-sliderValue {
+  display: flex;
+  justify-content: center;
+  margin: 10px auto;
+  width: 150px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff8682;
+}
+.review-rating-range {
+  display: flex;
+  justify-content: space-between;
 }
 .satis-count {
   display: flex;
@@ -634,25 +759,18 @@ export default {
 }
 .review-title {
   margin-left: 10px;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
 }
 .review-rating-title {
-  font-size: 20px;
+  font-size: 15px;
   margin-left: 20px;
 }
 .review-rating {
   display: flex;
+  flex-direction: column;
   margin: 0 auto;
   gap: 20px;
-}
-#review-rating-btn {
-  font-size: 20px;
-  border: #8ae6b2 solid 2px;
-  border-radius: 15px;
-  background-color: white;
-  width: 80px;
-  height: 50px;
 }
 .writing-review {
   display: flex;
@@ -660,18 +778,15 @@ export default {
   margin: 20px;
 }
 .writing-review-title {
-  font-size: 20px;
+  font-size: 15px;
 }
 .write-review-textarea {
   text-align: left;
   margin: 10px auto;
   width: 925px;
-  height: 150px;
+  height: 120px;
   padding: 10px;
   resize: none;
-}
-input[type='text'] {
-  margin: 10px auto;
 }
 .review-close-register {
   display: flex;
@@ -679,11 +794,14 @@ input[type='text'] {
   gap: 20px;
 }
 .review-close-btn {
-  background-color: #9e9a9a;
-  border: #9e9a9a solid 1px;
+  background-color: #d3d3d3;
+  border: #d3d3d3 solid 1px;
   border-radius: 15px;
   width: 220px;
   height: 50px;
+}
+.review-close-btn:hover {
+  background-color: #9e9a9a;
 }
 .review-register-btn {
   background-color: #8ae6b2;
@@ -691,6 +809,9 @@ input[type='text'] {
   border-radius: 15px;
   width: 220px;
   height: 50px;
+}
+.review-register-btn:hover {
+  background-color: #6acd97;
 }
 .all-amenities-grid {
   display: grid;

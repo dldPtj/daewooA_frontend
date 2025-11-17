@@ -65,6 +65,10 @@ export default {
         return 'Terrible';
       } else return '';
     },
+    roundedRating() {
+      // toFixed(1)로 소수 첫째 자리까지 반올림하고 문자열로 반환
+      return Number(this.hotelInfo.rating).toFixed(1);
+    }
   },
   methods: {
     async togglefavorites() {
@@ -200,7 +204,7 @@ export default {
       <div class="hotel-rating-count">
         <!--호텔 리뷰 평점-->
         <div class="hotel-review-avg">
-          <span id="review-rating">{{ hotelInfo.rating }}</span>
+          <span id="review-rating">{{ roundedRating }}</span>
         </div>
         <!--호텔 만족도-->
         <div class="hotel-satisfaction">

@@ -139,7 +139,7 @@ export default {
       <div id="paymentHotelInfo">
         <div id="pTitle">
           <p id="pRoomName">{{ roomName }} - {{view}} - {{bed}}</p>
-          <p id="PPrice">₩{{ totalPrice }}/night</p>
+          <p id="PPrice">₩{{ totalPrice?.toLocaleString() }}/night</p>
         </div>
         <div id="pHotelDetail">
           <img alt="호텔 이미지" class="paymentHotelImg">
@@ -197,13 +197,13 @@ export default {
         <hr>
         <div id="priceList">
           <p id="priceDetail">Price Details</p>
-          <div id="pBaseFare" class="fontMontserrat"><a>Base Fare </a><a>₩{{ subtotal }}</a></div>
-          <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩{{ selectedDiscount }}</a></div>
-          <div id="pTaxes" class="fontMontserrat"><a>Taxes</a><a>₩{{ taxes }}</a></div>
-          <div id="pServiceFee" class="fontMontserrat"><a>Service Fee</a><a>₩{{ serviceFee }}</a></div>
+          <div id="pBaseFare" class="fontMontserrat"><a>Base Fare </a><a>₩{{ subtotal?.toLocaleString() }}</a></div>
+          <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩{{ selectedDiscount?.toLocaleString() }}</a></div>
+          <div id="pTaxes" class="fontMontserrat"><a>Taxes</a><a>₩{{ taxes?.toLocaleString() }}</a></div>
+          <div id="pServiceFee" class="fontMontserrat"><a>Service Fee</a><a>₩{{ serviceFee?.toLocaleString() }}</a></div>
         </div>
         <hr>
-        <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{finalTotal}}</a></div>
+        <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{finalTotal?.toLocaleString()}}</a></div>
       </div>
       <div class="paymentList">
         <div id="couponTitle">
