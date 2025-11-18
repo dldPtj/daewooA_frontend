@@ -85,10 +85,15 @@ export default {
       } else return '';
     },
     ImageUrl() {
-      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      const baseUrl = process.env.VUE_APP_API_URL;// 환경변수 사용
+      const path = String(this.reviewInfo.imageUrl);
+      if(path.startsWith("http") || path.startsWith("https")){
+        return this.reviewInfo.imageUrl
+      }else{
       return this.reviewInfo.imageUrl
         ? `${baseUrl}${this.reviewInfo.imageUrl}`
         : "";
+      }
     },
   }
 }
