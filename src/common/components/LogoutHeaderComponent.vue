@@ -40,10 +40,10 @@ export default {
       <!-- 왼쪽 -->
       <div class="headerHover" @click="clicked('/')" :class="{active : $route.path === '/' }">
         <div class="go-to-home" id="item">
-                <span>
-                    <img src="../../assets/ion_bed.png" alt="침대 사진">
-                    hotels
-                </span>
+            <span style="display: flex; align-items: center; gap: 5px;">
+                <img src="../../assets/ion_bed.png" alt="침대 사진">
+                hotels
+            </span>
         </div>
       </div>
 
@@ -56,21 +56,14 @@ export default {
       <div class="item2">
         <div class="flex vertical-center">
           <!-- 오른쪽 첫번째 -->
-          <div @click="favoritePage" style="display: flex;"
-               class="headerHover" >
+          <div @click="favoritePage" class="headerHover" style="display: flex; align-items: center; gap: 5px;" >
             <img src="../../assets/heart.png" alt="하트 사진">
-            <span style="display: flex; margin: 0 16px 0 4px">
-                        찜하기
-                    </span>
+            <span>찜하기</span>
           </div>
             |
           <!-- 오른쪽 두번째 -->
           <div class="dropdownMenu" @click="menuModalOpen">
             <div class="circle ">
-              <img src="@/assets/userImg.png"  class="headerImgSize" alt="프로필 사진이 없을때">
-              <div class="mini-circle">
-                <div class="check"></div>
-              </div>
             </div>
             <span>
               로그인이 필요한 서비스 입니다.
@@ -85,7 +78,6 @@ export default {
   <div class="menuModal" v-show="menuModal">
     <div class="menuTop">
       <div class="menuProfileImg">
-        <img src="@/assets/userImg.png"  class="headerImgSize" alt="프로필 사진이 없을때">
       </div>
       <div class="menuProfileName">
         <a>로그인을 하세요.</a>
@@ -121,19 +113,28 @@ export default {
 }
 .headerImgSize {
   display: flex;
-  object-fit: cover;
-  border-radius: 100%;
-  width: 100%;
-  height: 100%;
+  flex-direction: column;
+  text-align: left;
+
+}
+.headerHover {
+  align-items: center;
+  display: flex;
+  height: 87px;
+  border: none;
+  justify-content: center;
+  cursor: pointer;
+}
+.headerHover.clicked{
+  border-bottom: #8DD3BB solid 5px;
+}
+
+.headerHover:hover {
+  border-bottom: #8DD3BB solid 5px;
 }
 .go-to-home:hover {
   cursor: pointer;
 }
-
-.go-to-favorite:hover {
-  cursor: pointer;
-}
-
 .gotoMain {
   display: flex;
   gap: 8px;
@@ -157,9 +158,10 @@ export default {
 
 .menuProfileName {
   display: flex;
+  margin: auto;
+  justify-content: center;
   flex-direction: column;
-  margin-top: 8px;
-  gap: 4px;
+  gap: 10px;
 }
 
 .menuProfileName a {
@@ -195,10 +197,10 @@ export default {
 
 .menuTop {
   display: flex;
+  align-items: center;
   margin: 0 auto;
   width: 265px;
   height: 64px;
-  gap: 16px;
 }
 
 .menuModal {
@@ -218,7 +220,8 @@ export default {
 
 .dropdownMenu {
   display: flex;
-  gap: 10px
+  align-items: center;
+  gap: 5px;
 }
 
 .dropdownMenu:hover {
@@ -262,28 +265,6 @@ export default {
   border-radius: 50%;
   position: relative;
 }
-
-.mini-circle {
-  position: absolute;
-  background-color: #FF8682;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  top: 33px;
-  right: 1px;
-}
-
-.check {
-  width: 6px;
-  height: 3px;
-  border-left: 2px solid black;
-  border-bottom: 2px solid black;
-  transform: rotate(-45deg);
-  position: absolute;
-  top: 2px;
-  left: 2px;
-}
-
 .flex {
   display: flex;
   gap: 10px;
