@@ -12,7 +12,7 @@ export default {
   props: {
     reviewInfo: {
       type: Array,
-      default: ()=>[]
+      default: () => []
     },
   },
   async mounted() {
@@ -141,6 +141,7 @@ export default {
   border-radius: 50%;
   object-fit: cover;
 }
+
 .review-info-in {
   display: flex;
   flex-direction: column;
@@ -148,10 +149,12 @@ export default {
   text-align: left;
   margin: auto 20px;
 }
+
 .review-info {
   display: flex;
   align-items: center;
 }
+
 .review-lists {
   display: flex;
   justify-content: space-between;

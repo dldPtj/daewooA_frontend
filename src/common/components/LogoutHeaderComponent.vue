@@ -111,6 +111,12 @@ export default {
   text-align: left;
 
 }
+.headerImgSize {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+}
 .headerHover {
   align-items: center;
   display: flex;
