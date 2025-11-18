@@ -59,6 +59,7 @@ export default {
 
   },
   async mounted() {
+    localStorage.setItem("couponId",null);
     const roomId = localStorage.getItem("roomId");
     const checkInDate = localStorage.getItem("checkin");
     const checkOutDate = localStorage.getItem("checkout");

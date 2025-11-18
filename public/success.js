@@ -89,13 +89,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 원하는 페이지로 이동
         window.location.href = `http://localhost:8080/ticketPage?id=${reservationId}`;
-        localStorage.clear("@tosspayments/merchant-browser-id");
-        localStorage.clear("@tosspayments/payment-widget-previous-payment-method-id");
-        localStorage.clear("checkin");
-        localStorage.clear("checkout");
-        localStorage.clear("couponId");
-        localStorage.clear("roomId");
-        localStorage.clear("totalPrice"); //결제 완료후 결제 데이터 초기화
+        localStorage.removeItem("checkin");
+        localStorage.removeItem("checkout");
+        localStorage.setItem("couponId", null);
+        localStorage.removeItem("roomId");
+        localStorage.removeItem("totalPrice"); //결제 완료후 결제 데이터 초기화
     });
 });
 
