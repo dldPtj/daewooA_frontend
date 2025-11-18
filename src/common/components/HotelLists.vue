@@ -90,14 +90,21 @@ export default {
 
         if (exists) {
           // 기존 데이터 업데이트
+          if(exists.favoriteId === true){
+            alert("즐겨 찾기 해제");
+          }
+          if(exists.favoriteId === false){
+            alert("즐겨 찾기 추가");
+          }
           exists.favoriteId = !exists.favoriteId;
-          alert("즐겨찾기 해제");
+          console.log(exists);
         } else {
           this.favoritedata = [
             ...this.favoritedata,
             { id: hotelId, favoriteId: true }
           ];
           alert("즐겨찾기 추가");
+          console.log(exists);
         }
 
       } else {
@@ -114,7 +121,7 @@ export default {
         }
       });
       const data = res.data;
-      this.favoritedata = data;
+      this.favoritedata = data.content;
       console.log(`여기가 즐겨찾기 데이터 있는곳~ ${this.favoritedata}`);
     } catch (err) {
       console.error(`여기가 즐기찾기 에러` + err);
