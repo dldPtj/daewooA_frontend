@@ -254,7 +254,7 @@ export default {
   display: flex;
   border-radius: 15px;
   box-shadow: 0px 3px 10px #d3d3d3;
-  height: 400px;
+  height: 273px;
 }
 
 #favorite-address {
@@ -272,10 +272,16 @@ export default {
 
 .favorite-hotel-img {
   display: flex;
+  width: 310px;
+  height: 273px;
   border-radius: 20px 0 0 20px;
   overflow: hidden;
 }
-
+.favorite-hotel-img img {
+  display: flex;
+  width: 100%;
+  object-fit: cover;
+}
 .favorite-hotel-info {
   display: flex;
   text-align: left;

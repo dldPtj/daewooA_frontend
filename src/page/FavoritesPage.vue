@@ -15,6 +15,9 @@ export default defineComponent({
   data() {
     return {
       favoriteHotels: [],
+      totalPages: {},
+      number: {},
+      totalElements: {},
     }
   },
   methods: {
@@ -49,17 +52,45 @@ export default defineComponent({
         console.error("즐겨찾기 토글 오류:", err);
       }
 
-    }
+    },
+    changePage(page){
+      if (page >= 0 && page < this.totalPages) {
+        this.fetchHotels(page);
+      }
+    },
+    async fetchHotels(page){
 
+      try {
+        // 1. 기본 쿼리 파라미터
+        let query = `/api/favorites?page=${page}&size=4`;
+
+        const result = await aTeamApi.get(query);
+        const data = result.data;
+
+        this.favoriteHotels = data.content || [];
+        // 필터링된 결과에 따라 totalHotels, totalPages가 서버에서 변경되어 옴
+        this.totalHotels = data.totalHotels || 0;
+        this.totalPages = data.totalPages || 0;
+        this.number = data.number || page;
+        this.totalElements = data.totalElements;
+        console.log(data);
+      } catch (error) {
+        console.error('호텔 데이터를 불러오는 중 오류 발생:', error);
+      }
+
+
+    }
   },
   async mounted() {
     try {
-      const res = await aTeamApi.get("/api/favorites", {
+      const res = await aTeamApi.get("/api/favorites?page=0&size=4", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       });
       this.favoriteHotels = res.data.content;
+      this.totalPages = res.data.totalPages;
+      this.number = res.data.number;
 
     } catch (err) {
       console.error(err);
@@ -108,6 +139,24 @@ export default defineComponent({
         :favorite-hotel-info="hotel"
         @toggle-favorite="toggleFavorite"
     />
+
+    <div class="page-btns">
+      <button
+          id="page-btn"
+          :disabled="number === 0"
+          @click="changePage(number - 1)"
+      >
+        <i class="bx bx-chevron-left" style="margin-top: 7px"></i>
+      </button>
+      <span id="page-info">{{ number + 1 }} of {{ totalPages }}</span>
+      <button
+          id="page-btn"
+          :disabled="number === totalPages - 1"
+          @click="changePage(number + 1)"
+      >
+        <i class="bx bx-chevron-right" style="margin-top: 7px"></i>
+      </button>
+    </div>
   </div>
   <FooterComponent/>
 </template>
