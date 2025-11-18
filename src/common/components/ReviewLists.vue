@@ -16,28 +16,43 @@ export default {
     },
   },
   async mounted() {
-    const res = await aTeamApi.get('/api/users/me/profileAll', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    });
-    const data = res.data;
-    console.log('user data >>> ', data);
-    this.userId = data.content.userId;
-    console.log('userId >>> ', this.userId);
+    // 로그인 상태 확인
+    if (this.isUserLoggedIn) {
+      try {
+        const res = await aTeamApi.get('/api/users/me/profileAll', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
 
-    if (this.reviewInfo.userId === this.userId ) {
-      this.identity = !this.identity;
+        const data = res.data;
+        this.userId = data.content.userId;
+
+        // 리뷰 작성자와 현재 로그인 유저가 일치하는지 확인
+        // reviewInfo에 리뷰 작성자의 userId가 포함되어 있어야 합니다.
+        if (this.reviewInfo.userId === this.userId) {
+          this.identity = true;
+        } else {
+          this.identity = false;
+        }
+      } catch (error) {
+        console.error('사용자 정보 로드 실패:', error);
+        this.identity = false;
+      }
     } else {
-      return this.identity;
+      this.identity = false; // 로그인이 안 되어 있으면 identity는 false (신고 버튼만 보임)
     }
   },
   methods: {
     reportYN() {
-      if(window.confirm('해당 리뷰 글을 신고하시겠습니까?')) {
-        alert('신고가 완료되었습니다.');
+      if(this.isUserLoggedIn) {
+        if(window.confirm('해당 리뷰 글을 신고하시겠습니까?')) {
+          alert('신고가 완료되었습니다.');
+        } else {
+          alert('신고가 취소되었습니다.')
+        }
       } else {
-        alert('신고가 취소되었습니다.')
+        alert('로그인이 필요한 기능입니다.');
       }
     },
     async deleteMyReview(){
@@ -95,6 +110,10 @@ export default {
         : "";
       }
     },
+    isUserLoggedIn() {
+      // 'token'은 로그인 시 저장되는 토큰의 키 이름으로 가정
+      return !!localStorage.getItem('token');
+    },
   }
 }
 </script>
@@ -114,7 +133,7 @@ export default {
       </div>
   </div>
     <!--리뷰 신고버튼-->
-    <div class="review-report" v-if="identity === false">
+    <div class="review-report" v-if="identity === false" >
       <button class="review-report-btn" @click="reportYN()">
         <i class='bxr bx-flag-alt-2'></i>
       </button>
