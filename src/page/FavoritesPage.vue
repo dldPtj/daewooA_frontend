@@ -90,6 +90,7 @@ export default defineComponent({
       });
       this.favoriteHotels = res.data.content;
       this.totalPages = res.data.totalPages;
+      this.totalElements = res.data.totalElements;
       this.number = res.data.number;
 
     } catch (err) {
@@ -118,11 +119,12 @@ export default defineComponent({
     <div class="favorites-selection">
       <button id="favorite-flights-count">
         <h3>Flights</h3>
-        <span>2 marked</span>
+        <span>0 marked</span>
       </button>
       <button id="favorite-places-count">
         <h3>Places</h3>
-        <span>3 marked</span>
+        <span v-if="totalElements !== null">{{totalElements}} marked</span>
+        <span v-else>0 marked</span>
       </button>
     </div>
   </header>

@@ -122,7 +122,6 @@ export default {
       });
       const data = res.data;
       this.favoritedata = data.content;
-      console.log(`여기가 즐겨찾기 데이터 있는곳~ ${this.favoritedata}`);
     } catch (err) {
       console.error(`여기가 즐기찾기 에러` + err);
     }

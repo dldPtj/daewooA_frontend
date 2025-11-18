@@ -39,6 +39,8 @@ export default {
       bed: {},
       selectedItemId: 0,
       selectedDiscount: 0,
+      hotelImagesUrl: [],
+      roomImageUrls: {},
 
     };
   },
@@ -103,6 +105,8 @@ export default {
       this.country = data.country;
       this.view = data.view;
       this.bed = data.bed;
+      this.hotelImagesUrl = data.hotelImagesUrl[1];
+      this.roomImageUrls = data.roomImageUrls;
 
       console.log('roomInfo', data);
     } catch (error) {
@@ -124,6 +128,28 @@ export default {
       localStorage.setItem("totalPrice", total)
         return total
     },
+    ImageUrl1() {
+      const baseUrl = process.env.VUE_APP_API_URL;// 환경변수 사용
+      const path = String(this.hotelImagesUrl);
+      if(path.startsWith("http") || path.startsWith("https")){
+        return this.hotelImagesUrl
+      }else{
+        return this.hotelImagesUrl
+            ? `${baseUrl}${this.hotelImagesUrl}`
+            : "";
+      }
+    },
+    ImageUrl2() {
+      const baseUrl = process.env.VUE_APP_API_URL;// 환경변수 사용
+      const path = String(this.roomImageUrls);
+      if(path.startsWith("http") || path.startsWith("https")){
+        return this.roomImageUrls
+      }else{
+        return this.roomImageUrls
+            ? `${baseUrl}${this.roomImageUrls}`
+            : "";
+      }
+    },
   },
 
 }
@@ -143,7 +169,7 @@ export default {
           <p id="PPrice">₩{{ totalPrice?.toLocaleString() }}/night</p>
         </div>
         <div id="pHotelDetail">
-          <img alt="호텔 이미지" class="paymentHotelImg">
+          <img :src="ImageUrl1" alt="호텔 이미지" class="paymentHotelImg">
           <div id="paymentHotelName">
             <a>{{ hotelName }}</a>
             <p><img alt="위치 아이콘" src="../assets/ion-location.png">Gümüssuyu Mah. Inönü Cad. No:8, Istanbul 34437</p>
@@ -182,7 +208,7 @@ export default {
     <div id="rightPList">
       <div class="paymentList">
         <div id="pListTop">
-          <img src="../assets/hotel-img-1.png" id="pHotelListImage">
+          <img :src="ImageUrl2" id="pHotelListImage">
           <div id="pListTopTextBox">
             <p id="pListTopText1">CVK Park Bosphorus...</p>
             <p id="pListTopText2">{{ roomName }} - {{view}} - {{bed}}</p>
