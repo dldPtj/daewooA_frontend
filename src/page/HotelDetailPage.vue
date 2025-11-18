@@ -94,6 +94,12 @@ export default {
         block: 'center',
       });
     },
+    scrollToMap() {
+      this.$refs.map.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    },
     scrollToReviews() {
       this.$refs.reviews.scrollIntoView({
         behavior: 'smooth',
@@ -310,7 +316,7 @@ export default {
         <!--호텔 위치-->
         <div class="hoteldetail-location">
           <i class="bx bx-location"></i>
-          <span id="address">
+          <span id="hoteldetail-address" @click="scrollToMap">
             <small>{{ hotelInfo.address }}</small>
           </span>
         </div>
@@ -479,7 +485,7 @@ export default {
         </div>
       </div>
       <!--지도-->
-      <div class="map">
+      <div class="map" ref="map">
         <MapComponent
           :address="hotelInfo.address"
           :hotelName="hotelInfo.name"
@@ -847,6 +853,9 @@ export default {
   padding-bottom: 70px;
   border-bottom: #d9d9d9 solid 1px;
 }
+#hoteldetail-address:hover {
+  cursor: pointer;
+}
 .map {
   width: 1232px;
   height: 450px;
@@ -862,6 +871,7 @@ export default {
 }
 #googlemaps-btn:hover {
   background-color: #6acd97;
+  cursor: pointer;
 }
 .hotel-map-top {
   display: flex;
@@ -984,6 +994,7 @@ export default {
 }
 #hoteldetail-book-btn:hover {
   background-color: #6acd97;
+  cursor: pointer;
 }
 #hoteldetail-share-btn {
   display: flex;
@@ -997,6 +1008,7 @@ export default {
 }
 #hoteldetail-share-btn:hover {
   background-color: #d3d3d3;
+  cursor: pointer;
 }
 #hoteldetail-favorite-btn {
   display: flex;
@@ -1010,6 +1022,7 @@ export default {
 }
 #hoteldetail-favorite-btn:hover {
   background-color: #d3d3d3;
+  cursor: pointer;
 }
 .hoteldetail-btns {
   justify-content: center;
@@ -1025,6 +1038,9 @@ export default {
   display: flex;
   align-items: center;
   margin: 10px auto 10px;
+}
+.hoteldetail-rating-count:hover {
+  cursor: pointer;
 }
 .hotel-namegrade {
   display: flex;
