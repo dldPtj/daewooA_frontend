@@ -125,22 +125,6 @@ export default defineComponent({
   <header>
     <h1 class="favoritespage-title">Favorites</h1>
   </header>
-
-  <!--  &lt;!&ndash;flight, hotel 선택 바&ndash;&gt;-->
-  <!--  <header class="favorites-selection-bar">-->
-  <!--    <div class="favorites-selection">-->
-  <!--      <button id="favorite-flights-count">-->
-  <!--        <h3>Flights</h3>-->
-  <!--        <span>0 marked</span>-->
-  <!--      </button>-->
-  <!--      <button id="favorite-places-count">-->
-  <!--        <h3>Places</h3>-->
-  <!--        <span v-if="totalElements !== null">{{totalElements}} marked</span>-->
-  <!--        <span v-else>0 marked</span>-->
-  <!--      </button>-->
-  <!--    </div>-->
-  <!--  </header>-->
-
   <FavoriteSelectBtnComponent :total-elements="totalElements" @goto-flight="PageMoveEvent('flight')"
                               @goto-places="PageMoveEvent('places')" :currentLink="currentLink"/>
 
@@ -193,41 +177,6 @@ export default defineComponent({
   width: 1240px;
   gap: 20px;
 }
-
-.favorites-selection {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  max-width: 1240px;
-  margin: 0 auto;
-  text-align: left;
-  border-radius: 10px;
-  box-shadow: 0px 3px 10px #d3d3d3;
-}
-
-#favorite-flights-count {
-  border: white solid 1px;
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
-  padding: 25px;
-  background-color: white;
-  width: 620px;
-  text-align: left;
-}
-
-
-#favorite-places-count {
-  border: white solid 1px;
-  border-left: #d3d3d3 solid 2px;
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
-  padding: 25px;
-  background-color: white;
-  width: 620px;
-  text-align: left;
-}
-
-
 
 .favoritespage-title {
   display: flex;
