@@ -125,10 +125,6 @@ export default {
       // 'token'은 로그인 시 저장되는 토큰의 키 이름으로 가정
       return !!localStorage.getItem('token');
     },
-    isUserLoggedIn() {
-      // 'token'은 로그인 시 저장되는 토큰의 키 이름으로 가정
-      return !!localStorage.getItem('token');
-    },
   }
 }
 </script>
