@@ -40,7 +40,7 @@ export default {
         this.identity = false;
       }
     } else {
-      this.identity = false; // 로그인이 안 되어 있으면 identity는 false (신고 버튼만 보임)
+      return this.identity;
     }
   },
   methods: {
@@ -111,10 +111,15 @@ export default {
       } else return '';
     },
     ImageUrl() {
-      const baseUrl = process.env.VUE_APP_API_URL; // 환경변수 사용
+      const baseUrl = process.env.VUE_APP_API_URL;// 환경변수 사용
+      const path = String(this.reviewInfo.imageUrl);
+      if(path.startsWith("http") || path.startsWith("https")){
+        return this.reviewInfo.imageUrl
+      }else{
       return this.reviewInfo.imageUrl
         ? `${baseUrl}${this.reviewInfo.imageUrl}`
         : "";
+      }
     },
     isUserLoggedIn() {
       // 'token'은 로그인 시 저장되는 토큰의 키 이름으로 가정
