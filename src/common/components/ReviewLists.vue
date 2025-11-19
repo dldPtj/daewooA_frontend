@@ -40,7 +40,7 @@ export default {
         this.identity = false;
       }
     } else {
-      this.identity = false; // 로그인이 안 되어 있으면 identity는 false (신고 버튼만 보임)
+      return this.identity;
     }
   },
   methods: {
@@ -120,10 +120,6 @@ export default {
         ? `${baseUrl}${this.reviewInfo.imageUrl}`
         : "";
       }
-    },
-    isUserLoggedIn() {
-      // 'token'은 로그인 시 저장되는 토큰의 키 이름으로 가정
-      return !!localStorage.getItem('token');
     },
     isUserLoggedIn() {
       // 'token'은 로그인 시 저장되는 토큰의 키 이름으로 가정
