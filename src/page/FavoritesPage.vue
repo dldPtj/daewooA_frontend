@@ -5,12 +5,14 @@ import HeaderComponent from "@/common/components/HeaderComponent.vue";
 import FooterComponent from "@/common/components/FooterComponent.vue";
 import FavoriteHotelLists from '@/common/components/FavoriteHotelLists.vue';
 import aTeamApi from "@/util/axios";
+import FavoriteSelectBtnComponent from "@/common/components/FavoriteSelectBtnComponent.vue";
 
 export default defineComponent({
   components: {
     FavoriteHotelLists,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    FavoriteSelectBtnComponent
   },
   data() {
     return {
@@ -18,9 +20,19 @@ export default defineComponent({
       totalPages: {},
       number: {},
       totalElements: {},
+      currentLink: 'places'
     }
   },
   methods: {
+    PageMoveEvent(link) {
+      if (link === 'flight') {
+        console.log(link);
+        this.currentLink = link;
+      } else if (link === 'places') {
+        console.log(link);
+        this.currentLink = link;
+      }
+    },
     async toggleFavorite(hotelId) {
       try {
         // 서버에 찜 토글 요청
@@ -53,12 +65,12 @@ export default defineComponent({
       }
 
     },
-    changePage(page){
+    changePage(page) {
       if (page >= 0 && page < this.totalPages) {
         this.fetchHotels(page);
       }
     },
-    async fetchHotels(page){
+    async fetchHotels(page) {
 
       try {
         // 1. 기본 쿼리 파라미터
@@ -113,21 +125,8 @@ export default defineComponent({
   <header>
     <h1 class="favoritespage-title">Favorites</h1>
   </header>
-
-  <!--flight, hotel 선택 바-->
-  <header class="favorites-selection-bar">
-    <div class="favorites-selection">
-      <button id="favorite-flights-count">
-        <h3>Flights</h3>
-        <span>0 marked</span>
-      </button>
-      <button id="favorite-places-count">
-        <h3>Places</h3>
-        <span v-if="totalElements !== null">{{totalElements}} marked</span>
-        <span v-else>0 marked</span>
-      </button>
-    </div>
-  </header>
+  <FavoriteSelectBtnComponent :total-elements="totalElements" @goto-flight="PageMoveEvent('flight')"
+                              @goto-places="PageMoveEvent('places')" :currentLink="currentLink"/>
 
   <!--즐겨찾기한 호텔-->
   <div class="favorite-hotel-lists">
@@ -135,29 +134,35 @@ export default defineComponent({
       <p style="text-align: center; font-size: 1.2em;">찜한 호텔이 없습니다.</p>
     </div>
 
-    <FavoriteHotelLists
-        v-for="hotel in favoriteHotels"
-        :key="hotel.id"
-        :favorite-hotel-info="hotel"
-        @toggle-favorite="toggleFavorite"
-    />
 
-    <div class="page-btns">
-      <button
-          id="page-btn"
-          :disabled="number === 0"
-          @click="changePage(number - 1)"
-      >
-        <i class="bx bx-chevron-left" style="margin-top: 7px"></i>
-      </button>
-      <span id="page-info">{{ number + 1 }} of {{ totalPages }}</span>
-      <button
-          id="page-btn"
-          :disabled="number === totalPages - 1"
-          @click="changePage(number + 1)"
-      >
-        <i class="bx bx-chevron-right" style="margin-top: 7px"></i>
-      </button>
+    <div v-if="currentLink === 'places'">
+      <FavoriteHotelLists
+          v-for="hotel in favoriteHotels"
+          :key="hotel.id"
+          :favorite-hotel-info="hotel"
+          @toggle-favorite="toggleFavorite"
+      />
+
+      <div class="page-btns">
+        <button
+            id="page-btn"
+            :disabled="number === 0"
+            @click="changePage(number - 1)"
+        >
+          <i class="bx bx-chevron-left" style="margin-top: 7px"></i>
+        </button>
+        <span id="page-info">{{ number + 1 }} of {{ totalPages }}</span>
+        <button
+            id="page-btn"
+            :disabled="number === totalPages - 1"
+            @click="changePage(number + 1)"
+        >
+          <i class="bx bx-chevron-right" style="margin-top: 7px"></i>
+        </button>
+      </div>
+    </div>
+    <div v-else-if="currentLink === 'flight'">
+      <p style="text-align: center; font-size: 1.2em;">찜한 호텔이 없습니다.</p>
     </div>
   </div>
   <FooterComponent/>
@@ -171,46 +176,6 @@ export default defineComponent({
   margin: 40px auto;
   width: 1240px;
   gap: 20px;
-}
-
-.favorites-selection {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  max-width: 1240px;
-  margin: 0 auto;
-  text-align: left;
-  border-radius: 10px;
-  box-shadow: 0px 3px 10px #d3d3d3;
-}
-
-#favorite-flights-count {
-  border: white solid 1px;
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
-  padding: 25px;
-  background-color: white;
-  width: 620px;
-  text-align: left;
-}
-
-#favorite-flights-count:hover {
-  box-shadow: 0px 6px #8ae6b2;
-}
-
-#favorite-places-count {
-  border: white solid 1px;
-  border-left: #d3d3d3 solid 2px;
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
-  padding: 25px;
-  background-color: white;
-  width: 620px;
-  text-align: left;
-}
-
-#favorite-places-count:hover {
-  box-shadow: 0px 6px #8ae6b2;
 }
 
 .favoritespage-title {
