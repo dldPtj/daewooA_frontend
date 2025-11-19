@@ -40,7 +40,7 @@ export default {
       <h1>예약 내역</h1>
       <div>
         <select id="ReservationDropDownStyle">
-          <option value="Upcoming"><b>Upcoming</b></option>
+          <option value="Upcoming">Upcoming</option>
           <option value=""></option>
           <option value=""></option>
           <option value=""></option>
@@ -89,7 +89,7 @@ export default {
   font-size: 15px;
   font-weight: bold;
   height: 20px;
-  width: 100px;
+  width: 110px;
 }
 
 #ReservationSpace-btw{
