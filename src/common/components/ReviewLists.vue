@@ -40,14 +40,25 @@ export default {
         this.identity = false;
       }
     } else {
-      this.identity = false; // 로그인이 안 되어 있으면 identity는 false (신고 버튼만 보임)
+      return this.identity;
     }
   },
   methods: {
-    reportYN() {
+    async reportYN() {
+      const hotelId = this.$route.query.id;
       if(this.isUserLoggedIn) {
         if(window.confirm('해당 리뷰 글을 신고하시겠습니까?')) {
-          alert('신고가 완료되었습니다.');
+          try {
+            await aTeamApi.post(`/api/hotels/${hotelId}/reviews/${this.reviewInfo.reviewId}/report`, null, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+              }
+            });
+            alert('신고가 완료되었습니다.');
+          } catch (error) {
+            console.error('신고 실패:', error);
+            alert('이미 신고가 완료된 리뷰입니다.');
+          }
         } else {
           alert('신고가 취소되었습니다.')
         }
