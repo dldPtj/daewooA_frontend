@@ -25,6 +25,9 @@ export default {
     favoriteState() {
       return this.favoriteHotelInfo.favoriteId === true;
     },
+    roundedRating() {
+      return Number(this.favoriteHotelInfo.rating).toFixed(1);
+    }
   },
   methods: {
     async togglefavorites() {
@@ -101,7 +104,7 @@ export default {
       <div class="favorite-hotel-rating-count">
         <!--호텔 리뷰 평점-->
         <div class="favorite-hotel-review-avg">
-          <span id="favorite-review-rating">{{ favoriteHotelInfo.rating }}</span>
+          <span id="favorite-review-rating" style="font-weight: bold;">{{ roundedRating }}</span>
         </div>
         <!--호텔 만족도-->
         <div class="favorite-hotel-satisfaction">
@@ -255,6 +258,7 @@ export default {
   border-radius: 15px;
   box-shadow: 0px 3px 10px #d3d3d3;
   height: 273px;
+  margin-bottom: 30px;
 }
 
 #favorite-address {

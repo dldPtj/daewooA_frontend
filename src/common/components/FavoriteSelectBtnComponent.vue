@@ -40,9 +40,9 @@ export default {
 </template>
 
 <style scoped>
-
 #favorite-flights-count {
   border: white solid 1px;
+  box-shadow: 0px 3px 10px #d3d3d3;
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
   padding: 25px;
@@ -54,12 +54,13 @@ export default {
   background-color: #d3d3d3;
 }
 
-.activeFavorite{
+#favorite-flights-count.activeFavorite {
   box-shadow: 0px 6px #8ae6b2;
 }
 
 #favorite-places-count {
   border: white solid 1px;
+  box-shadow: 0px 3px 10px #d3d3d3;
   border-left: #d3d3d3 solid 2px;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -71,6 +72,10 @@ export default {
 
 #favorite-places-count:hover{
   background-color: #d3d3d3;
+}
+
+#favorite-places-count.activeFavorite {
+  box-shadow: 0px 6px #8ae6b2;
 }
 
 
