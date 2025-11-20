@@ -269,7 +269,7 @@ export default {
 
 .ticketProfileImg img {
   display: flex;
-  object-fit: fill;
+  object-fit: cover;
   width: 100%;
   height: 100%;
   border-radius: 100%;
