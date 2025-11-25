@@ -45,7 +45,7 @@ async function confirmPayment() {
     try {
         // ✅ 우리 백엔드 서버의 /api/pay 주소로 요청
         const response = await axios.post(
-            "http://localhost:18888/api/pay",
+            "http://localhost:8888/api/pay",
             requestData, // 👈 1. 실제 데이터
             {              // 👈 2. 설정
                 headers: {
