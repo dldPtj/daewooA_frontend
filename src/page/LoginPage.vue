@@ -167,13 +167,13 @@ export default {
         Or link with
       </div>
       <div id="LoginIconBoxes">
-        <a href="http://onedayrest.softagape.com:8888/oauth2/authorization/naver">
+        <a href="http://localhost:18888/oauth2/authorization/naver">
           <button type="button" id="fBtn" class="LBtnGroup"><img src="../assets/Naver.png"></button>
         </a>
-        <a href="http://onedayrest.softagape.com:8888/oauth2/authorization/google">
+        <a href="http://localhost:18888/oauth2/authorization/google">
           <button type="button" id="GBtn" class="LBtnGroup"><img src="../assets/googleLogin.png"></button>
         </a>
-        <a href="http://onedayrest.softagape.com:8888/oauth2/authorization/kakao">
+        <a href="http://localhost:18888/oauth2/authorization/kakao">
           <button type="button" id="ABtn" class="LBtnGroup"><img src="../assets/Kakao.png"></button>
         </a>
       </div>

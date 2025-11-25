@@ -28,7 +28,7 @@ services:
     image: gustj5020/backend_image:1.0.17
     container_name: boot_container
     ports:
-      - "8888:8888"
+      - "18888:8888"
     env_file:
       - .env  # .env 파일 로드
     environment:
