@@ -337,6 +337,7 @@ export default {
 
 
 #ProfileImg {
+  width: 100%;
   object-fit: cover;
 }
 

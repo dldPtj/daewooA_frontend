@@ -29,7 +29,7 @@ const alive = localStorage.getItem("alive");
 if(alive){
     const diff = Date.now() - Number(alive);
 
-    if(diff > 60000){
+    if(diff > 1000 * 60 * 20){
         localStorage.removeItem("token");
     }
 }
