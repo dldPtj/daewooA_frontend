@@ -24,6 +24,19 @@ if (token && !existingToken) {
     window.history.replaceState({}, document.title, cleanUrl);
 }
 
+const alive = localStorage.getItem("alive");
+
+if(alive){
+    const diff = Date.now() - Number(alive);
+
+    if(diff > 60000){
+        localStorage.removeItem("token");
+    }
+}
+
+setInterval(() =>{
+    localStorage.setItem("alive", Date.now());},15000);
+
 // ✅ Vue 앱 초기화
 const app = createApp(App);
 app.use(pinia);
