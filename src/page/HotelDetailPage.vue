@@ -6,6 +6,7 @@ import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
 import MapComponent from '@/common/components/MapComponent.vue';
 import ReviewLists from '@/common/components/ReviewLists.vue';
 import { reactive } from 'vue';
+import dayjs from "dayjs";
 
 export default {
   name: 'HotelDetailPage',
@@ -35,6 +36,11 @@ export default {
   async mounted() {
     const hotelId = this.$route.query.id;
 
+    const formatCheckInDate = dayjs(localStorage.getItem("checkin")).format("YYYY-MM-DD");
+    const formatCheckOutDate = dayjs(localStorage.getItem("checkout")).format("YYYY-MM-DD");
+
+    console.log(formatCheckInDate);
+
     if (!hotelId) {
       console.warn('호텔 ID가 없습니다.');
       this.$router.push('/hotels');
@@ -43,7 +49,7 @@ export default {
 
     // 호텔 정보 api 로드
     try {
-      const result = await aTeamApi.get(`/api/hotels/detail/${hotelId}`);
+      const result = await aTeamApi.get(`/api/hotels/detail/${hotelId}?checkInDate=${formatCheckInDate}&checkOutDate=${formatCheckOutDate}`);
       this.hotelInfo = result.data;
       console.log('hotelInfo', this.hotelInfo);
     } catch (error) {
