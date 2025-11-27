@@ -42,7 +42,7 @@ export default {
       this.menuModal = !this.menuModal
     },
     logout() {
-      localStorage.removeItem('token');
+      localStorage.clear();
 
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);

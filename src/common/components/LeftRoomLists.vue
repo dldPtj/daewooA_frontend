@@ -9,13 +9,12 @@ export default {
       default: () => ({}),
     },
   },
-  methods:{
-    goToPaymentPage(){
+  methods: {
+    goToPaymentPage() {
       if (this.isUserLoggedIn) {
         localStorage.setItem("roomId", this.roomInfo.id);
         router.push("/paymentpage");
-      }
-      else {
+      } else {
         alert('로그인이 필요한 기능입니다.');
       }
     }
@@ -29,8 +28,8 @@ export default {
       const firstRoomImage = this.roomInfo.roomImages?.[0];
 
       return firstRoomImage?.roomImgUrl
-        ? `${baseUrl}${firstRoomImage.roomImgUrl}`
-        : ""; // 이미지가 없을 경우 빈 문자열 반환
+          ? `${baseUrl}${firstRoomImage.roomImgUrl}`
+          : ""; // 이미지가 없을 경우 빈 문자열 반환
     },
   }
 };
@@ -55,9 +54,10 @@ export default {
 
     <!--객실 리스트 오른쪽 편(객실가격, 객실예약버튼)-->
     <div class="leftroom-sec">
-      <div class="room-price">₩<span id="room-price">{{ roomInfo?.price?.toLocaleString() }}</span><small>/night</small></div>
+      <div class="room-price">₩<span id="room-price">{{ roomInfo?.price?.toLocaleString() }}</span><small>/night</small>
+      </div>
       <div class="room-book">
-        <button id="room-book-btn" @click="goToPaymentPage">Book now</button>
+          <button id="room-book-btn" @click="goToPaymentPage" :disabled="roomInfo.isAvailable === false">Book now</button>
       </div>
     </div>
   </div>
@@ -71,19 +71,24 @@ export default {
   width: 120px;
   height: 40px;
 }
+
 #room-book-btn:hover {
   background-color: #6acd97;
 }
+
 .room-book {
   margin: 0 0 0 50px;
 }
+
 .room-price {
   font-size: 30px;
   margin: auto;
 }
+
 .leftroom-type {
   margin: auto 15px;
 }
+
 .leftroom {
   display: flex;
   justify-content: space-between;
@@ -91,14 +96,17 @@ export default {
   padding: 10px;
   border-bottom: #d9d9d9 solid 1px;
 }
+
 .leftroom-sec {
   display: flex;
   align-items: center;
 }
+
 .leftroom-img {
   width: 50px;
   height: 50px;
 }
+
 .leftroom-img-size {
   width: 100%;
   height: 100%;
