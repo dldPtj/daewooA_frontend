@@ -914,6 +914,7 @@ export default {
   border-radius: 10px;
   background-color: #8ae6b2;
   padding: 15px;
+  width: 150px;
 }
 .hotel-overview-text {
   text-align: left;
