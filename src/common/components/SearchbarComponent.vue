@@ -51,6 +51,13 @@ export default {
       this.dataList = [];
     }
 
+    if (this.checkInDate) {
+      localStorage.setItem("checkin", this.checkInDate.toISOString());
+    }
+    if (this.checkOutDate) {
+      localStorage.setItem("checkout", this.checkOutDate.toISOString());
+    }
+
     document.addEventListener('click', this.handleClickOutside);
   },
   beforeUnmount() {
@@ -85,12 +92,12 @@ export default {
 
     handleCheckInSelected(date) {
       this.checkInDate = date;
-      localStorage.setItem("checkin", date);
+      localStorage.setItem("checkin", date.toISOString());
       this.showCheckInPicker = false;
     },
     handleCheckOutSelected(date) {
       this.checkOutDate = date;
-      localStorage.setItem("checkout", date);
+      localStorage.setItem("checkout", date.toISOString());
       this.showCheckOutPicker = false;
     },
 
