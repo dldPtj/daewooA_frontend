@@ -47,7 +47,7 @@ export default {
             <h2>The Travel</h2>
             <h3>구독하고 쿠폰, 최신 이벤트를 받아보세요.</h3>
           </div>
-          <div>
+          <div class="email-subscribe">
             <input type="text" class="textBox" placeholder="Your email address" style="border: none">
             <button type="button" id = "GsubBtn" style="border: none" @click="submit">Subscribe</button>
           </div>
@@ -152,11 +152,8 @@ export default {
 }
 
 #mailBox{
-  position: relative;
-  right: 47px;
-  width: 400px;
   height: 305px;
-  margin-left: -16px;
+  margin-left: -200px;
 }
 .MainText {
   display: flex;
@@ -185,6 +182,10 @@ export default {
 .TopTheTravel {
   margin-bottom: 16px;
 }
+.email-subscribe {
+  display: flex;
+  align-items: center;
+}
 .textBox{
   width: 473px;
   height: 56px;
@@ -194,14 +195,11 @@ export default {
   padding-left: 16px;
 }
 #GsubBtn{
-  position: absolute;
   width: 104px;
   height: 56px;
-  gap: 10px;
   background: black;
   color: white;
   border-radius: 4px;
-  top: 81px;
 }
 #GsubBtn:hover{
   background: gray;

@@ -22,18 +22,32 @@ export default {
       isInitialText: true,
       searchTerm: '',
       isFocused: false,
+      selectedSearchTerm: '',
     };
   },
   async mounted() {
-    const result = await aTeamApi.get('/api/travel-packages/popular');
-    const resultData = result.data.content;
-    console.log('data >>> ', resultData);
-    this.cities = resultData || [];
+    try {
+      const result = await aTeamApi.get(`/api/hotels/filter?size=999`);
+      const data = result.data;
 
-    this.dataList = this.cities.map(city => ({
-      name: city.name,
-      value: city.name
-    }));
+      const allHotels = data.hotels || [];
+
+      this.hotels = allHotels;
+      console.log('allHotelsData >>> ', this.hotels);
+
+      this.dataList = this.hotels
+        .filter(hotel => hotel && hotel.name && hotel.address && hotel.city)
+        .map(hotel => ({
+          hotelName: hotel.name,
+          hotelLocation: hotel.address,
+          city: hotel.city
+        }));
+
+    } catch (error) {
+      console.error('호텔 목록을 불러오는 중 오류 발생:', error);
+      this.hotels = [];
+      this.dataList = [];
+    }
 
     document.addEventListener('click', this.handleClickOutside);
   },
@@ -50,9 +64,15 @@ export default {
         this.isFocused = false;
       }, 150);
     },
-    selectItem(name) {
-      this.searchTerm = name; // 검색어(입력 필드 값)를 선택된 이름으로 설정
-      this.isFocused = false; // 목록 숨기기
+    selectItem(fullText) {
+      // 표시되는 텍스트는 전체 (도시 / 호텔)
+      this.searchTerm = fullText;
+
+      // API 필터링을 위해 도시 이름만 추출 (예: '서울 / 호텔 신라'에서 '서울' 추출)
+      const cityOnly = fullText.split(' / ')[0].trim();
+      this.selectedSearchTerm = cityOnly;
+
+      this.isFocused = false;
     },
     clearSearch() {
       this.searchTerm = '';
@@ -102,18 +122,76 @@ export default {
         // 외부 클릭으로 닫힐 때도 요약 텍스트로 전환되도록 합니다.
         this.isInitialText = false;
       }
-    }
+    },
+    searchHotels() {
+      // 룸/인원 패널이 열려있다면 닫고 텍스트 요약
+      if (this.showPanel) {
+        this.closePanel();
+      }
+
+      // 1. 필수 검색 조건 확인
+      const isSearchTermMissing = !this.searchTerm.trim();
+      const isCheckInMissing = !this.checkInDate;
+      const isCheckOutMissing = !this.checkOutDate;
+
+      // 2. '모두 비어 있는 경우' 확인 (새로고침 조건)
+      if (isSearchTermMissing && isCheckInMissing && isCheckOutMissing) {
+        // 아무것도 입력하지 않고 검색 버튼을 눌렀을 때 페이지 새로고침
+        window.location.reload();
+        return; // 새로고침 후 함수 종료
+      }
+
+      // 3. '하나라도 빠져 있는 경우' 확인 (alert 조건)
+      if (isSearchTermMissing || isCheckInMissing || isCheckOutMissing) {
+        alert("검색 조건을 모두 입력해주세요");
+        return; // 알림 후 함수 종료
+      }
+
+      // 4. 모든 조건이 충족되면 검색 실행
+      // 부모 컴포넌트로 검색 조건과 함께 이벤트를 발생시킵니다.
+      this.$emit('perform-search', {
+        city: this.selectedSearchTerm || this.searchTerm.split(' / ')[0].trim(), // 최종 검색어 또는 입력된 내용
+        checkIn: this.checkInDate,
+        checkOut: this.checkOutDate,
+        room: this.room,
+        guests: this.guests,
+      });
+    },
   },
   computed: {
+    today() {
+      // 오늘 날짜를 가져와서 Datepicker의 min-date로 설정
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // 시간을 00:00:00.000으로 설정
+      return now;
+    },
+    checkOutMinDate() {
+      // 체크아웃 날짜는 체크인 날짜의 '다음 날'부터 가능
+      if (this.checkInDate) {
+        // 체크인 날짜를 기준으로 새로운 Date 객체 선언
+        const checkIn = new Date(this.checkInDate);
+        checkIn.setDate(checkIn.getDate() + 1);
+        return checkIn;
+      }
+      // 체크인 날짜가 없으면 기본값인 오늘 날짜를 반환
+      return this.today;
+    },
     filteredList() {
-      if(this.searchTerm === '') {
+      if (this.searchTerm === '') {
+        // 검색어가 비어 있으면 전체 dataList 반환 (선택 사항: 전체 목록 반환하거나 빈 배열 반환)
         return this.dataList;
       }
-      const searchTermToCompare = this.searchTerm;
 
-      return this.dataList.filter(cityName => {
-        return cityName.value.includes(searchTermToCompare);
-      })
+      const searchTermLower = this.searchTerm.toLowerCase();
+
+      return this.dataList.filter(item => {
+        // 호텔 이름, 도시 이름, 주소 중 하나라도 검색어를 포함하면 true 반환
+        return (
+          item.hotelName.toLowerCase().includes(searchTermLower) ||
+          item.city.toLowerCase().includes(searchTermLower) ||
+          item.hotelLocation.toLowerCase().includes(searchTermLower)
+        );
+      });
     },
     summaryText() {
       //summaryText 복수형 처리
@@ -146,18 +224,17 @@ export default {
           <i v-if="searchTerm" @click="clearSearch" class='bx bx-x' style='font-size: 24px; color:#000000; cursor: pointer; margin-right: 5px;'></i>
         </div>
         <!-- isFocused가 true일 때만 목록을 보여줍니다. -->
-        <ul v-if="isFocused && cities.length > 0" class="search-list">
+        <ul v-if="isFocused && filteredList.length > 0" class="search-list">
           <li
-              v-for="city in cities"
-              :key="city.id"
-              class="list-item"
-              @mousedown.prevent="selectItem(city.cityName)"
+            v-for="(item, index) in filteredList"
+            :key="index"
+            class="list-item"
+            @mousedown.prevent="selectItem(`${item.city} / ${item.hotelName}`)"
           >
-            {{ city.cityName }}
+            <strong>{{ item.city }}</strong> / {{ item.hotelName }}
           </li>
         </ul>
-        <!-- 검색 결과가 없을 때 메시지 -->
-        <div v-else-if="isFocused && filteredList.length === 0" class="search-list">
+        <div v-else-if="isFocused && filteredList.length === 0 && searchTerm.length > 0" class="search-list">
           검색 결과가 없습니다.
         </div>
       </fieldset>
@@ -168,6 +245,7 @@ export default {
       <fieldset>
         <legend>&nbsp;Check In&nbsp;</legend>
         <Datepicker placeholder="날짜를 선택하세요" class="datepicker" v-model="checkInDate" :format="'yyyy-MM-dd'"
+                    :min-date="today"
                     @update:model-value="handleCheckInSelected"
                     @click="showCheckInPicker"
         />
@@ -179,6 +257,7 @@ export default {
       <fieldset>
         <legend>&nbsp;Check Out&nbsp;</legend>
         <Datepicker placeholder="날짜를 선택하세요" class="datepicker" v-model="checkOutDate" :format="'yyyy-MM-dd'"
+                    :min-date="checkOutMinDate"
                     @update:model-value="handleCheckOutSelected"
                     @click="showCheckOutPicker"
         />
@@ -190,7 +269,7 @@ export default {
       <fieldset>
         <legend>&nbsp;Room & Guests&nbsp;</legend>
         <!-- 설정 패널을 토글하는 버튼 -->
-        <button @click="togglePanel" class="roomguests-btn" aria-expanded="showPanel">
+        <button @click="togglePanel" class="roomguests-btn" aria-expanded="showPanel" :class="{ 'summary-active': !isInitialText }">
           <i class='bx bx-user' style="font-size: 22px"></i>
           &nbsp;{{ isInitialText ? '방 개수, 인원 수를 선택하세요' : summaryText }}
         </button>
@@ -224,7 +303,7 @@ export default {
 
     <!-- 검색 버튼 -->
     <div class="hotel-search-btn">
-      <button @click="$router.push('/hotelsearchpage')" id="hotel-search-btn">
+      <button @click="searchHotels" id="hotel-search-btn">
         <i class='bxr  bx-search' style="font-size: 24px"></i>
       </button>
     </div>
@@ -350,6 +429,9 @@ export default {
   width: 100%;
   justify-content: flex-start;
   cursor: pointer;
+}
+.roomguests-btn.summary-active {
+  color: black;
 }
 .selector-panel {
   position: absolute;
