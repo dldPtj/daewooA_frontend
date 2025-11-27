@@ -43,6 +43,13 @@ export default {
         fitnessCenter: false,
         pool: false,
       },
+      searchParams: { // SearchbarComponent에서 넘어온 검색 조건을 저장할 객체
+        city: '',
+        checkIn: null,
+        checkOut: null,
+        room: 1,
+        guests: 1,
+      },
     };
   },
 
@@ -67,7 +74,6 @@ export default {
   },
 
   async mounted() {
-    this.checkLogined(); //로그인 여부 확인
     await this.fetchMaxPrice();
     const initialData = await this.fetchHotels(0);
     if (initialData) {
@@ -77,9 +83,9 @@ export default {
   },
 
   methods: {
-    checkLogined() {
-      const token = localStorage.getItem("token");
-      this.isLogined = !!token;
+    handleSearch(params) {
+      this.searchParams = params; // 검색 조건 저장
+      this.fetchHotels(0); // 검색 조건이 변경되었으므로 첫 페이지부터 다시 로드
     },
     selectAvgRating(rating) {
       // 선택된 평점 업데이트
@@ -147,14 +153,20 @@ export default {
         // 1. 기본 쿼리 파라미터
         let query = `/api/hotels/filter?page=${page}&size=4&sortBy=${this.currentSortBy}`;
 
-        // 2. 가격 필터 (슬라이더 값) 추가
+        // 2. 검색어 필터
+        if (this.searchParams.city) {
+          // 서버 API가 검색어 필터를 `city` 쿼리 파라미터로 처리한다고 가정
+          query += `&cityName=${encodeURIComponent(this.searchParams.city)}`;
+        }
+
+        // 3. 가격 필터 (슬라이더 값) 추가
         query += `&maxPrice=${this.sliderValue}`;
 
-        // 3. 별점 필터 추가
+        // 4. 별점 필터 추가
         if (this.minAvgRating > 0) {
           query += `&minAvgRating=${this.minAvgRating}`;
         }
-        // 4. 기타 필터 파라미터 추가 (API 구조에 맞춤)
+        // 5. 기타 필터 파라미터 추가 (API 구조에 맞춤)
         // filterParams 객체를 순회하며 쿼리를 동적으로 생성
         for (const key in this.filterParams) {
           query += `&${key}=${this.filterParams[key]}`;
@@ -225,7 +237,7 @@ export default {
 
   <!--호텔 검색 바-->
   <div class="hotel-search-bar">
-    <SearchbarComponent/>
+    <SearchbarComponent @perform-search="handleSearch" />
   </div>
 
   <!--호텔 검색 화면 메인 부분-->
