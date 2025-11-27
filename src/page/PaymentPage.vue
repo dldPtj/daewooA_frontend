@@ -48,12 +48,12 @@ export default {
     handleToggle(value) {
       this.showChild = value;
     },
-    applyCoupon(item){
+    applyCoupon(item) {
       this.selectedItemId = item.id;
       this.selectedDiscount = item.discountAmount;
       localStorage.setItem("couponId", item.id);
     },
-    resetCoupon(){
+    resetCoupon() {
       this.selectedItemId = 0;
       this.selectedDiscount = 0;
       localStorage.setItem("couponId", null);
@@ -61,14 +61,22 @@ export default {
 
   },
   async mounted() {
-    localStorage.setItem("couponId",null);
+    localStorage.setItem("couponId", null);
     const roomId = localStorage.getItem("roomId");
-    const checkInDate = localStorage.getItem("checkin");
-    const checkOutDate = localStorage.getItem("checkout");
+
+    let checkInDate = localStorage.getItem("checkin");
+    let checkOutDate = localStorage.getItem("checkout");
+
+    if (checkInDate === null || checkOutDate === null) {
+
+      checkOutDate = Date.now();
+
+      checkInDate = Date.now();
+    }
+
 
     const formatCheckInDate = dayjs(checkInDate).format('YYYY-MM-DD');
     const formatCheckOutDate = dayjs(checkOutDate).format('YYYY-MM-DD');
-
 
 
     if (!roomId) {
@@ -126,14 +134,14 @@ export default {
     finalTotal() {
       const total = this.totalPrice - this.selectedDiscount;
       localStorage.setItem("totalPrice", total)
-        return total
+      return total
     },
     ImageUrl1() {
       const baseUrl = process.env.VUE_APP_API_URL;// 환경변수 사용
       const path = String(this.hotelImagesUrl);
-      if(path.startsWith("http") || path.startsWith("https")){
+      if (path.startsWith("http") || path.startsWith("https")) {
         return this.hotelImagesUrl
-      }else{
+      } else {
         return this.hotelImagesUrl
             ? `${baseUrl}${this.hotelImagesUrl}`
             : "";
@@ -142,9 +150,9 @@ export default {
     ImageUrl2() {
       const baseUrl = process.env.VUE_APP_API_URL;// 환경변수 사용
       const path = String(this.roomImageUrls);
-      if(path.startsWith("http") || path.startsWith("https")){
+      if (path.startsWith("http") || path.startsWith("https")) {
         return this.roomImageUrls
-      }else{
+      } else {
         return this.roomImageUrls
             ? `${baseUrl}${this.roomImageUrls}`
             : "";
@@ -158,14 +166,15 @@ export default {
 <template>
   <HeaderComponent/>
   <div class="country-city-hotelname">
-    <span class="hd-country">{{cityName}}</span>&nbsp;>&nbsp;<span class="hd-city">{{country}}</span>&nbsp;>&nbsp;<span
+    <span class="hd-country">{{ cityName }}</span>&nbsp;>&nbsp;<span
+      class="hd-city">{{ country }}</span>&nbsp;>&nbsp;<span
       class="hd-hotelname">{{ hotelName }}</span>
   </div>
   <div id="paymentContainer">
     <div id="paymentMain">
       <div id="paymentHotelInfo">
         <div id="pTitle">
-          <p id="pRoomName">{{ roomName }} - {{view}} - {{bed}}</p>
+          <p id="pRoomName">{{ roomName }} - {{ view }} - {{ bed }}</p>
           <p id="PPrice">₩{{ totalPrice?.toLocaleString() }}/night</p>
         </div>
         <div id="pHotelDetail">
@@ -211,7 +220,7 @@ export default {
           <img :src="ImageUrl2" id="pHotelListImage">
           <div id="pListTopTextBox">
             <p id="pListTopText1">CVK Park Bosphorus...</p>
-            <p id="pListTopText2">{{ roomName }} - {{view}} - {{bed}}</p>
+            <p id="pListTopText2">{{ roomName }} - {{ view }} - {{ bed }}</p>
             <div id="pRatingReviewContainer">
               <div id="pRatingContainer"><a>{{ avgRating }}</a></div>
               <a id="pListTopText3">Very Good <span>{{ reviewCount }} reviews</span></a>
@@ -225,33 +234,35 @@ export default {
         <div id="priceList">
           <p id="priceDetail">Price Details</p>
           <div id="pBaseFare" class="fontMontserrat"><a>Base Fare </a><a>₩{{ subtotal?.toLocaleString() }}</a></div>
-          <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩{{ selectedDiscount?.toLocaleString() }}</a></div>
+          <div id="pDiscount" class="fontMontserrat"><a>Discount</a><a>₩{{ selectedDiscount?.toLocaleString() }}</a>
+          </div>
           <div id="pTaxes" class="fontMontserrat"><a>Taxes</a><a>₩{{ taxes?.toLocaleString() }}</a></div>
-          <div id="pServiceFee" class="fontMontserrat"><a>Service Fee</a><a>₩{{ serviceFee?.toLocaleString() }}</a></div>
+          <div id="pServiceFee" class="fontMontserrat"><a>Service Fee</a><a>₩{{ serviceFee?.toLocaleString() }}</a>
+          </div>
         </div>
         <hr>
-        <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{finalTotal?.toLocaleString()}}</a></div>
+        <div id="pTotal" class="fontMontserrat"><a>Total </a><a>₩{{ finalTotal?.toLocaleString() }}</a></div>
       </div>
       <div class="paymentList">
         <div id="couponTitle">
           <a>할인 쿠폰 선택</a>
         </div>
         <div class="couponList">
-          <input type="radio" name="coupon" style="width: 20px; height: 20px; margin: auto 0"  @change="resetCoupon">
+          <input type="radio" name="coupon" style="width: 20px; height: 20px; margin: auto 0" @change="resetCoupon">
           <div class="couponMain">
             선택 안함
           </div>
         </div>
-          <coupon-component  mponent v-for="(item, index) in coupone"
-                            :key="index"
-                            :id="item.id"
-                            :name="item.name"
-                            :expiry-date="item.expiryDate"
-                            :discount-amount="item.discountAmount"
-                            :item="item"
-                            :selected-item-id="selectedItemId"
-                            @select-item="applyCoupon"
-          />
+        <coupon-component mponent v-for="(item, index) in coupone"
+                          :key="index"
+                          :id="item.id"
+                          :name="item.name"
+                          :expiry-date="item.expiryDate"
+                          :discount-amount="item.discountAmount"
+                          :item="item"
+                          :selected-item-id="selectedItemId"
+                          @select-item="applyCoupon"
+        />
       </div>
     </div>
   </div>
@@ -261,10 +272,11 @@ export default {
 
 <style>
 * {
-  margin:0;
+  margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 #rightPList {
   display: flex;
   flex-direction: column;

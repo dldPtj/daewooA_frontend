@@ -6,6 +6,7 @@ import LeftRoomLists from '@/common/components/LeftRoomLists.vue';
 import MapComponent from '@/common/components/MapComponent.vue';
 import ReviewLists from '@/common/components/ReviewLists.vue';
 import { reactive } from 'vue';
+import dayjs from "dayjs";
 
 export default {
   name: 'HotelDetailPage',
@@ -23,17 +24,23 @@ export default {
       reviewInfo: [],
       reviewCount: 0,
       favorite: false,
-      roomData: {},
       modalOpen: false,
       writeModalOpen: false,
       sliderValue: 0,
       editingReviewId: null,
       reviewsPerPage: 4,
       currentPage: 1,
+      favoritedata: {},
+
     };
   },
   async mounted() {
     const hotelId = this.$route.query.id;
+
+    const formatCheckInDate = dayjs(localStorage.getItem("checkin")).format("YYYY-MM-DD");
+    const formatCheckOutDate = dayjs(localStorage.getItem("checkout")).format("YYYY-MM-DD");
+
+    console.log(formatCheckInDate);
 
     if (!hotelId) {
       console.warn('호텔 ID가 없습니다.');
@@ -43,9 +50,11 @@ export default {
 
     // 호텔 정보 api 로드
     try {
-      const result = await aTeamApi.get(`/api/hotels/detail/${hotelId}`);
+      const result = await aTeamApi.get(`/api/hotels/detail/${hotelId}?checkInDate=${formatCheckInDate}&checkOutDate=${formatCheckOutDate}`);
       this.hotelInfo = result.data;
+      this.favoritedata = result.data.favoriteId;
       console.log('hotelInfo', this.hotelInfo);
+      console.log("roomsData")
     } catch (error) {
       console.error('호텔 정보 로드 실패:', error);
     }
@@ -69,13 +78,26 @@ export default {
     }
   },
   methods: {
-    togglefavorites() {
+    async togglefavorites() {
       if (this.isUserLoggedIn) {
         // 로그인 상태일 때 (토큰이 있을 때): 기존 찜하기 로직 실행
-        this.favorite = !this.favorite;
-      } else {
-        // 로그인 상태가 아닐 때 (토큰이 없을 때): 로그인 필요 이벤트 발생
-        alert('로그인이 필요한 기능입니다.');
+        await aTeamApi.post(`/api/favorites/${this.hotelInfo.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }).then(() => {
+          console.log("정보 수정 완료");
+        }).catch(() => {
+          alert("등록 실패");
+        });
+        }
+
+      if(this.favoritedata === true){
+        this.favoritedata = false;
+        alert("즐겨찾기가 해제되었습니다.");
+      }else {
+        this.favoritedata = true;
+        alert("즐겨찾기가 추가되었습니다.");
       }
     },
     // 각 이미지 URL에 base URL을 안전하게 붙여서 반환
@@ -278,6 +300,9 @@ export default {
     } catch (error) {
       console.error('적은 리뷰 정보 로드 실패: ', error);
     }
+  },
+  watch: {
+
   }
 };
 </script>
@@ -350,14 +375,19 @@ export default {
         <div class="hoteldetail-btns">
           <div class="hoteldetail-heart">
             <button id="hoteldetail-favorite-btn" @click="togglefavorites()">
-              <i
-                class="bxr"
-                :class="{
-                  'bx-heart': !favorite,
-                  'bx-heart-square': favorite,
-                }"
-                :style="{ 'font-size': favorite ? '60px' : '30px', color: '#8ae6b2' }"
-              ></i>
+<!--              <i-->
+<!--                class="bxr"-->
+<!--                :class="{-->
+<!--                  'bx-heart': !favorite,-->
+<!--                  'bx-heart-square': favorite,-->
+<!--                }"-->
+<!--                :style="{ 'font-size': favorite ? '60px' : '30px', color: '#8ae6b2' }"-->
+<!--              ></i>-->
+
+              <i class='bxr' :class="{
+              'bx-heart': favoritedata === false,
+              'bx-heart-square': favoritedata === true
+            }" :style="{ 'font-size': favoritedata ? '60px' : '30px', color: '#8ae6b2' }"></i>
             </button>
           </div>
           <div class="hoteldetail-share">

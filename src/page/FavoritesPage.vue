@@ -45,21 +45,21 @@ export default defineComponent({
         // 현재 찜 목록에서 hotelId가 있는지 찾기
         const idx = this.favoriteHotels.findIndex(f => f.id === hotelId);
 
+
         if (idx !== -1) {
           // 찜 해제 → 배열에서 제거
           this.favoriteHotels.splice(idx, 1);
-
           alert("즐겨찾기를 해제.");
+          window.location.reload();
+
         } else {
           // 찜 추가 → 배열에 추가
           this.favoriteHotels.push({
             id: hotelId,
             favoriteId: true
           });
-
           alert("즐겨찾기를 추가.");
         }
-
       } catch (err) {
         console.error("즐겨찾기 토글 오류:", err);
       }
@@ -72,6 +72,9 @@ export default defineComponent({
     },
     async fetchHotels(page) {
 
+      this.hotellists = [];
+      this.totalPages = 0;
+      this.currentPage = 0;
       try {
         // 1. 기본 쿼리 파라미터
         let query = `/api/favorites?page=${page}&size=4`;
@@ -111,8 +114,7 @@ export default defineComponent({
   },
   watch: {
     toggleFavorite() {
-
-    }
+    },
   }
 
 })
