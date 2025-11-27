@@ -26,40 +26,28 @@ export default {
     };
   },
   async mounted() {
-    const hotelIds = Array.from({ length: 8 }, (_, i) => i + 1);
+    try {
+      const result = await aTeamApi.get(`/api/hotels/filter?size=999`);
+      const data = result.data;
 
-    // Promise.all을 사용하여 8개의 API 요청을 병렬로 처리합니다.
-    const fetchPromises = hotelIds.map(id => aTeamApi.get(`/api/hotels/${id}`).catch(error => {
-      // 에러가 발생하더라도 전체 Promise.all이 실패하지 않도록 처리 (옵션)
-      console.error(`Failed to fetch hotel data for ID ${id}:`, error);
-      return null;
-    }));
+      const allHotels = data.hotels || [];
 
-    const results = await Promise.all(fetchPromises);
+      this.hotels = allHotels;
+      console.log('allHotelsData >>> ', this.hotels);
 
-    // 가져온 모든 결과를 하나의 배열로 합칩니다.
-    let allHotels = [];
-    results.forEach(result => {
-      if (result && result.data) {
-        // 단일 객체가 아닌 경우 배열로 가정하고 spread
-        if (Array.isArray(result.data)) {
-          allHotels.push(...result.data);
-        } else {
-          // 단일 객체인 경우
-          allHotels.push(result.data);
-        }
-      }
-    });
+      this.dataList = this.hotels
+        .filter(hotel => hotel && hotel.name && hotel.address && hotel.city)
+        .map(hotel => ({
+          hotelName: hotel.name,
+          hotelLocation: hotel.address,
+          city: hotel.city
+        }));
 
-    this.hotels = allHotels; // 템플릿의 `hotels` 속성에 전체 데이터 저장
-    console.log('hoteldata >>> ', this.hotels);
-
-    // 검색 목록(`dataList`)을 채웁니다.
-    this.dataList = this.hotels.map(hotel => ({
-      hotelName: hotel.name,
-      hotelLocation: hotel.address,
-      cityName: hotel.cityName
-    }));
+    } catch (error) {
+      console.error('호텔 목록을 불러오는 중 오류 발생:', error);
+      this.hotels = [];
+      this.dataList = [];
+    }
 
     document.addEventListener('click', this.handleClickOutside);
   },
@@ -162,7 +150,7 @@ export default {
       // 4. 모든 조건이 충족되면 검색 실행
       // 부모 컴포넌트로 검색 조건과 함께 이벤트를 발생시킵니다.
       this.$emit('perform-search', {
-        cityName: this.selectedSearchTerm || this.searchTerm.split(' / ')[0].trim(), // 최종 검색어 또는 입력된 내용
+        city: this.selectedSearchTerm || this.searchTerm.split(' / ')[0].trim(), // 최종 검색어 또는 입력된 내용
         checkIn: this.checkInDate,
         checkOut: this.checkOutDate,
         room: this.room,
@@ -183,7 +171,7 @@ export default {
         // 호텔 이름, 도시 이름, 주소 중 하나라도 검색어를 포함하면 true 반환
         return (
           item.hotelName.toLowerCase().includes(searchTermLower) ||
-          item.cityName.toLowerCase().includes(searchTermLower) ||
+          item.city.toLowerCase().includes(searchTermLower) ||
           item.hotelLocation.toLowerCase().includes(searchTermLower)
         );
       });
@@ -224,9 +212,9 @@ export default {
             v-for="(item, index) in filteredList"
             :key="index"
             class="list-item"
-            @mousedown.prevent="selectItem(`${item.cityName} / ${item.hotelName}`)"
+            @mousedown.prevent="selectItem(`${item.city} / ${item.hotelName}`)"
           >
-            <strong>{{ item.cityName }}</strong> / {{ item.hotelName }}
+            <strong>{{ item.city }}</strong> / {{ item.hotelName }}
           </li>
         </ul>
         <div v-else-if="isFocused && filteredList.length === 0 && searchTerm.length > 0" class="search-list">

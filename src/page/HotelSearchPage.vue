@@ -44,7 +44,7 @@ export default {
         pool: false,
       },
       searchParams: { // SearchbarComponent에서 넘어온 검색 조건을 저장할 객체
-        cityName: '',
+        city: '',
         checkIn: null,
         checkOut: null,
         room: 1,
@@ -154,9 +154,9 @@ export default {
         let query = `/api/hotels/filter?page=${page}&size=4&sortBy=${this.currentSortBy}`;
 
         // 2. 검색어 필터
-        if (this.searchParams.cityName) {
-          // 서버 API가 검색어 필터를 `cityName` 쿼리 파라미터로 처리한다고 가정
-          query += `&cityName=${encodeURIComponent(this.searchParams.cityName)}`;
+        if (this.searchParams.city) {
+          // 서버 API가 검색어 필터를 `city` 쿼리 파라미터로 처리한다고 가정
+          query += `&cityName=${encodeURIComponent(this.searchParams.city)}`;
         }
 
         // 3. 가격 필터 (슬라이더 값) 추가
