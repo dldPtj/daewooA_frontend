@@ -57,6 +57,7 @@ export default {
   methods: {
     setSearchTerm(e) {
       this.searchTerm = e.target.value;
+      this.selectedSearchTerm = '';
     },
     hideList() {
       // 목록 항목 클릭 이벤트가 처리될 시간을 주기 위해 짧은 지연(setTimeout)을 사용합니다.
