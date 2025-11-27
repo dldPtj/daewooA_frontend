@@ -10,10 +10,12 @@ export default {
     Datepicker,
   },
   data() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
     return {
       dataList: [],
-      checkInDate: null,
-      checkOutDate: null,
+      checkInDate: new Date(),
+      checkOutDate: tomorrow,
       showCheckInPicker: false,
       showCheckOutPicker: false,
       showPanel: false,
