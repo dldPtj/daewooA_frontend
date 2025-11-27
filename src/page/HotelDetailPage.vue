@@ -90,14 +90,16 @@ export default {
         }).catch(() => {
           alert("등록 실패");
         });
-        }
 
-      if(this.favoritedata === true){
-        this.favoritedata = false;
-        alert("즐겨찾기가 해제되었습니다.");
-      }else {
-        this.favoritedata = true;
-        alert("즐겨찾기가 추가되었습니다.");
+        if (this.favoritedata === true) {
+          this.favoritedata = false;
+          alert("즐겨찾기가 해제되었습니다.");
+        } else {
+          this.favoritedata = true;
+          alert("즐겨찾기가 추가되었습니다.");
+        }
+      } else {
+        alert('로그인이 필요한 기능입니다.');
       }
     },
     // 각 이미지 URL에 base URL을 안전하게 붙여서 반환
@@ -375,15 +377,6 @@ export default {
         <div class="hoteldetail-btns">
           <div class="hoteldetail-heart">
             <button id="hoteldetail-favorite-btn" @click="togglefavorites()">
-<!--              <i-->
-<!--                class="bxr"-->
-<!--                :class="{-->
-<!--                  'bx-heart': !favorite,-->
-<!--                  'bx-heart-square': favorite,-->
-<!--                }"-->
-<!--                :style="{ 'font-size': favorite ? '60px' : '30px', color: '#8ae6b2' }"-->
-<!--              ></i>-->
-
               <i class='bxr' :class="{
               'bx-heart': favoritedata === false,
               'bx-heart-square': favoritedata === true
@@ -944,7 +937,6 @@ export default {
   border-radius: 10px;
   background-color: #8ae6b2;
   padding: 15px;
-  width: 150px;
 }
 .hotel-overview-text {
   text-align: left;
