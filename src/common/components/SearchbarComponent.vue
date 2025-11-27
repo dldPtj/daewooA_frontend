@@ -159,6 +159,23 @@ export default {
     },
   },
   computed: {
+    today() {
+      // 오늘 날짜를 가져와서 Datepicker의 min-date로 설정
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // 시간을 00:00:00.000으로 설정
+      return now;
+    },
+    checkOutMinDate() {
+      // 체크아웃 날짜는 체크인 날짜의 '다음 날'부터 가능
+      if (this.checkInDate) {
+        // 체크인 날짜를 기준으로 새로운 Date 객체 선언
+        const checkIn = new Date(this.checkInDate);
+        checkIn.setDate(checkIn.getDate() + 1);
+        return checkIn;
+      }
+      // 체크인 날짜가 없으면 기본값인 오늘 날짜를 반환
+      return this.today;
+    },
     filteredList() {
       if (this.searchTerm === '') {
         // 검색어가 비어 있으면 전체 dataList 반환 (선택 사항: 전체 목록 반환하거나 빈 배열 반환)
@@ -228,6 +245,7 @@ export default {
       <fieldset>
         <legend>&nbsp;Check In&nbsp;</legend>
         <Datepicker placeholder="날짜를 선택하세요" class="datepicker" v-model="checkInDate" :format="'yyyy-MM-dd'"
+                    :min-date="today"
                     @update:model-value="handleCheckInSelected"
                     @click="showCheckInPicker"
         />
@@ -239,6 +257,7 @@ export default {
       <fieldset>
         <legend>&nbsp;Check Out&nbsp;</legend>
         <Datepicker placeholder="날짜를 선택하세요" class="datepicker" v-model="checkOutDate" :format="'yyyy-MM-dd'"
+                    :min-date="checkOutMinDate"
                     @update:model-value="handleCheckOutSelected"
                     @click="showCheckOutPicker"
         />
