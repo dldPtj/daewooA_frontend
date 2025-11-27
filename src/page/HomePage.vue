@@ -32,14 +32,17 @@ export default {
     console.log('main data >>> ', mainData);
     this.tours = mainData || [];
 
-    window.addEventListener("token-changed", this.updateToken);
+    this.startSlideShow();
   },
   beforeUnmount() {
-    window.removeEventListener("token-changed", this.updateToken);
     clearInterval(this.slideInterval); //Interval 해체하여 메모리 누수 방지
   },
   methods: {
     startSlideShow() {
+      // 이미 인터벌이 설정되어 있다면 중복 실행 방지
+      if (this.slideInterval) {
+        clearInterval(this.slideInterval);
+      }
       // 5초마다 슬라이드 전환
       this.slideInterval = setInterval(() => {
         // 현재 슬라이드 인덱스를 증가시키고, 전체 개수로 나눈 나머지를 사용해 순환시킨다.
@@ -49,6 +52,7 @@ export default {
     setSlide(index) {
       // 점을 클릭했을 때 해당 인덱스로 슬라이드를 직접 설정합니다.
       this.currentSlide = index;
+      this.startSlideShow();
     },
     getFullImageUrl(url) {
       if (!url) return '';
