@@ -58,6 +58,10 @@ const router = createRouter({
         { path: '/ticketPage', name: 'ticketPage', component: TicketPage },
         { path: '/slide', name: 'SlideTest', component: SlideTest }
     ],
+
+
+
+
 });
 
 export default router;
