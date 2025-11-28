@@ -28,6 +28,12 @@ export default {
     };
   },
   async mounted() {
+    const queryCity = this.$route.query.city;
+    if (queryCity) {
+      this.searchTerm = queryCity;
+      this.selectedSearchTerm = queryCity; // 선택된 값도 설정하여 검색 조건으로 사용되게 함
+      this.emitSearchOnLoad(queryCity);
+    }
     try {
       const result = await aTeamApi.get(`/api/hotels/filter?size=999`);
       const data = result.data;
@@ -132,6 +138,16 @@ export default {
         // 외부 클릭으로 닫힐 때도 요약 텍스트로 전환되도록 합니다.
         this.isInitialText = false;
       }
+    },
+    emitSearchOnLoad(city) {
+      // SearchbarComponent의 기본 날짜를 사용하여 부모에게 이벤트를 emit
+      this.$emit('perform-search', {
+        city: city, // URL 쿼리에서 얻은 도시 이름 사용
+        checkIn: this.checkInDate,
+        checkOut: this.checkOutDate,
+        room: this.room,
+        guests: this.guests,
+      });
     },
     searchHotels() {
       // 룸/인원 패널이 열려있다면 닫고 텍스트 요약
