@@ -47,7 +47,7 @@ export default {
       this.slideInterval = setInterval(() => {
         // 현재 슬라이드 인덱스를 증가시키고, 전체 개수로 나눈 나머지를 사용해 순환시킨다.
         this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
-      }, 5000);
+      }, 3000);
     },
     setSlide(index) {
       // 점을 클릭했을 때 해당 인덱스로 슬라이드를 직접 설정합니다.
@@ -61,6 +61,12 @@ export default {
       // Vue CLI 환경에서 process.env.VUE_APP_API_URL 사용
       const base = process.env.VUE_APP_API_URL || '';
       return `${base}${url}`;
+    },
+    goToHotelSearch(cityName) {
+      this.$router.push({
+        path: '/hotelsearchpage',
+        query: { city: cityName }
+      });
     },
   }
 };
@@ -157,7 +163,7 @@ export default {
   </div>
 
   <div class="city-selection-imgs">
-    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city" />
+    <CityLists v-for="city in cities" :key="city.id" :cityInfo="city" @homepage-hotel-select="goToHotelSearch"/>
   </div>
 
   <!--투어 선택 부분-->
