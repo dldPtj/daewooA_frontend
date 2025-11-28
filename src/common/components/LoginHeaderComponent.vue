@@ -13,16 +13,28 @@ export default {
     };
   },
   async mounted() {
-    const res = await aTeamApi.get('/api/users/me/profileAll', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    });
-    const data = res.data;
-    console.log('data >>> ', data);
-    this.hotels = data || [];
-    this.profileName = data.content.userName;
-    this.profileImg = data.content.imageUrl;
+    try {
+      const res = await aTeamApi.get('/api/users/me/profileAll', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }).catch((error)=>{
+        if(error.response?.status === 302) {
+
+          alert("302 에러 발생");
+        }
+      });
+
+      const data = res.data;
+      console.log('data >>> ', data);
+      this.hotels = data || [];
+      this.profileName = data.content.userName;
+      this.profileImg = data.content.imageUrl;
+    }catch (err){
+      console.log(err,"에러 발생");
+      this.$emit("err302", true);
+    }
+
   },
   computed: {
     headerImageUrl() {
