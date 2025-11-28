@@ -137,10 +137,10 @@ export default {
         <div class="gotoMain"><img src="../../assets/card.png" alt="카드이미지"> <a>결제 내역</a></div>
         <div>&gt;</div>
       </div>
-      <div class="goToBtn">
-        <div class="gotoMain"><img src="../../assets/settings.png" alt="설정이미지"> <a>설정</a></div>
-        <div>&gt;</div>
-      </div>
+<!--      <div class="goToBtn">-->
+<!--        <div class="gotoMain"><img src="../../assets/settings.png" alt="설정이미지"> <a>설정</a></div>-->
+<!--        <div>&gt;</div>-->
+<!--      </div>-->
     </div>
     <hr>
     <div class="menuUnder">

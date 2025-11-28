@@ -84,13 +84,13 @@ export default {
         <p>Offline</p>
       </div>
     </div>
-    <hr>
-    <div class="menuMiddle">
-      <div class="goToBtn">
-        <div class="gotoMain"><img src="../../assets/settings.png" alt="설정이미지"> <a>설정</a></div>
-        <div>&gt;</div>
-      </div>
-    </div>
+<!--    <hr>-->
+<!--    <div class="menuMiddle">-->
+<!--      <div class="goToBtn">-->
+<!--        <div class="gotoMain"><img src="../../assets/settings.png" alt="설정이미지"> <a>설정</a></div>-->
+<!--        <div>&gt;</div>-->
+<!--      </div>-->
+<!--    </div>-->
     <hr>
     <div class="menuUnder">
       <div class="goToBtn" @click="$router.push('/loginpage')">
