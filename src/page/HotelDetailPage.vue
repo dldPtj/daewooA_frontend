@@ -155,7 +155,7 @@ export default {
     openGoogleMaps() {
       if (this.hotelInfo.address) {
         // 주소를 URL 인코딩하여 Google Maps 검색 쿼리 URL을 생성합니다.
-        const encodedAddress = encodeURIComponent(this.hotelInfo.address);
+        const encodedAddress = encodeURIComponent(this.hotelInfo.name);
         const url = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
 
         // 새 탭에서 Google Maps를 엽니다.
