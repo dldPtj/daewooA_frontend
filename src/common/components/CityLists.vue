@@ -14,6 +14,12 @@ export default {
           ? `${baseUrl}${this.cityInfo.imageUrl}`
           : "";
     },
+  },
+  methods: {
+    HomepageHotelSelect() {
+      this.$emit('homepage-hotel-select', this.cityInfo.cityName);
+      console.log('cityName >>> ', this.cityInfo.cityName);
+    }
   }
 };
 </script>
@@ -42,7 +48,7 @@ export default {
       </div>
     </div>
     <div class="hotel-book-btn">
-      <button id="bookhotel">Book a Hotel</button>
+      <button id="bookhotel" @click="HomepageHotelSelect">Book a Hotel</button>
     </div>
 
   </div>

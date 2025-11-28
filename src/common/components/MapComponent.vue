@@ -26,9 +26,9 @@ export default {
   watch: {
     address: {
       immediate: true,
-      handler(newAddress) {
-        if (this.map && newAddress) {
-          this.codeAddress(newAddress);
+      handler(newHotelName) {
+        if (this.map && newHotelName) {
+          this.codeAddress(newHotelName);
         }
       }
     }
@@ -50,8 +50,8 @@ export default {
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
-      if (this.address) {
-        this.codeAddress(this.address);
+      if (this.hotelName) {
+        this.codeAddress(this.hotelName);
       }
     },
 

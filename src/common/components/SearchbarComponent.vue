@@ -10,10 +10,12 @@ export default {
     Datepicker,
   },
   data() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
     return {
       dataList: [],
-      checkInDate: null,
-      checkOutDate: null,
+      checkInDate: new Date(),
+      checkOutDate: tomorrow,
       showCheckInPicker: false,
       showCheckOutPicker: false,
       showPanel: false,
@@ -26,6 +28,12 @@ export default {
     };
   },
   async mounted() {
+    const queryCity = this.$route.query.city;
+    if (queryCity) {
+      this.searchTerm = queryCity;
+      this.selectedSearchTerm = queryCity; // 선택된 값도 설정하여 검색 조건으로 사용되게 함
+      this.emitSearchOnLoad(queryCity);
+    }
     try {
       const result = await aTeamApi.get(`/api/hotels/filter?size=999`);
       const data = result.data;
@@ -49,6 +57,13 @@ export default {
       this.dataList = [];
     }
 
+    if (this.checkInDate) {
+      localStorage.setItem("checkin", this.checkInDate.toISOString());
+    }
+    if (this.checkOutDate) {
+      localStorage.setItem("checkout", this.checkOutDate.toISOString());
+    }
+
     document.addEventListener('click', this.handleClickOutside);
   },
   beforeUnmount() {
@@ -57,6 +72,7 @@ export default {
   methods: {
     setSearchTerm(e) {
       this.searchTerm = e.target.value;
+      this.selectedSearchTerm = '';
     },
     hideList() {
       // 목록 항목 클릭 이벤트가 처리될 시간을 주기 위해 짧은 지연(setTimeout)을 사용합니다.
@@ -82,12 +98,12 @@ export default {
 
     handleCheckInSelected(date) {
       this.checkInDate = date;
-      localStorage.setItem("checkin", date);
+      localStorage.setItem("checkin", date.toISOString());
       this.showCheckInPicker = false;
     },
     handleCheckOutSelected(date) {
       this.checkOutDate = date;
-      localStorage.setItem("checkout", date);
+      localStorage.setItem("checkout", date.toISOString());
       this.showCheckOutPicker = false;
     },
 
@@ -122,6 +138,16 @@ export default {
         // 외부 클릭으로 닫힐 때도 요약 텍스트로 전환되도록 합니다.
         this.isInitialText = false;
       }
+    },
+    emitSearchOnLoad(city) {
+      // SearchbarComponent의 기본 날짜를 사용하여 부모에게 이벤트를 emit
+      this.$emit('perform-search', {
+        city: city, // URL 쿼리에서 얻은 도시 이름 사용
+        checkIn: this.checkInDate,
+        checkOut: this.checkOutDate,
+        room: this.room,
+        guests: this.guests,
+      });
     },
     searchHotels() {
       // 룸/인원 패널이 열려있다면 닫고 텍스트 요약
