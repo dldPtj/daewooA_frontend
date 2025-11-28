@@ -13,16 +13,28 @@ export default {
     };
   },
   async mounted() {
-    const res = await aTeamApi.get('/api/users/me/profileAll', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    });
-    const data = res.data;
-    console.log('data >>> ', data);
-    this.hotels = data || [];
-    this.profileName = data.content.userName;
-    this.profileImg = data.content.imageUrl;
+    try {
+      const res = await aTeamApi.get('/api/users/me/profileAll', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }).catch((error)=>{
+        if(error.response?.status === 302) {
+
+          alert("302 에러 발생");
+        }
+      });
+
+      const data = res.data;
+      console.log('data >>> ', data);
+      this.hotels = data || [];
+      this.profileName = data.content.userName;
+      this.profileImg = data.content.imageUrl;
+    }catch (err){
+      console.log(err,"에러 발생");
+      this.$emit("err302", true);
+    }
+
   },
   computed: {
     headerImageUrl() {
@@ -125,10 +137,10 @@ export default {
         <div class="gotoMain"><img src="../../assets/card.png" alt="카드이미지"> <a>결제 내역</a></div>
         <div>&gt;</div>
       </div>
-      <div class="goToBtn">
-        <div class="gotoMain"><img src="../../assets/settings.png" alt="설정이미지"> <a>설정</a></div>
-        <div>&gt;</div>
-      </div>
+<!--      <div class="goToBtn">-->
+<!--        <div class="gotoMain"><img src="../../assets/settings.png" alt="설정이미지"> <a>설정</a></div>-->
+<!--        <div>&gt;</div>-->
+<!--      </div>-->
     </div>
     <hr>
     <div class="menuUnder">

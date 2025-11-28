@@ -259,20 +259,15 @@ export default {
 
 .ticketProfileImg {
   display: flex;
-  width: 48px;
-  height: 48px;
-  border-radius: 48px;
-  border: white solid 1px;
-  background: #9e9a9a;
-
+  align-items: center;
 }
 
 .ticketProfileImg img {
-  display: flex;
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  border-radius: 100%;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #FFFFFF;
+  border-radius: 50%;
+
 
 }
 
